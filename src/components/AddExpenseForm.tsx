@@ -32,9 +32,9 @@ const AddExpenseForm = () => {
         try {
             const expenses: any = await getExpenses(idUser, groupName);
             console.log(expenses, '클라이언트 받은 데이터');
-            if(expenses) {
-                setExpense(expenses);
-            }
+            if(!expenses) return;
+            console.log('넘어가나', expenses);
+            setExpense(expenses);
         } catch (error) {
             console.error('데이터를 가져오는 중 오류 발생:', error);
         }

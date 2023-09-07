@@ -14,12 +14,13 @@ const renderComponent = () => {
     const input = screen.getByPlaceholderText('2022 제주도 여행');
     const saveButton = screen.getByText('저장');
     const errorMessage = screen.queryByText('그룹 이름을 입력해 주세요.');
-    
+    const groupMessage = screen.queryByText('속한 그룹들');
     //공통으로 사용될 Elemnet DOM 요소들을 renderComponent함수에서 생성
     return {
         input,
         saveButton,
         errorMessage,
+        groupMessage
     }
 };
 //describe : 여러 개의 테스틈 함수를 묶을 때 사용
@@ -58,5 +59,11 @@ describe('그룹 생성페이지', () => {
         await userEvent.click(saveButton);
 
         expect(errorMessage).toHaveAttribute('data-validate', 'true'); //저장 성공이라면 null값이 나와야함!
+    });
+
+    test('유저가 속한 그룹들이 존재한다면 그룹들이 렌더링 되는가', async() => {
+        const {groupMessage} = renderComponent();
+
+        expect(groupMessage).not.toBeNull();
     });
 })

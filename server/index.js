@@ -54,7 +54,7 @@ app.get(`/members`, async (req, res) => {
                 { groupName: groupName }, // 두 번째 조건 필드
         ]},);
         
-        console.log(existingGroupName,' 그룹이름');
+        // console.log(existingGroupName,' 그룹이름');
         if (existingGroupName) {
             return res.status(400).json({ msg: '이미 해당 그룹이름이 존재합니다.'});
         }

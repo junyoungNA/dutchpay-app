@@ -6,7 +6,7 @@ import OverlayWrapper from './shared/OverlayWrapper'
 import styled from 'styled-components'
 
 const ExpenseTable = () => {
-    const expense = useRecoilValue(expensesState)
+    const expense = useRecoilValue(expensesState);
     return (
         <OverlayWrapper minheight={'73vh'} padding='100px'>
             <Table data-testid='expenseList' borderless hover responsive>
@@ -19,7 +19,7 @@ const ExpenseTable = () => {
                     </tr>
                 </StyledThead>
                 <StyledTbody>
-                    {expense.map(({date, desc, amount, payer}, idx) => 
+                    {expense?.map(({date, desc, amount, payer}, idx) => 
                         <tr key={idx}>
                             <td>{date}</td>
                             <td>{desc}</td>

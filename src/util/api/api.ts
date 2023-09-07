@@ -5,9 +5,8 @@ export const getExpenses = async (idUser : string, groupName : string) => {
     try {
         const result = await getData(`expense?idUser=${idUser}&groupName=${groupName}`);
         return result;
-    } catch(error) {
-        console.log(error, 'getExpenses 오류');
-        return error;
+    } catch(error:any) {
+        throw new Error(error);
     } 
 }
 
