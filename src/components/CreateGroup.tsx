@@ -7,7 +7,6 @@ import { useNavigate } from 'react-router-dom';
 import { kakaoUser } from '../state/kakaoUser';
 import  {getGroupMembers} from '../util/api/api'
 import { StyledErrorMessage } from './AddMembers';
-import ExsitingGroups from './ExsitingGroups';
 
 
 //그룹의 이름 정하는 컴포넌트
@@ -53,29 +52,26 @@ const CreateGroup = () => {
     }
 
     return (
-        <>
-            <CenteredOverlayForm    
-                title='먼저, 더치 페이 할 그룹의 이름을 정해주세요'
-                handleSubmit={handleSubmit}
-                validated={validated}
-                >   
-                <Form.Group controlId='validationGroupName'>
-                    <Form.Control   
-                        type='text' 
-                        required
-                        placeholder='2022 제주도 여행'
-                        onChange={(e) => {setGroupName(e.target.value)}}
-                        style={{border : !validated ?'1px solid red' : '1px solid gray'}}
-                        />
-                    <Form.Control.Feedback type="invalid" data-validate={vaildGroupName} >
-                        {/* DOM에 항상 렌더링 됨!? 리액트 부트스트랩 특성상 */}
-                        그룹 이름을 입력해 주세요.
-                    </Form.Control.Feedback>
-                    {isExsitingGroup && <StyledErrorMessage>이미 존재하는 그룹 이름입니다.</StyledErrorMessage>}
-                </Form.Group>
-            </CenteredOverlayForm>
-            <ExsitingGroups/>
-        </>
+        <CenteredOverlayForm    
+            title='먼저, 더치 페이 할 그룹의 이름을 정해주세요'
+            handleSubmit={handleSubmit}
+            validated={validated}
+            >   
+            <Form.Group controlId='validationGroupName'>
+                <Form.Control   
+                    type='text' 
+                    required
+                    placeholder='2022 제주도 여행'
+                    onChange={(e) => {setGroupName(e.target.value)}}
+                    style={{border : !validated ?'1px solid red' : '1px solid gray'}}
+                    />
+                <Form.Control.Feedback type="invalid" data-validate={vaildGroupName} >
+                    {/* DOM에 항상 렌더링 됨!? 리액트 부트스트랩 특성상 */}
+                    그룹 이름을 입력해 주세요.
+                </Form.Control.Feedback>
+                {isExsitingGroup && <StyledErrorMessage>이미 존재하는 그룹 이름입니다.</StyledErrorMessage>}
+            </Form.Group>
+        </CenteredOverlayForm>
     )
 }
 

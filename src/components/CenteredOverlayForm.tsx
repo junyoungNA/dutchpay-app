@@ -4,6 +4,8 @@ import styled from 'styled-components'
 import OverlayWrapper from './shared/OverlayWrapper';
 import { Form } from 'react-bootstrap';
 import ServiceLogo from './shared/ServiceLogo';
+import ExsitingGroups from './ExsitingGroups';
+
 
 interface CenteredOverlayFormProps {
     children: ReactNode;
@@ -28,12 +30,16 @@ const CenteredOverlayForm = ({children, title, handleSubmit, validated} : Center
                             <Row className='align-items-center'>
                                 {children}
                             </Row>
+                            <Row>
+                                <ExsitingGroups/>
+                            </Row>
                             <Row className='align-items-end'>
                                 <StyledSubmitdButton>저장</StyledSubmitdButton>
                             </Row>
                         </StyledCentralizedContent>
                     </Form>
                 </Container>
+            
             </OverlayWrapper>
         </StyledCenteralizedContainer>
     )
