@@ -2,30 +2,43 @@ import {  Form, } from 'react-bootstrap'
 import CenteredOverlayForm from './CenteredOverlayForm'
 import {groupNameState} from '../state/groupName';
 import {useRecoilValue, useRecoilState} from 'recoil';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { kakaoUser } from '../state/kakaoUser';
-import  {getGroupMembers} from '../util/api/api'
+import  {getExsitingGroup, getGroupMembers} from '../util/api/api'
 import { StyledErrorMessage } from './AddMembers';
+import ExsitingGroups from './ExsitingGroups';
 
 
 //그룹의 이름 정하는 컴포넌트
 const CreateGroup = () => {
     const navigate = useNavigate();
-    const {idUser} = useRecoilValue(kakaoUser);
+    const {idUser, nickname} = useRecoilValue(kakaoUser);
 
     //bootstrap에서 지원해주는 form 태그안에 input 요소들의
     // text 검사를 다 돌았는지 확인해주는 역할 required 등
     const [validated, setValidated] = useState(false); 
     const [vaildGroupName, setVaildGroupName] = useState(false); 
     const [groupName, setGroupName] = useRecoilState(groupNameState);
+
+    const [userGroups, setUserGroups] = useState([]);
     const [isExsitingGroup, setExsitingGroup] = useState(false);
+
+    const getGroupMemberFetch = async() => {
+        const resultGroups = await getGroupMembers(idUser);
+        console.log(resultGroups,'유저의 그룹들');
+        setUserGroups(resultGroups);
+    }
+    
+    useEffect(() => {
+        getGroupMemberFetch();
+    }, []);
 
     const fetchData = async (idUser : string, groupName : string) => {
         try {
-            const grouopMembrs: any = await getGroupMembers(idUser, groupName);
-            console.log(grouopMembrs, '존재하는 그룹 클라이언트');
-            return grouopMembrs;
+            const exsitingGroup: any = await getExsitingGroup(idUser, groupName);
+            console.log(exsitingGroup, '존재하는 그룹 클라이언트');
+            return exsitingGroup;
         } catch (error : any) {
             if(error.message === 'Error: Request failed with status code 400') {
                 setExsitingGroup(true); //이미 존재하는 그룹;
@@ -38,9 +51,13 @@ const CreateGroup = () => {
     const handleSubmit = async (event : React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const form = event.currentTarget;
-        console.log(groupName, '그룹 이름');
-        const isExsitingGroup = await fetchData(idUser, groupName);
-        if(!isExsitingGroup) return; //존재하는 그룹시? 또는 에러시
+        const exsitingGroup = await fetchData(idUser, groupName);
+        console.log(exsitingGroup);
+        if(!exsitingGroup) {
+            setExsitingGroup(true);
+            return
+        }; //존재하는 그룹시? 또는 에러시
+        setExsitingGroup(false);;
         if(form.checkValidity()) {
             setVaildGroupName(true);
             navigate('/members');
@@ -69,6 +86,7 @@ const CreateGroup = () => {
                     {/* DOM에 항상 렌더링 됨!? 리액트 부트스트랩 특성상 */}
                     그룹 이름을 입력해 주세요.
                 </Form.Control.Feedback>
+                <ExsitingGroups userGroups={userGroups} nickname={nickname}/>
                 {isExsitingGroup && <StyledErrorMessage>이미 존재하는 그룹 이름입니다.</StyledErrorMessage>}
             </Form.Group>
         </CenteredOverlayForm>

@@ -46,18 +46,6 @@ app.post('/user', async (req, res) => {
 app.get(`/members`, async (req, res) => {
     try {
         const idUser = req.query.idUser; // 첫 번째 조건 파라미터
-        const groupName = req.query.groupName; // 두 번째 조건 파라미터
-
-        const existingGroupName = await Members.findOne({    
-            $and: [
-                { idUser:idUser }, // 첫 번째 조건 필드
-                { groupName: groupName }, // 두 번째 조건 필드
-        ]},);
-        
-        // console.log(existingGroupName,' 그룹이름');
-        if (existingGroupName) {
-            return res.status(400).json({ msg: '이미 해당 그룹이름이 존재합니다.'});
-        }
         const groupMembrs = await Members.find({
             idUser: idUser
         })
@@ -68,29 +56,43 @@ app.get(`/members`, async (req, res) => {
     }
 });
 
+//그룹 이름 중복되는지 확인
+app.get(`/existingGroup`, async (req, res) => {
+    try {
+        const idUser = req.query.idUser; // 첫 번째 조건 파라미터
+        const groupName = req.query.groupName; // 두 번째 조건 파라미터
+
+        const existingGroupName = await Members.findOne({    
+            $and: [
+                { idUser:idUser }, // 첫 번째 조건 필드
+                { groupName: groupName }, // 두 번째 조건 필드
+        ]},);
+        
+        console.log(existingGroupName,' 그룹이름', idUser, groupName);
+        if (existingGroupName) {
+            return res.status(400).json({ msg: '이미 해당 그룹이름이 존재합니다.'});
+        }
+        res.status(201).json({msg : '해당 그룹이름이 존재하지 않습니다.'}); // 저장된 사용자 데이터를 JSON 형식으로 응답
+    } catch (error) {
+        console.error('사용자 생성 오류:', error);
+        res.status(500).json({ error: '내부 서버 오류' });
+    }
+});
+
+
 app.post('/members', async (req, res) => {
     try {
         const { groupMembers, idUser, groupName } = req.body;
         console.log(groupMembers, idUser, groupName);
         const existingUser = await User.findOne({ idUser});
-        const existingGroup = await Members.findOne({    
-            $and: [
-                { idUser:idUser }, // 첫 번째 조건 필드
-                { groupName: groupName }, // 두 번째 조건 필드
-        ]},);
-        console.log(existingGroup, 'index existingGroup');
         if (!existingUser) {
             return res.status(302).json({ msg: '사용자 정보가 없습니다. 다시 로그인해주세요.' });
-        }
-
-        if (existingGroup) {
-            return res.status(400).json({ msg: '이미 해당 그룹이름이 존재합니다.' });
         }
         const members = new Members({ groupMembers, idUser, groupName });
         await members.save(); // 사용자 데이터를 데이터베이스에 저장
         res.status(201).json(members); // 저장된 사용자 데이터를 JSON 형식으로 응답
     } catch (error) {
-        console.error('사용자 생성 오류:', error);
+        console.error('멤버 생성 오류:', error);
         res.status(500).json({ error: '내부 서버 오류' });
     }
 });
