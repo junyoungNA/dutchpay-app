@@ -6,11 +6,22 @@ import styled from "styled-components";
 import { postData } from "../util/api/apiInstance";
 import {useNavigate} from 'react-router-dom';
 import { ROUTES } from "../route/routes";
+import {useRef} from 'react';
 
 const SocialKakao = () => {
     const  navigate = useNavigate();
     const  [user,setUser] = useRecoilState(kakaoUser);
     const kakaoClientId = process.env.REACT_APP_API_KEY!;
+    const kakaoRef: React.RefObject<KakaoLogin> = useRef<KakaoLogin>(null);
+
+    const handleKakaoDivClick = () => {
+        // StyledKakaoDiv가 클릭되면 KakaoLogin 컴포넌트를 클릭한 것처럼 동작하도록 
+        if (kakaoRef.current) {
+            console.log(kakaoRef.current);
+        //   (kakaoRef.current as any).click(); // KakaoLogin 컴포넌트를 클릭한 것처럼 동작
+        }
+    };
+    
 
     const kakaoOnSuccess = async (data : any)=> {
         try {
@@ -36,10 +47,11 @@ const SocialKakao = () => {
             <StyledImage src='./images/kakao.png' alt='카카오 이미지'/>
             {!user.nickname ? 
                 <StyledKakao
-                token={kakaoClientId}
-                onSuccess={kakaoOnSuccess}
-                onFail={kakaoOnFailure}
-                // onLogout={responseKaKao}
+                    ref={kakaoRef}
+                    token={kakaoClientId}
+                    onSuccess={kakaoOnSuccess}
+                    onFail={kakaoOnFailure}
+                    // onLogout={responseKaKao}
                 />
             :  
                 <span>{user.nickname} 님 환영해요~!</span>
@@ -62,13 +74,12 @@ const StyledKakaoDiv = styled.div`
     margin-left: 20px;
     width: 300px;
     padding-left: 10px;
+    cursor: pointer;
 `
 
 const StyledKakao = styled(KakaoLogin) `
     font-weight: 900;
-    cursor: pointer;
 `
-
 const StyledImage = styled(Image) `
     width: 40px;
     height: 40px;
@@ -78,6 +89,5 @@ const StyledImage = styled(Image) `
     position: absolute;
     left: 10px;
 `
-
 
 export default SocialKakao

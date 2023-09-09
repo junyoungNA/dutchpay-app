@@ -2,37 +2,24 @@ import {  Form, } from 'react-bootstrap'
 import CenteredOverlayForm from './CenteredOverlayForm'
 import {groupNameState} from '../state/groupName';
 import {useRecoilValue, useRecoilState} from 'recoil';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { kakaoUser } from '../state/kakaoUser';
 import  {getExsitingGroup, getGroupMembers} from '../util/api/api'
 import { StyledErrorMessage } from './AddMembers';
-import ExsitingGroups from './ExsitingGroups';
 
 
 //그룹의 이름 정하는 컴포넌트
 const CreateGroup = () => {
     const navigate = useNavigate();
-    const {idUser, nickname} = useRecoilValue(kakaoUser);
+    const {idUser} = useRecoilValue(kakaoUser);
 
     //bootstrap에서 지원해주는 form 태그안에 input 요소들의
     // text 검사를 다 돌았는지 확인해주는 역할 required 등
     const [validated, setValidated] = useState(false); 
     const [vaildGroupName, setVaildGroupName] = useState(false); 
     const [groupName, setGroupName] = useRecoilState(groupNameState);
-
-    const [userGroups, setUserGroups] = useState([]);
     const [isExsitingGroup, setExsitingGroup] = useState(false);
-
-    const getGroupMemberFetch = async() => {
-        const resultGroups = await getGroupMembers(idUser);
-        console.log(resultGroups,'유저의 그룹들');
-        setUserGroups(resultGroups);
-    }
-    
-    useEffect(() => {
-        getGroupMemberFetch();
-    }, []);
 
     const fetchData = async (idUser : string, groupName : string) => {
         try {
@@ -73,7 +60,7 @@ const CreateGroup = () => {
             title='먼저, 더치 페이 할 그룹의 이름을 정해주세요'
             handleSubmit={handleSubmit}
             validated={validated}
-            >   
+            > 
             <Form.Group controlId='validationGroupName'>
                 <Form.Control   
                     type='text' 
@@ -86,9 +73,9 @@ const CreateGroup = () => {
                     {/* DOM에 항상 렌더링 됨!? 리액트 부트스트랩 특성상 */}
                     그룹 이름을 입력해 주세요.
                 </Form.Control.Feedback>
-                <ExsitingGroups userGroups={userGroups} nickname={nickname}/>
                 {isExsitingGroup && <StyledErrorMessage>이미 존재하는 그룹 이름입니다.</StyledErrorMessage>}
             </Form.Group>
+
         </CenteredOverlayForm>
     )
 }

@@ -12,15 +12,15 @@ interface IUserGrooups {
 
 interface IExsitingGroupsProps {
     userGroups : IUserGrooups[]
-    nickname: string,
+    nickname: string
 }
 
 const ExsitingGroups= ({userGroups, nickname} : IExsitingGroupsProps) => {
     return (
         <StyledGroupContainer>
-            <h5>{nickname}님이  속한 그룹 목록!</h5>
+            <h5>{nickname} 속한 그룹 목록!</h5>
             {userGroups.map(({groupName}) => 
-                <div key={groupName}>{groupName}</div>
+                <div>{groupName}</div>
             )}
         </StyledGroupContainer>
     )

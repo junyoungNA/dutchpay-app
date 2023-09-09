@@ -36,7 +36,6 @@ const CenteredOverlayForm = ({children, title, handleSubmit, validated} : Center
                         </StyledCentralizedContent>
                     </Form>
                 </Container>
-            
             </OverlayWrapper>
         </StyledCenteralizedContainer>
     )
