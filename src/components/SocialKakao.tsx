@@ -4,25 +4,11 @@ import { kakaoUser } from "../state/kakaoUser";
 import {Image } from 'react-bootstrap';
 import styled from "styled-components";
 import { postData } from "../util/api/apiInstance";
-import {useNavigate} from 'react-router-dom';
-import { ROUTES } from "../route/routes";
-import {useRef} from 'react';
 
 const SocialKakao = () => {
-    const  navigate = useNavigate();
     const  [user,setUser] = useRecoilState(kakaoUser);
     const kakaoClientId = process.env.REACT_APP_API_KEY!;
-    const kakaoRef: React.RefObject<KakaoLogin> = useRef<KakaoLogin>(null);
-
-    const handleKakaoDivClick = () => {
-        // StyledKakaoDiv가 클릭되면 KakaoLogin 컴포넌트를 클릭한 것처럼 동작하도록 
-        if (kakaoRef.current) {
-            console.log(kakaoRef.current);
-        //   (kakaoRef.current as any).click(); // KakaoLogin 컴포넌트를 클릭한 것처럼 동작
-        }
-    };
     
-
     const kakaoOnSuccess = async (data : any)=> {
         try {
             console.log(data);
@@ -32,7 +18,7 @@ const SocialKakao = () => {
             setUser({nickname, idUser });
             const result = await postData('user',{accessToken, nickname , idUser});
             // console.log(result);
-            navigate(ROUTES.CREATE_GROUP);
+            // navigate(ROUTES.CREATE_GROUP);
         } catch (error) {
             console.log(error);
         }
@@ -43,10 +29,9 @@ const SocialKakao = () => {
     };
 
     return(
-        <StyledKakaoDiv onClick={handleKakaoDivClick}>
+        <StyledKakaoDiv>
             {!user.nickname ? 
                 <StyledKakao
-                    ref={kakaoRef}
                     token={kakaoClientId}
                     onSuccess={kakaoOnSuccess}
                     onFail={kakaoOnFailure}

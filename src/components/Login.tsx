@@ -41,12 +41,11 @@ const Login:React.FC = () => {
                     <ServiceLogo/>
                     <StyledGreetings>안녕하세요~ 플랜 B를 통해 <br/>언제든 계획을 수립하고 기록해보세요</StyledGreetings>
                     <SocialKakao/>
-                    <StyledVButtonWrapper onClick={() => navigate(ROUTES.CREATE_GROUP)}>
+                    <StyledButtonWrapper onClick={() => navigate(ROUTES.CREATE_GROUP)}>
                         <StlyedDutchpayLottie animationData={dutchpayButton}></StlyedDutchpayLottie>
                         <StlyedCreateGroupBtn>더치페이 하러가기</StlyedCreateGroupBtn>
-                    </StyledVButtonWrapper>
+                    </StyledButtonWrapper>
                 </StyledLoginCol>
-
                 {nickname && userGroups && <ExsitingGroups userGroups={userGroups} nickname={nickname}/>}
             </StyledRow>
         </StyledContainer>
@@ -83,7 +82,7 @@ const StyledLoginCol = styled(Col)`
     gap: 15px;
 `
 
-export const StyledVButtonWrapper = styled.div`
+export const StyledButtonWrapper = styled.div`
     position: relative;
     display: flex;
     justify-content: center;

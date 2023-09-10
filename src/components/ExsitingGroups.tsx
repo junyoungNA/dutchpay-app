@@ -1,6 +1,9 @@
-import React from 'react'
-import { Container, Row } from 'react-bootstrap'
+import { Container } from 'react-bootstrap'
+import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
+import {groupMemberState} from '../state/groupMembers';
+import { useSetRecoilState } from 'recoil';
+import { groupNameState } from '../state/groupName';
 
 interface IUserGrooups {
     _id: string,
@@ -16,11 +19,25 @@ interface IExsitingGroupsProps {
 }
 
 const ExsitingGroups= ({userGroups, nickname} : IExsitingGroupsProps) => {
+    console.log(userGroups);
+    const setGroupMembers = useSetRecoilState(groupMemberState);
+    const setGroupName = useSetRecoilState(groupNameState);
+    const navigate = useNavigate();
+
+    const userExpenseNavgiation  = (groupName : string, groupMembers : string[]) => {
+        setGroupMembers(groupMembers);
+        setGroupName(groupName);
+        navigate('/expense');
+    }
+
     return (
         <StyledGroupContainer>
             <h5>{nickname} 속한 그룹 목록!</h5>
-            {userGroups.map(({groupName}) => 
-                <div>{groupName}</div>
+            {userGroups.map(({groupName, groupMembers}) => 
+                <div key={groupName}>
+                    <span >{groupName}</span>
+                    <button onClick={() => userExpenseNavgiation(groupName, groupMembers)}>보기</button>
+                </div>
             )}
         </StyledGroupContainer>
     )
