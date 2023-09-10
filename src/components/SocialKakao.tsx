@@ -43,8 +43,7 @@ const SocialKakao = () => {
     };
 
     return(
-        <StyledKakaoDiv>
-            <StyledImage src='./images/kakao.png' alt='카카오 이미지'/>
+        <StyledKakaoDiv onClick={handleKakaoDivClick}>
             {!user.nickname ? 
                 <StyledKakao
                     ref={kakaoRef}
@@ -56,6 +55,7 @@ const SocialKakao = () => {
             :  
                 <span>{user.nickname} 님 환영해요~!</span>
             }
+            <StyledImage src='./images/kakao.png' alt='카카오 이미지'/>
         </StyledKakaoDiv>
     )
 }
@@ -74,11 +74,17 @@ const StyledKakaoDiv = styled.div`
     margin-left: 20px;
     width: 300px;
     padding-left: 10px;
-    cursor: pointer;
+    box-sizing: border-box;
 `
 
 const StyledKakao = styled(KakaoLogin) `
     font-weight: 900;
+    box-sizing: border-box;
+    width: 300px !important;
+    border-radius: 15px !important;
+    position: absolute;
+    cursor: pointer;
+;
 `
 const StyledImage = styled(Image) `
     width: 40px;
@@ -88,6 +94,8 @@ const StyledImage = styled(Image) `
     background-color: none;
     position: absolute;
     left: 10px;
+    z-index: 999;
+    pointer-events: none;
 `
 
 export default SocialKakao
