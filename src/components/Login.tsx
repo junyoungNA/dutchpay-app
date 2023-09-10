@@ -10,8 +10,11 @@ import ExsitingGroups from './ExsitingGroups';
 import  {getGroupMembers} from '../util/api/api'
 import { useRecoilValue } from 'recoil';
 import { kakaoUser } from '../state/kakaoUser';
+import { useNavigate } from 'react-router-dom';
+import {ROUTES} from '../route/routes'
 
 const Login:React.FC = () => {
+    const navigate = useNavigate();
     const {idUser,nickname} = useRecoilValue(kakaoUser);
     const [userGroups, setUserGroups] = useState([]);
 
@@ -38,7 +41,7 @@ const Login:React.FC = () => {
                     <ServiceLogo/>
                     <StyledGreetings>안녕하세요~ 플랜 B를 통해 <br/>언제든 계획을 수립하고 기록해보세요</StyledGreetings>
                     <SocialKakao/>
-                    <StyledVButtonWrapper>
+                    <StyledVButtonWrapper onClick={() => navigate(ROUTES.CREATE_GROUP)}>
                         <StlyedDutchpayLottie animationData={dutchpayButton}></StlyedDutchpayLottie>
                         <StlyedCreateGroupBtn>더치페이 하러가기</StlyedCreateGroupBtn>
                     </StyledVButtonWrapper>
