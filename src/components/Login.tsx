@@ -1,5 +1,5 @@
 import Lottie from 'lottie-react';
-import { dutchpayButton, loginSide_animation } from '../aseets';
+import { calendar, dutchpayButton, loginSide_animation } from '../aseets';
 import React,{useEffect, useState} from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { Container } from 'react-bootstrap';
@@ -12,6 +12,7 @@ import { useRecoilValue } from 'recoil';
 import { kakaoUser } from '../state/kakaoUser';
 import { useNavigate } from 'react-router-dom';
 import {ROUTES} from '../route/routes'
+import { StyledButtonWrapper } from '../aseets/styled/ButtonWrapper';
 
 const Login:React.FC = () => {
     const navigate = useNavigate();
@@ -41,9 +42,13 @@ const Login:React.FC = () => {
                     <ServiceLogo/>
                     <StyledGreetings>안녕하세요~ 플랜 B를 통해 <br/>언제든 계획을 수립하고 기록해보세요</StyledGreetings>
                     <SocialKakao/>
-                    <StyledButtonWrapper onClick={() => navigate(ROUTES.CREATE_GROUP)}>
+                    <StyledButtonWrapper onClick={() => navigate(ROUTES.CREATE_GROUP)} background='#ae7df9'>
                         <StlyedDutchpayLottie animationData={dutchpayButton}></StlyedDutchpayLottie>
-                        <StlyedCreateGroupBtn>더치페이 하러가기</StlyedCreateGroupBtn>
+                        <StlyedNavBtn background='#ae7df9'>더치페이 하러가기</StlyedNavBtn>
+                    </StyledButtonWrapper>
+                    <StyledButtonWrapper onClick={() => navigate(ROUTES.CALENDAR)} background='#66a4f5'>
+                        <StlyedCalendarLottie animationData={calendar}></StlyedCalendarLottie>
+                        <StlyedNavBtn background='#66a4f5'>캘린더 보러가기</StlyedNavBtn>
                     </StyledButtonWrapper>
                 </StyledLoginCol>
                 {nickname && userGroups && <ExsitingGroups userGroups={userGroups} nickname={nickname}/>}
@@ -51,7 +56,6 @@ const Login:React.FC = () => {
         </StyledContainer>
     )
 }
-
 
 const StyledRow = styled(Row)`
     display:'flex';
@@ -81,29 +85,13 @@ const StyledLoginCol = styled(Col)`
     padding: 0;
     gap: 15px;
 `
-
-export const StyledButtonWrapper = styled.div`
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 15px;
-    height: 50px;
-    margin-left: 20px;
-    width: 300px;
-    padding-left: 10px;
-    background: #ae7df9;
-    cursor: pointer;
-`
-
-const StlyedCreateGroupBtn  = styled.button`
+const StlyedNavBtn  = styled.button<{background? : string}>`
     border-radius: 15px;
     font-weight:700;
     font-size: 16px;
     height: 50px;
     border: none;
-    margin-left: 20px;
-    background: #ae7df9;
+    background-color: ${({background}) => (background ? background : 'gray')};
 `
 const StlyedDutchpayLottie = styled(Lottie)`
     width: 40px;
@@ -112,6 +100,15 @@ const StlyedDutchpayLottie = styled(Lottie)`
     border-radius: 100%;
     position: absolute;
     left: 10px;
+`
+
+const StlyedCalendarLottie = styled(Lottie)`
+    width: 150px;
+    height: 150px;
+    border-radius: 100%;
+    position: absolute;
+    left: -45px;
+    pointer-events: none;
 `
 
 export default Login

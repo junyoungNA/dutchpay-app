@@ -4,6 +4,7 @@ import { kakaoUser } from "../state/kakaoUser";
 import {Image } from 'react-bootstrap';
 import styled from "styled-components";
 import { postData } from "../util/api/apiInstance";
+import { StyledButtonWrapper } from "../aseets/styled/ButtonWrapper";
 
 const SocialKakao = () => {
     const  [user,setUser] = useRecoilState(kakaoUser);
@@ -29,7 +30,7 @@ const SocialKakao = () => {
     };
 
     return(
-        <StyledKakaoDiv>
+        <StyledButtonWrapper background="#fef01b">
             {!user.nickname ? 
                 <StyledKakao
                     token={kakaoClientId}
@@ -38,29 +39,12 @@ const SocialKakao = () => {
                     // onLogout={responseKaKao}
                 />
             :  
-                <span>{user.nickname} 님 환영해요~!</span>
+                <span>{user.nickname}님 환영해요~!</span>
             }
             <StyledImage src='./images/kakao.png' alt='카카오 이미지'/>
-        </StyledKakaoDiv>
+        </StyledButtonWrapper>
     )
 }
-
-
-const StyledKakaoDiv = styled.div`
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 15px;
-    font-weight:800;
-    font-size: 18px;
-    background:#fef01b;
-    height: 50px;
-    margin-left: 20px;
-    width: 300px;
-    padding-left: 10px;
-    box-sizing: border-box;
-`
 
 const StyledKakao = styled(KakaoLogin) `
     font-weight: 900;
@@ -68,6 +52,8 @@ const StyledKakao = styled(KakaoLogin) `
     width: 300px !important;
     border-radius: 15px !important;
     position: absolute;
+    bottom: 2px;
+    background:none !important;
     cursor: pointer;
 ;
 `
