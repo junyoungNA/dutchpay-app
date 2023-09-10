@@ -3,20 +3,8 @@ import { expensesState } from '../state/expenses'
 import { Table } from 'react-bootstrap'
 import OverlayWrapper from './shared/OverlayWrapper'
 import styled from 'styled-components'
-import { useEffect } from 'react'
 
-interface IExpenseTableProps {
-    idUser? : string;
-    groupName? : string;
-    
-}
-
-const ExpenseTable = ({idUser, groupName} : IExpenseTableProps) => {
-    useEffect(() => {
-        if(idUser &&  groupName) {
-            
-        }
-    }, []);
+const ExpenseTable = () => {
     const expense = useRecoilValue(expensesState);
     return (
         <OverlayWrapper minheight={'73vh'} padding='100px'>

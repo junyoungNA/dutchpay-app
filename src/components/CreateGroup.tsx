@@ -5,7 +5,7 @@ import {useRecoilValue, useRecoilState} from 'recoil';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { kakaoUser } from '../state/kakaoUser';
-import  {getExsitingGroup, getGroupMembers} from '../util/api/api'
+import  {getExsitingGroup} from '../util/api/api'
 import { StyledErrorMessage } from './AddMembers';
 
 

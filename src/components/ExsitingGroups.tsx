@@ -19,7 +19,6 @@ interface IExsitingGroupsProps {
 }
 
 const ExsitingGroups= ({userGroups, nickname} : IExsitingGroupsProps) => {
-    console.log(userGroups);
     const setGroupMembers = useSetRecoilState(groupMemberState);
     const setGroupName = useSetRecoilState(groupNameState);
     const navigate = useNavigate();
