@@ -3,5 +3,6 @@
 export const ROUTES = {
     CREATE_GROUP : '/gorup',
     ADD_MEMBERS : '/members',
-    EXPENSE_MAIN: '/expense'
+    EXPENSE_MAIN: '/expense',
+    CALENDAR: '/calendar',
 }
