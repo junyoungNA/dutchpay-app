@@ -18,11 +18,11 @@ const Calendar = () => {
                     { 
                         switch(day) {
                             case '일' : 
-                            return (<StyledCalendarCol key={day} color='#b61233'>{day}</StyledCalendarCol>);
+                            return (<StyledCalendarCol md={6} key={day} color='#b61233'>{day}</StyledCalendarCol>);
                             case '토' :
-                            return (<StyledCalendarCol key={day} color='#0a6ba3'>{day}</StyledCalendarCol>);
+                            return (<StyledCalendarCol  md={6} key={day} color='#0a6ba3'>{day}</StyledCalendarCol>);
                             default :
-                            return (<StyledCalendarCol key={day}>{day}</StyledCalendarCol>);
+                            return (<StyledCalendarCol  md={6} key={day}>{day}</StyledCalendarCol>);
                         }
                         
                     }
