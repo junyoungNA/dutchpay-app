@@ -103,11 +103,11 @@ const StlyedDutchpayLottie = styled(Lottie)`
 `
 
 const StlyedCalendarLottie = styled(Lottie)`
-    width: 150px;
-    height: 150px;
+    width: 125px;
+    height: 125px;
     border-radius: 100%;
     position: absolute;
-    left: -45px;
+    left: -35px;
     pointer-events: none;
 `
 

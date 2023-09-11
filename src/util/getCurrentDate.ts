@@ -13,6 +13,17 @@ export function getDate () {
     return date;
 }
 
+export function getFullYear () {
+    const year = getCurrnetDate().getFullYear();
+    return year;
+}
+
+
+export function getDay () {
+    const day = getCurrnetDate().getDay();
+    return day;
+}
+
 function addZeroDate (getCallback : () => number) {
     const LIMIT_NUM = 10
     const customDate = getCallback() < LIMIT_NUM ?  '0' + String(getCallback()) : getCallback();
