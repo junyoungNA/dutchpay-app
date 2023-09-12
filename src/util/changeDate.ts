@@ -1,21 +1,17 @@
-import { getFirstDayOfWeek, getFullYear, getThisLasyDate, getThisLasyDay } from "./getCurrentDate";
+import { getFirstDayOfWeek, getFullYear, getThisLasyDate } from "./getCurrentDate";
 
 const changeDate = (month : number) => {
     //이전 날짜는 보내지 않기 아직
     //이전 날짜
     const YEAR = getFullYear();
      // 월은 0부터 시작하므로, 월을 0부터 11까지로 설정
-    const firstDayOfMonth = getFirstDayOfWeek(YEAR, 0);
-    const ThisLasyDate = getThisLasyDate(YEAR, 0);
-    console.log(ThisLasyDate,'다음달이 오기전 마지막 날짜?');
-    console.log(firstDayOfMonth,'이번달의 첫번째 날 요일?');
+    const firstDayOfMonth = getFirstDayOfWeek(YEAR, month);
+    const ThisLasyDate = getThisLasyDate(YEAR, month);
     //현재날짜
     //현재 달의 모든 날짜 생성 0은 slice를 통해 삭제
     const TD: any = [...Array(ThisLasyDate + 1).keys()].slice(1);
     
-    //달력에 나타낼 row줄 
     //만든 date 값들 7의 배수로 쪼개 이중배열 만들기
-    const ROW_LIMIT = 5;
     const WEEK_NUM = 7
     const result = [];
     //만약 첫주가 일요일부터 시작이 아니라면 
@@ -30,7 +26,7 @@ const changeDate = (month : number) => {
     }
     //일수가 들어간 TD배열의 레이아웃 Row(5)보다 작을때까지
     //while문을 돌려서 7의 배수만큼 일수를 짤라 이중배열형태로 만든다.
-    //마지막주는 다시 공백을 넣어줘야한다!
+    //마지막줄은 다시 공백을 넣어줘야한다!
     while(TD.length > 0) {
         const spliceArr = TD.splice(0, WEEK_NUM);
         result.push(spliceArr);
@@ -43,9 +39,6 @@ const changeDate = (month : number) => {
             }
         }
     }
-
-    console.log(TD, '남은?');
-    console.log(result, '보낼?');
     return result;
 };
 

@@ -1,5 +1,5 @@
 import {  useEffect, useState } from 'react';
-import { getCalendarMonth, getThisLasyDay } from '../util/getCurrentDate';
+import { getCalendarMonth } from '../util/getCurrentDate';
 import changeDate from '../util/changeDate';
 import OverlayWrapper from './shared/OverlayWrapper';
 import { Col, Row } from 'react-bootstrap';
@@ -8,7 +8,7 @@ import styled from 'styled-components';
 const Calendar = () => {
     const DATE_ARR = ['일','월','화','수','목','금','토',];
     const [totalDate , setTotalDate] = useState<number[][]>([]);
-    console.log(totalDate, '전채날짜');
+    // console.log(totalDate, '전채날짜');
     useEffect(() => {
         setTotalDate(changeDate(getCalendarMonth()));
         }, []);
@@ -34,12 +34,14 @@ const Calendar = () => {
             </StyledCalendarRow>
                 {totalDate?.map((_, index) => 
                     <StyledCalendarRow key={index}>
-                        {totalDate[index]?.map((day) => 
-                            <StyledCalendarCol xs={1} >{day}</StyledCalendarCol>
+                        {totalDate[index]?.map((day, index) => 
+                            day === 0 ? 
+                            <StyledCalendarCol xs={1} key={index}></StyledCalendarCol>
+                            : 
+                            <StyledCalendarCol xs={1} key={index}>{day}</StyledCalendarCol>
                         )}
                 </StyledCalendarRow>
                 )}
-           
         </OverlayWrapper>
     )
 }
