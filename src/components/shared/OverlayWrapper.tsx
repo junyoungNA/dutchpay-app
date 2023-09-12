@@ -18,6 +18,7 @@ const OverlayWrapper = ({children, padding, minheight} : OverlayWrapperProps) =>
 interface StyledContainerProps {
     minheight? :  string
     padding? : string
+    // margin? : string
 }
 
 const StyledContainer = styled.div<StyledContainerProps>`

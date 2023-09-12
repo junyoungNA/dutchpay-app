@@ -24,6 +24,17 @@ export function getDay () {
     return day;
 }
 
+
+//이번달의 마지막 날짜 구하기
+export function getThisLasyDate (year:number , month : number) {
+    return new Date(year, month, 0).getDate();
+};
+
+//이번달의 마지막 요일 구하기
+export function getThisLasyDay (year:number, month : number) {
+    return new Date(year, month, 0).getDay();
+};
+
 function addZeroDate (getCallback : () => number) {
     const LIMIT_NUM = 10
     const customDate = getCallback() < LIMIT_NUM ?  '0' + String(getCallback()) : getCallback();
