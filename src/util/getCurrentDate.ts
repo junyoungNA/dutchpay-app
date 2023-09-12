@@ -3,9 +3,17 @@ export  function getCurrnetDate () {
     return today;
 }
 
+
+//표기를 위한 월의 + 1
 export function getMonth () {
-    const moth = getCurrnetDate().getMonth() + 1;
-    return moth;
+    const month = getCurrnetDate().getMonth() + 1;
+    return month;
+}
+
+//캘린더를 위한 getMonth
+export function getCalendarMonth () {
+    const month = getCurrnetDate().getMonth();
+    return month;
 }
 
 export function getDate () {
@@ -27,13 +35,24 @@ export function getDay () {
 
 //이번달의 마지막 날짜 구하기
 export function getThisLasyDate (year:number , month : number) {
-    return new Date(year, month, 0).getDate();
+    return new Date(year, month + 1, 0).getDate();
 };
 
 //이번달의 마지막 요일 구하기
 export function getThisLasyDay (year:number, month : number) {
     return new Date(year, month, 0).getDay();
 };
+
+//이번달의 첫번째 요일 구하기
+export function getFirstDayOfWeek(year:number, month : number) {
+    // 월은 0부터 시작하므로, 월을 0부터 11까지로 설정
+    const firstDayOfMonth = new Date(year, month, 1);
+
+    // getDay() 메소드를 사용하여 해당 날짜의 요일을 얻음 (0은 일요일, 1은 월요일, ...)
+    const firstDayOfWeek = firstDayOfMonth.getDay();
+
+    return firstDayOfWeek;
+}
 
 function addZeroDate (getCallback : () => number) {
     const LIMIT_NUM = 10

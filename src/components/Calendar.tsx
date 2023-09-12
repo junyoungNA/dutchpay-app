@@ -1,18 +1,16 @@
 import {  useEffect, useState } from 'react';
-import { getFullYear, getMonth, getThisLasyDay } from '../util/getCurrentDate';
+import { getCalendarMonth, getThisLasyDay } from '../util/getCurrentDate';
 import changeDate from '../util/changeDate';
 import OverlayWrapper from './shared/OverlayWrapper';
 import { Col, Row } from 'react-bootstrap';
 import styled from 'styled-components';
 
 const Calendar = () => {
-    const CALENDAR_ROW = [0,1,2,3,4];
     const DATE_ARR = ['일','월','화','수','목','금','토',];
-    const LASY_DAY = getThisLasyDay(getFullYear(), getMonth());
     const [totalDate , setTotalDate] = useState<number[][]>([]);
-    console.log('이번달 시작 요일', LASY_DAY);
+    console.log(totalDate, '전채날짜');
     useEffect(() => {
-        setTotalDate(changeDate(getMonth()));
+        setTotalDate(changeDate(getCalendarMonth()));
         }, []);
     return (
         <OverlayWrapper>
@@ -34,13 +32,14 @@ const Calendar = () => {
                     }
                 )}
             </StyledCalendarRow>
-            {CALENDAR_ROW.map(row => 
-                <StyledCalendarRow key={row} >
-                    {totalDate[row]?.map((day) => 
-                        <StyledCalendarCol xs={1} >{day}</StyledCalendarCol>
-                    )}
+                {totalDate?.map((_, index) => 
+                    <StyledCalendarRow key={index}>
+                        {totalDate[index]?.map((day) => 
+                            <StyledCalendarCol xs={1} >{day}</StyledCalendarCol>
+                        )}
                 </StyledCalendarRow>
-            )};
+                )}
+           
         </OverlayWrapper>
     )
 }
