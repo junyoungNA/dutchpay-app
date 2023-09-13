@@ -4,30 +4,37 @@ import changeDate from '../util/changeDate';
 import OverlayWrapper from './shared/OverlayWrapper';
 import { Col, Row } from 'react-bootstrap';
 import styled from 'styled-components';
+import { useRecoilState } from 'recoil';
+import { calendarDateState } from '../state/calendarDate';
 
 const Calendar = () => {
     const DATE_ARR = ['일','월','화','수','목','금','토',];
     const [totalDate , setTotalDate] = useState<number[][]>([]);
-    // console.log(totalDate, '전채날짜');
+    const [{year, month, currentDate}, setCalendar] = useRecoilState(calendarDateState)
+    console.log(year, month, '년도, 날짜');
     useEffect(() => {
-        setTotalDate(changeDate(getCalendarMonth()));
-        }, []);
+        setTotalDate(changeDate(month));
+        }, [year, month]);
     return (
-        <OverlayWrapper>
+        <OverlayWrapper minheight='90%'>
+            <StyledCalendarRow>
+                <StyledCalendarCol xs = {5}>{year}년 {month + 1} 월</StyledCalendarCol>
+                <StyledCalendarCol xs = {2}> 다음달 오늘 이전달</StyledCalendarCol>
+            </StyledCalendarRow>
             <StyledCalendarRow>
                 {DATE_ARR.map((day, index) => 
                     { 
                         switch(day) {
                             case '일' : 
                             return (
-                                <StyledCalendarCol xs={1} md={1} lg={1} key={day} color='#b61233'>{day}</StyledCalendarCol>
+                                <StyledCalendarCol xs={1}  key={day} color='#b61233'>{day}</StyledCalendarCol>
                             );
                             case '토' :
                             return (
-                                <StyledCalendarCol xs={1} md={1} lg={1} key={day} color='#0a6ba3'>{day}</StyledCalendarCol>
+                                <StyledCalendarCol xs={1} key={day} color='#0a6ba3'>{day}</StyledCalendarCol>
                                 );
                             default :
-                            return (<StyledCalendarCol xs={1} md={1} lg={1} key={day}>{day}</StyledCalendarCol>);
+                            return (<StyledCalendarCol xs={1} key={day}>{day}</StyledCalendarCol>);
                         }
                     }
                 )}
@@ -36,9 +43,12 @@ const Calendar = () => {
                     <StyledCalendarRow key={index}>
                         {totalDate[index]?.map((day, index) => 
                             day === 0 ? 
-                            <StyledCalendarCol xs={1} key={index}></StyledCalendarCol>
+                            <StyledCalendarCol xs={1} key={index} ></StyledCalendarCol>
                             : 
-                            <StyledCalendarCol xs={1} key={index}>{day}</StyledCalendarCol>
+                            currentDate === day ? 
+                                <StyledCalendarCol xs={1} key={index} color='#ae7df9'>{day}</StyledCalendarCol>
+                                :
+                                <StyledCalendarCol xs={1} key={index}>{day}</StyledCalendarCol>
                         )}
                 </StyledCalendarRow>
                 )}
@@ -50,6 +60,8 @@ export default Calendar
 
 interface StyledCalendarColProps {
     color? : string;
+    height? : string;
+    border? : string;
 }
 
 const StyledCalendarRow = styled(Row)`
@@ -57,10 +69,12 @@ const StyledCalendarRow = styled(Row)`
     font-weight: 700;
     display: flex;
     justify-content: center;
-    
+    min-height : 100px;
 `
 
 const StyledCalendarCol = styled(Col)<StyledCalendarColProps>`
     text-align: start;
+    min-height: ${(height) => height && height};
+    border: ${(border) => border && border};;
     color :  ${({color}) => (color ? color : 'black')};
 `
