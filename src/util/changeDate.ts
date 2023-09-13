@@ -1,12 +1,10 @@
-import { getFirstDayOfWeek, getFullYear, getThisLasyDate } from "./getCurrentDate";
+import { getFirstDayOfWeek, getThisLasyDate } from "./getCurrentDate";
 
-const changeDate = (month : number) => {
-    //이전 날짜는 보내지 않기 아직
+const changeDate = (yaer:number , month : number) => {
     //이전 날짜
-    const YEAR = getFullYear();
      // 월은 0부터 시작하므로, 월을 0부터 11까지로 설정
-    const firstDayOfMonth = getFirstDayOfWeek(YEAR, month);
-    const ThisLasyDate = getThisLasyDate(YEAR, month);
+    const firstDayOfMonth = getFirstDayOfWeek(yaer, month);
+    const ThisLasyDate = getThisLasyDate(yaer, month);
     //현재날짜
     //현재 달의 모든 날짜 생성 0은 slice를 통해 삭제
     const TD: any = [...Array(ThisLasyDate + 1).keys()].slice(1);
