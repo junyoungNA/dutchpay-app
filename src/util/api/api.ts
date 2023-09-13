@@ -10,9 +10,21 @@ export const getExpenses = async (idUser : string, groupName : string) => {
     } 
 }
 
+
 export const getGroupMembers = async (idUser : string) => {
     try {
         const result :any = await getData(`members?idUser=${idUser}`);
+        return result;
+    } catch(error : any) {
+        // console.log(error, 'api호출 오류');
+        throw new Error(error);
+    } 
+}
+
+//캘린더에 유저가 생성한 그룹들 날짜에 맞게 가져오기
+export const getCalendarGroups = async (idUser : string , createdAt: string) => {
+    try {
+        const result :any = await getData(`calendarGroups?idUser=${idUser}&createdAt=${createdAt}`);
         return result;
     } catch(error : any) {
         // console.log(error, 'api호출 오류');

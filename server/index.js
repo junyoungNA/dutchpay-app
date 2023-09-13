@@ -56,6 +56,23 @@ app.get(`/members`, async (req, res) => {
     }
 });
 
+app.get(`/calendarGroups`, async (req, res) => {
+    try {
+        const idUser = req.query.idUser; // 첫 번째 조건 파라미터
+        const createdAt = req.query.createdAt; // 두 번째 조건 파라미터
+        const regexPattern = new RegExp("^" + createdAt); //yyyy-mm 맞는 정규 표현식생성
+        const groupMembrs = await Members.find({
+            $and: [
+                { idUser:idUser }, // 첫 번째 조건 필드
+                { createdAt: { $regex: regexPattern } }, // 두 번째 조건 필드
+        ]},);
+        res.status(201).json(groupMembrs); // 저장된 사용자 데이터를 JSON 형식으로 응답
+    } catch (error) {
+        console.error('사용자 생성 오류:', error);
+        res.status(500).json({ error: '내부 서버 오류' });
+    }
+});
+
 //그룹 이름 중복되는지 확인
 app.get(`/existingGroup`, async (req, res) => {
     try {

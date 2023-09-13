@@ -7,21 +7,23 @@ import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil';
 import { calendarDateState } from '../state/calendarDate';
 import { ArrowRight, ArrowLeft } from 'react-bootstrap-icons';
 import { kakaoUser } from '../state/kakaoUser';
-import { getGroupMembers } from '../util/api/api';
+import { getCalendarGroups, getGroupMembers } from '../util/api/api';
 
 const Calendar = () => {
     const {idUser,nickname} = useRecoilValue(kakaoUser);
     const [userGroups, setUserGroups] = useState([]);
+    const [{year, month, currentDate}, setCalendar] = useRecoilState(calendarDateState);
 
+    const customDate = `${year}-${month < 10 ? '0'+ (month + 1): month + 1}`; //yyyy-mm;
+    console.log(customDate);
     const getGroupMemberFetch = async(idUser : string) => {
-        const resultGroups = await getGroupMembers(idUser);
+        const resultGroups: any = await getCalendarGroups(idUser, customDate);
         console.log(resultGroups,'유저의 그룹들');
         setUserGroups(resultGroups);
     }
     const DATE_ARR = ['일','월','화','수','목','금','토',];
     const [totalDate , setTotalDate] = useState<number[][]>([]);
-    const [{year, month, currentDate}, setCalendar] = useRecoilState(calendarDateState);
-    
+
   // useResetRecoilState로 초기화 함수 가져오기
     const resetCalendarState = useResetRecoilState(calendarDateState);
     useEffect(() => {
