@@ -15,7 +15,6 @@ const Calendar = () => {
     const [{year, month, currentDate}, setCalendar] = useRecoilState(calendarDateState);
 
     const customDate = `${year}-${month < 10 ? '0'+ (month + 1): month + 1}`; //yyyy-mm;
-    console.log(customDate);
     const getGroupMemberFetch = async(idUser : string) => {
         const resultGroups: any = await getCalendarGroups(idUser, customDate);
         console.log(resultGroups,'유저의 그룹들');
@@ -54,6 +53,7 @@ const Calendar = () => {
         // console.log(newYear, '새로운년');
         setCalendar(newDate);
     }
+    console.log(userGroups);
     return (
         <OverlayWrapper minheight='90%'>
             <StyledCalendarRow>
@@ -94,9 +94,15 @@ const Calendar = () => {
                             <StyledCalendarCol xs={1} key={index} ></StyledCalendarCol>
                             : 
                             currentDate === day ? 
-                                <StyledCalendarCol xs={1} key={index} color='#ae7df9'>{day}</StyledCalendarCol>
+                                <StyledCalendarCol xs={1} key={index} color='#ae7df9'>{day}
+                                {userGroups.map(({createdAt, groupName}) => 
+                                        createdAt === (customDate + `-${day < 10 ? '0' + day : day}`)  &&  <div>{groupName}</div> )}
+                                    </StyledCalendarCol>
                                 :
-                                <StyledCalendarCol xs={1} key={index}>{day}</StyledCalendarCol>
+                                <StyledCalendarCol xs={1} key={index}>{day} 
+                                    {userGroups.map(({createdAt, groupName}) =>
+                                        createdAt === (customDate + `-${day < 10 ? '0' + day : day}`)  &&  <div>{groupName}</div> )}
+                                </StyledCalendarCol>
                         )}
                 </StyledCalendarRow>
                 )}
