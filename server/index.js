@@ -82,13 +82,14 @@ app.get(`/existingGroup`, async (req, res) => {
 
 app.post('/members', async (req, res) => {
     try {
-        const { groupMembers, idUser, groupName } = req.body;
+        const { groupMembers, idUser, groupName, createdAt } = req.body;
+        
         console.log(groupMembers, idUser, groupName);
         const existingUser = await User.findOne({ idUser});
         if (!existingUser) {
             return res.status(302).json({ msg: '사용자 정보가 없습니다. 다시 로그인해주세요.' });
         }
-        const members = new Members({ groupMembers, idUser, groupName });
+        const members = new Members({ groupMembers, idUser, groupName, createdAt });
         await members.save(); // 사용자 데이터를 데이터베이스에 저장
         res.status(201).json(members); // 저장된 사용자 데이터를 JSON 형식으로 응답
     } catch (error) {

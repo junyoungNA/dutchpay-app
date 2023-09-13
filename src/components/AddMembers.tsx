@@ -10,6 +10,7 @@ import { ROUTES } from '../route/routes';
 import { kakaoUser } from '../state/kakaoUser';
 import { postData } from '../util/api/apiInstance';
 import { memberIdState } from '../state/memberId';
+import getCalenderDate from '../util/getCurrentDate';
 
 //멤버 추가 컴포넌트
 const AddMembers = () => {
@@ -26,8 +27,9 @@ const AddMembers = () => {
         event.preventDefault();
         try { 
             setValidated(true);
-            const result : any = await postData('members',{idUser :userInfo.idUser, groupMembers, groupName});
-            console.log(result ,'클라이언트 members');
+            const createdAt = getCalenderDate() ; //오늘날짜 yyyy-mm-dd
+            const result : any = await postData('members',{idUser :userInfo.idUser, groupMembers, groupName, createdAt});
+            // console.log(result ,'클라이언트 members');
             setMemberId(result._id);
             if(groupMembers.length > 0) {
                 navigate(ROUTES.EXPENSE_MAIN); 

@@ -3,11 +3,21 @@ import changeDate from '../util/changeDate';
 import OverlayWrapper from './shared/OverlayWrapper';
 import { Button, Col, Row } from 'react-bootstrap';
 import styled from 'styled-components';
-import { useRecoilState, useResetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil';
 import { calendarDateState } from '../state/calendarDate';
 import { ArrowRight, ArrowLeft } from 'react-bootstrap-icons';
+import { kakaoUser } from '../state/kakaoUser';
+import { getGroupMembers } from '../util/api/api';
 
 const Calendar = () => {
+    const {idUser,nickname} = useRecoilValue(kakaoUser);
+    const [userGroups, setUserGroups] = useState([]);
+
+    const getGroupMemberFetch = async(idUser : string) => {
+        const resultGroups = await getGroupMembers(idUser);
+        console.log(resultGroups,'유저의 그룹들');
+        setUserGroups(resultGroups);
+    }
     const DATE_ARR = ['일','월','화','수','목','금','토',];
     const [totalDate , setTotalDate] = useState<number[][]>([]);
     const [{year, month, currentDate}, setCalendar] = useRecoilState(calendarDateState);
@@ -15,6 +25,9 @@ const Calendar = () => {
   // useResetRecoilState로 초기화 함수 가져오기
     const resetCalendarState = useResetRecoilState(calendarDateState);
     useEffect(() => {
+        if(idUser) {
+            getGroupMemberFetch(idUser);
+        }
         setTotalDate(changeDate(year, month));
         }, [year, month]);
 

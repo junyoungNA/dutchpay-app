@@ -1,36 +1,17 @@
 import Lottie from 'lottie-react';
 import { calendar, dutchpayButton, loginSide_animation } from '../aseets';
-import React,{useEffect, useState} from 'react';
+import React from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { Container } from 'react-bootstrap';
 import styled from 'styled-components';
 import SocialKakao from './SocialKakao';
 import ServiceLogo from './shared/ServiceLogo';
-import ExsitingGroups from './ExsitingGroups';
-import  {getGroupMembers} from '../util/api/api'
-import { useRecoilValue } from 'recoil';
-import { kakaoUser } from '../state/kakaoUser';
 import { useNavigate } from 'react-router-dom';
 import {ROUTES} from '../route/routes'
 import { StyledButtonWrapper } from '../aseets/styled/ButtonWrapper';
 
 const Login:React.FC = () => {
     const navigate = useNavigate();
-    const {idUser,nickname} = useRecoilValue(kakaoUser);
-    const [userGroups, setUserGroups] = useState([]);
-
-    const getGroupMemberFetch = async(idUser : string) => {
-        const resultGroups = await getGroupMembers(idUser);
-        console.log(resultGroups,'유저의 그룹들');
-        setUserGroups(resultGroups);
-    }
-
-    useEffect(() => {
-        if(idUser) {
-            getGroupMemberFetch(idUser);
-        }
-    }, [idUser]);
-
 
     return (
         <StyledContainer style={{gap:'2'}}>
@@ -51,7 +32,6 @@ const Login:React.FC = () => {
                         <StlyedNavBtn background='#66a4f5'>캘린더 보러가기</StlyedNavBtn>
                     </StyledButtonWrapper>
                 </StyledLoginCol>
-                {nickname && userGroups && <ExsitingGroups userGroups={userGroups} nickname={nickname}/>}
             </StyledRow>
         </StyledContainer>
     )
