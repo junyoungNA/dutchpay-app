@@ -4,8 +4,6 @@ import styled from 'styled-components'
 import OverlayWrapper from './shared/OverlayWrapper';
 import { Form } from 'react-bootstrap';
 import ServiceLogo from './shared/ServiceLogo';
-import ExsitingGroups from './ExsitingGroups';
-
 
 interface CenteredOverlayFormProps {
     children: ReactNode;
@@ -40,8 +38,6 @@ const CenteredOverlayForm = ({children, title, handleSubmit, validated} : Center
         </StyledCenteralizedContainer>
     )
 }
-
-
 
 const StyledCenteralizedContainer = styled(Container)`
     width: 50vw;
@@ -78,8 +74,6 @@ const StyledSubmitdButton = styled(Button).attrs({
     align-items : center;
     justify-content: center;
     padding : 15px;
-    /* width: 15vw; */
-    /* height: 5vh; */
     display: flex;
     background-color: #6610F2;
     outline: none;

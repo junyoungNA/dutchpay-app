@@ -25,7 +25,8 @@ export const getGroupMembers = async (idUser : string) => {
 export const getCalendarGroups = async (idUser : string , createdAt: string) => {
     try {
         const result :any = await getData(`calendarGroups?idUser=${idUser}&createdAt=${createdAt}`);
-        return result;
+        const filterUserGroups = filterUserGroup(result);
+        return filterUserGroups;
     } catch(error : any) {
         // console.log(error, 'api호출 오류');
         throw new Error(error);
@@ -44,4 +45,19 @@ export const getExsitingGroup = async (idUser : string, groupName : string) => {
         // console.log(error, 'api호출 오류');
         throw new Error(error);
     } 
+}
+
+// 유저의 그룹 생성날짜와 받아온 totalDate의 날짜 데이터를 맵핑
+
+const filterUserGroup = (resultGroups : any) => {
+    if(!resultGroups) return;
+    // const formattedDay = `${year}-${month + 1}-${day < 10 ? '0' + day : day}`;
+    const filterUserGroups = resultGroups.map((group: any) => {
+        const { createdAt, ...otherData } = group; // createdAt를 제외한 다른 데이터를 유지
+        return {
+            date :createdAt.slice(-2) , // 다른 데이터 유지
+            group :otherData,
+        };
+    });
+    return filterUserGroups;
 }

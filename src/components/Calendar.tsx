@@ -7,7 +7,7 @@ import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil';
 import { calendarDateState } from '../state/calendarDate';
 import { ArrowRight, ArrowLeft } from 'react-bootstrap-icons';
 import { kakaoUser } from '../state/kakaoUser';
-import { getCalendarGroups, getGroupMembers } from '../util/api/api';
+import { getCalendarGroups } from '../util/api/api';
 
 const Calendar = () => {
     const {idUser,nickname} = useRecoilValue(kakaoUser);
@@ -17,9 +17,10 @@ const Calendar = () => {
     const customDate = `${year}-${month < 10 ? '0'+ (month + 1): month + 1}`; //yyyy-mm;
     const getGroupMemberFetch = async(idUser : string) => {
         const resultGroups: any = await getCalendarGroups(idUser, customDate);
-        console.log(resultGroups,'유저의 그룹들');
+        console.log(resultGroups, '그룹');
         setUserGroups(resultGroups);
     }
+    
     const DATE_ARR = ['일','월','화','수','목','금','토',];
     const [totalDate , setTotalDate] = useState<number[][]>([]);
 
@@ -53,7 +54,8 @@ const Calendar = () => {
         // console.log(newYear, '새로운년');
         setCalendar(newDate);
     }
-    console.log(userGroups);
+
+    console.log(totalDate,'전체 날짜');
     return (
         <OverlayWrapper minheight='90%'>
             <StyledCalendarRow>
@@ -87,25 +89,27 @@ const Calendar = () => {
                     }
                 )}
             </StyledCalendarRow>
-                {totalDate?.map((_, index) => 
-                    <StyledCalendarRow key={index}>
-                        {totalDate[index]?.map((day, index) => 
-                            day === 0 ? 
-                            <StyledCalendarCol xs={1} key={index} ></StyledCalendarCol>
-                            : 
-                            currentDate === day ? 
-                                <StyledCalendarCol xs={1} key={index} color='#ae7df9'>{day}
-                                {userGroups.map(({createdAt, groupName}) => 
-                                        createdAt === (customDate + `-${day < 10 ? '0' + day : day}`)  &&  <div>{groupName}</div> )}
-                                    </StyledCalendarCol>
-                                :
-                                <StyledCalendarCol xs={1} key={index}>{day} 
-                                    {userGroups.map(({createdAt, groupName}) =>
-                                        createdAt === (customDate + `-${day < 10 ? '0' + day : day}`)  &&  <div>{groupName}</div> )}
+            {totalDate?.map((_, rowIndex) => (
+                <StyledCalendarRow key={rowIndex}>
+                    {totalDate[rowIndex]?.map((day, colIndex) => {
+                        if (day === 0) {
+                        return <StyledCalendarCol xs={1} key={colIndex}></StyledCalendarCol>;
+                    } else {
+                    // 해당 날짜와 일치하는 userGroups의 요소들을 필터링하고 처리
+                        const matchingGroups = userGroups.filter(({ date }) => date === String(day));
+                        return (
+                                <StyledCalendarCol xs={1} key={colIndex} color={matchingGroups.length > 0 ? '#ae7df9' : undefined}>
+                                    {day}
+                                    {matchingGroups.map(({ group } : any, index) => 
+                                        <div key={index}>{group.groupName}</div>
+                                    )}
                                 </StyledCalendarCol>
-                        )}
-                </StyledCalendarRow>
-                )}
+                            );
+                        }
+                    })}
+                    </StyledCalendarRow>
+                ))
+            }
         </OverlayWrapper>
     )
 }
