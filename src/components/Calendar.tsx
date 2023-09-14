@@ -1,7 +1,7 @@
 import {  useEffect, useState } from 'react';
 import changeDate from '../util/changeDate';
 import OverlayWrapper from './shared/OverlayWrapper';
-import { Button, Col, Row } from 'react-bootstrap';
+import { Badge, Button, Col, Row } from 'react-bootstrap';
 import styled from 'styled-components';
 import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil';
 import { calendarDateState } from '../state/calendarDate';
@@ -77,14 +77,14 @@ const Calendar = () => {
                         switch(day) {
                             case '일' : 
                             return (
-                                <StyledCalendarCol xs={1}  key={day} color='#b61233'>{day}</StyledCalendarCol>
+                                <Col xs={1}  key={day} style={{ color : '#b61233'}}>{day}</Col>
                             );
                             case '토' :
                             return (
-                                <StyledCalendarCol xs={1} key={day} color='#0a6ba3'>{day}</StyledCalendarCol>
+                                <Col xs={1} key={day} style={{ color : '#0a6ba3'}} >{day}</Col>
                                 );
                             default :
-                            return (<StyledCalendarCol xs={1} key={day}>{day}</StyledCalendarCol>);
+                            return (<Col xs={1} key={day}>{day}</Col>);
                         }
                     }
                 )}
@@ -93,17 +93,20 @@ const Calendar = () => {
                 <StyledCalendarRow key={rowIndex}>
                     {totalDate[rowIndex]?.map((day, colIndex) => {
                         if (day === 0) {
-                        return <StyledCalendarCol xs={1} key={colIndex}></StyledCalendarCol>;
+                        return <Col xs={1} key={colIndex}></Col>;
                     } else {
                     // 해당 날짜와 일치하는 userGroups의 요소들을 필터링하고 처리
                         const matchingGroups = userGroups.filter(({ date }) => date === String(day));
                         return (
-                                <StyledCalendarCol xs={1} key={colIndex} color={matchingGroups.length > 0 ? '#ae7df9' : undefined}>
+                                <Col xs={1} key={colIndex} color={currentDate === day ? '#ae7df9' : undefined}>
                                     {day}
                                     {matchingGroups.map(({ group } : any, index) => 
-                                        <div key={index}>{group.groupName}</div>
+                                        <StyledCalendarButton variant="primary" size='sm' key={index}>
+                                            {group.groupName}
+                                            <Badge bg="secondary">{group.groupMembers.length}</Badge>
+                                        </StyledCalendarButton>
                                     )}
-                                </StyledCalendarCol>
+                                </Col>
                             );
                         }
                     })}
@@ -126,7 +129,6 @@ interface StyledCalendarArrowProps {
     margin? : string;
 }
 
-
 const StyledCalendarRow = styled(Row)`
     font-size: 20px;
     font-weight: 700;
@@ -144,6 +146,12 @@ const StyledCalendarCol = styled(Col)<StyledCalendarColProps>`
     border: ${(border) => border && border};;
     color :  ${({color}) => (color ? color : 'black')};
 `
+
+const StyledCalendarButton = styled(Button)`
+    display: flex;
+
+`
+
 const StyledArrow = styled.div<StyledCalendarArrowProps>`
   // 공통 스타일을 여기에 적용
     margin: ${({ margin }) => margin && margin};
