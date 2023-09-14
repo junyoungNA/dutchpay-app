@@ -98,15 +98,15 @@ const Calendar = () => {
                     // 해당 날짜와 일치하는 userGroups의 요소들을 필터링하고 처리
                         const matchingGroups = userGroups.filter(({ date }) => date === String(day));
                         return (
-                                <Col xs={1} key={colIndex} color={currentDate === day ? '#ae7df9' : undefined}>
+                                <ScrollableCol xs={1} key={colIndex} color={currentDate === day ? '#ae7df9' : undefined}>
                                     {day}
                                     {matchingGroups.map(({ group } : any, index) => 
-                                        <StyledCalendarButton variant="primary" size='sm' key={index}>
-                                            {group.groupName}
+                                        <StyledCalendarButton variant="primary" size='sm' key={group._id}>
+                                            {group.groupName.length >=5 ? group.groupName.slice(0,5) : group.groupName }
                                             <StyledCalendarBadge bg="secondary">{group.groupMembers.length}</StyledCalendarBadge>
                                         </StyledCalendarButton>
                                     )}
-                                </Col>
+                                </ScrollableCol>
                             );
                         }
                     })}
@@ -147,14 +147,26 @@ const StyledCalendarCol = styled(Col)<StyledCalendarColProps>`
     color :  ${({color}) => (color ? color : 'black')};
 `
 
+
+const ScrollableCol = styled(Col)`
+  /* 스크롤 가능한 영역을 만듭니다. */
+    overflow-y: auto;
+    max-height: 100px; /* 원하는 높이로 조정하세요. */
+    word-wrap: break-word;
+    overflow-x: hidden;
+`
+
 const StyledCalendarButton = styled(Button)`
     display: flex;
     align-items: center;
     height: 20px;
-    margin-top: 3px;
+    margin-top: 5px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 `
 const StyledCalendarBadge = styled(Badge)`
-    margin-left: 5px;
+    margin-left: 10px;
 `
 
 const StyledArrow = styled.div<StyledCalendarArrowProps>`

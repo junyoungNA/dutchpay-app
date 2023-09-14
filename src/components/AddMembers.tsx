@@ -43,7 +43,7 @@ const AddMembers = () => {
 
     useEffect(() => {
         resetMembers();
-    });
+    } , []);
 
     return (
         <CenteredOverlayForm
