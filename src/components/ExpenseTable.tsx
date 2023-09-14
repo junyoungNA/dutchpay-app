@@ -1,11 +1,35 @@
-import { useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil'
 import { expensesState } from '../state/expenses'
 import { Table } from 'react-bootstrap'
 import OverlayWrapper from './shared/OverlayWrapper'
 import styled from 'styled-components'
+import { kakaoUser } from '../state/kakaoUser'
+import { useEffect } from 'react'
+import { getExpenses } from '../util/api/api'
+import { groupNameState } from '../state/groupName'
 
 const ExpenseTable = () => {
-    const expense = useRecoilValue(expensesState);
+    const {idUser} = useRecoilValue(kakaoUser);
+    const groupName =  useRecoilValue(groupNameState);
+    const [expense,setExpense] = useRecoilState(expensesState);
+    const resetExpense = useResetRecoilState(expensesState);
+
+    const fetchData = async (idUser : string, groupName : string) => {
+        try {
+            const expenses: any = await getExpenses(idUser, groupName);
+            // console.log(expenses, '클라이언트 받은 데이터');
+            if(!expenses) return;
+            setExpense(expenses);
+        } catch (error) {
+            console.error('데이터를 가져오는 중 오류 발생:', error);
+        }
+    };
+
+    useEffect(() => {
+        resetExpense();       
+        fetchData(idUser, groupName);
+    }, [groupName]);
+
     return (
         <OverlayWrapper minheight={'73vh'} padding='100px'>
             <Table data-testid='expenseList' borderless hover responsive>

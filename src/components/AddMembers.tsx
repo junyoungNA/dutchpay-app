@@ -1,8 +1,8 @@
 import CenteredOverlayForm from './CenteredOverlayForm'
-import {useRecoilState, useRecoilValue, useSetRecoilState} from 'recoil';
+import {useRecoilState, useRecoilValue, useResetRecoilState, useSetRecoilState} from 'recoil';
 import { groupMemberState } from '../state/groupMembers';
 import { InputTags } from 'react-bootstrap-tagsinput';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { groupNameState } from '../state/groupName';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
@@ -14,10 +14,12 @@ import getCalenderDate from '../util/getCurrentDate';
 
 //멤버 추가 컴포넌트
 const AddMembers = () => {
+    
     const navigate = useNavigate();
     const [groupMembers,setGroupMembers] = useRecoilState(groupMemberState);
-    const  userInfo = useRecoilValue(kakaoUser);
-    const  setMemberId = useSetRecoilState(memberIdState);
+    const userInfo = useRecoilValue(kakaoUser);
+    const setMemberId = useSetRecoilState(memberIdState);
+    const resetMembers = useResetRecoilState(groupMemberState)
     
     const groupName = useRecoilValue(groupNameState);
     const [validated, setValidated] = useState(false); 
@@ -29,7 +31,6 @@ const AddMembers = () => {
             setValidated(true);
             const createdAt = getCalenderDate() ; //오늘날짜 yyyy-mm-dd
             const result : any = await postData('members',{idUser :userInfo.idUser, groupMembers, groupName, createdAt});
-            // console.log(result ,'클라이언트 members');
             setMemberId(result._id);
             if(groupMembers.length > 0) {
                 navigate(ROUTES.EXPENSE_MAIN); 
@@ -37,9 +38,12 @@ const AddMembers = () => {
         } catch (error : any) {
             console.log(error);
         }
-        
     }
     const header = `${groupName}의 속한 멤버들의 이름을 넣어주세요`;
+
+    useEffect(() => {
+        resetMembers();
+    });
 
     return (
         <CenteredOverlayForm

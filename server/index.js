@@ -125,7 +125,7 @@ app.get(`/expense`, async (req, res) => {
                 { idUser:idUser }, // 첫 번째 조건 필드
                 { groupName: groupName }, // 두 번째 조건 필드
         ]},);
-        // console.log(idUser,'index 유저 id');
+        // console.log(allExpenses, '찾은값');
         if (!allExpenses || allExpenses.length === 0) {
             return res.status(404).json({ msg: '데이터가 없습니다.' });
         }

@@ -103,7 +103,7 @@ const Calendar = () => {
                                     {matchingGroups.map(({ group } : any, index) => 
                                         <StyledCalendarButton variant="primary" size='sm' key={index}>
                                             {group.groupName}
-                                            <Badge bg="secondary">{group.groupMembers.length}</Badge>
+                                            <StyledCalendarBadge bg="secondary">{group.groupMembers.length}</StyledCalendarBadge>
                                         </StyledCalendarButton>
                                     )}
                                 </Col>
@@ -149,7 +149,12 @@ const StyledCalendarCol = styled(Col)<StyledCalendarColProps>`
 
 const StyledCalendarButton = styled(Button)`
     display: flex;
-
+    align-items: center;
+    height: 20px;
+    margin-top: 3px;
+`
+const StyledCalendarBadge = styled(Badge)`
+    margin-left: 5px;
 `
 
 const StyledArrow = styled.div<StyledCalendarArrowProps>`

@@ -65,17 +65,17 @@ const CreateGroup = () => {
                 <Form.Control   
                     type='text' 
                     required
-                    placeholder='2022 제주도 여행'
+                    maxLength={10}
+                    placeholder='2022 제주도 여행(10자 이내)'
                     onChange={(e) => {setGroupName(e.target.value)}}
                     style={{border : !validated ?'1px solid red' : '1px solid gray'}}
                     />
                 <Form.Control.Feedback type="invalid" data-validate={vaildGroupName} >
                     {/* DOM에 항상 렌더링 됨!? 리액트 부트스트랩 특성상 */}
-                    그룹 이름을 입력해 주세요.
+                    그룹 이름을 입력해 주세요 .
                 </Form.Control.Feedback>
                 {isExsitingGroup && <StyledErrorMessage>이미 존재하는 그룹 이름입니다.</StyledErrorMessage>}
             </Form.Group>
-
         </CenteredOverlayForm>
     )
 }
