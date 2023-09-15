@@ -1,18 +1,25 @@
 import {  useEffect, useState } from 'react';
 import changeDate from '../util/changeDate';
 import OverlayWrapper from './shared/OverlayWrapper';
-import { Badge, Button, Col, Row } from 'react-bootstrap';
+import { Button, Col, Dropdown, Row } from 'react-bootstrap';
 import styled from 'styled-components';
-import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useResetRecoilState, useSetRecoilState } from 'recoil';
 import { calendarDateState } from '../state/calendarDate';
 import { ArrowRight, ArrowLeft } from 'react-bootstrap-icons';
 import { kakaoUser } from '../state/kakaoUser';
 import { getCalendarGroups } from '../util/api/api';
+import { groupNameState } from '../state/groupName';
+import { useNavigate } from 'react-router-dom';
+import { ROUTES } from '../route/routes';
+import { groupMemberState } from '../state/groupMembers';
 
 const Calendar = () => {
+    const navigate = useNavigate();
     const {idUser,nickname} = useRecoilValue(kakaoUser);
     const [userGroups, setUserGroups] = useState([]);
     const [{year, month, currentDate}, setCalendar] = useRecoilState(calendarDateState);
+    const setGroupName = useSetRecoilState(groupNameState);
+    const setGroupMembers = useSetRecoilState(groupMemberState);
 
     const customDate = `${year}-${month < 10 ? '0'+ (month + 1): month + 1}`; //yyyy-mm;
     const getGroupMemberFetch = async(idUser : string) => {
@@ -55,7 +62,12 @@ const Calendar = () => {
         setCalendar(newDate);
     }
 
-    console.log(totalDate,'전체 날짜');
+    const onClickCalendarGroup = (groupName : string , groupMembers : string[]) => () => {
+        setGroupName(groupName);
+        setGroupMembers(groupMembers);
+        navigate(ROUTES.EXPENSE_MAIN);
+    }
+
     return (
         <OverlayWrapper minheight='90%'>
             <StyledCalendarRow>
@@ -98,15 +110,24 @@ const Calendar = () => {
                     // 해당 날짜와 일치하는 userGroups의 요소들을 필터링하고 처리
                         const matchingGroups = userGroups.filter(({ date }) => date === String(day));
                         return (
-                                <ScrollableCol xs={1} key={colIndex} color={currentDate === day ? '#ae7df9' : undefined}>
-                                    {day}
-                                    {matchingGroups.map(({ group } : any, index) => 
-                                        <StyledCalendarButton variant="primary" size='sm' key={group._id}>
-                                            {group.groupName.length >=5 ? group.groupName.slice(0,5) : group.groupName }
-                                            <StyledCalendarBadge bg="secondary">{group.groupMembers.length}</StyledCalendarBadge>
-                                        </StyledCalendarButton>
-                                    )}
-                                </ScrollableCol>
+                                <Col xs={1} key={colIndex} color={currentDate === day ? '#ae7df9' : undefined}>
+                                    <span >{day}</span>
+                                    {matchingGroups.length !== 0 &&
+                                    <Dropdown>
+                                        <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                            그룹
+                                        </Dropdown.Toggle>
+                                        <Dropdown.Menu>
+                                        {matchingGroups.map(({ group } : any, index) =>   
+                                            <Dropdown.Item onClick={onClickCalendarGroup(group.groupName, group.groupMembers)}>
+                                                {group.groupName.length >5 ? group.groupName.slice(0,5)+'...' : group.groupName }
+                                            </Dropdown.Item>
+                                            )
+                                        }
+                                        </Dropdown.Menu>
+                                    </Dropdown> 
+                                    }
+                                </Col>
                             );
                         }
                     })}
@@ -147,26 +168,8 @@ const StyledCalendarCol = styled(Col)<StyledCalendarColProps>`
     color :  ${({color}) => (color ? color : 'black')};
 `
 
-
-const ScrollableCol = styled(Col)`
-  /* 스크롤 가능한 영역을 만듭니다. */
-    overflow-y: auto;
-    max-height: 100px; /* 원하는 높이로 조정하세요. */
-    word-wrap: break-word;
-    overflow-x: hidden;
-`
-
-const StyledCalendarButton = styled(Button)`
-    display: flex;
-    align-items: center;
-    height: 20px;
-    margin-top: 5px;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-`
-const StyledCalendarBadge = styled(Badge)`
-    margin-left: 10px;
+const StyledCalendarDropdown = styled(Dropdown)`
+    width: 50px;
 `
 
 const StyledArrow = styled.div<StyledCalendarArrowProps>`
