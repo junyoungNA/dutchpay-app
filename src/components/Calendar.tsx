@@ -121,6 +121,8 @@ const Calendar = () => {
                                         {matchingGroups.map(({ group } : any, index) =>   
                                             <Dropdown.Item onClick={onClickCalendarGroup(group.groupName, group.groupMembers)}>
                                                 {group.groupName.length >5 ? group.groupName.slice(0,5)+'...' : group.groupName }
+                                                <StyledCalendarBtuoon variant="outline-primary" size='sm'>확인</StyledCalendarBtuoon>
+                                                <StyledCalendarBtuoon variant="outline-danger" size='sm' >삭제</StyledCalendarBtuoon>
                                             </Dropdown.Item>
                                             )
                                         }
@@ -168,7 +170,8 @@ const StyledCalendarCol = styled(Col)<StyledCalendarColProps>`
     color :  ${({color}) => (color ? color : 'black')};
 `
 
-const StyledCalendarDropdown = styled(Dropdown)`
+const StyledCalendarBtuoon = styled(Button)`
+    margin-left : '10px';
     width: 50px;
 `
 
