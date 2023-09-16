@@ -7,11 +7,12 @@ import { useRecoilState, useRecoilValue, useResetRecoilState, useSetRecoilState 
 import { calendarDateState } from '../state/calendarDate';
 import { ArrowRight, ArrowLeft } from 'react-bootstrap-icons';
 import { kakaoUser } from '../state/kakaoUser';
-import { getCalendarGroups } from '../util/api/api';
+import {  getCalendarGroups } from '../util/api/api';
 import { groupNameState } from '../state/groupName';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../route/routes';
 import { groupMemberState } from '../state/groupMembers';
+import { deleteData } from '../util/api/apiInstance';
 
 const Calendar = () => {
     const navigate = useNavigate();
@@ -62,10 +63,27 @@ const Calendar = () => {
         setCalendar(newDate);
     }
 
-    const onClickCalendarGroup = (groupName : string , groupMembers : string[]) => () => {
+    const onClickShowGroup = (groupName : string , groupMembers : string[]) => () => {
         setGroupName(groupName);
         setGroupMembers(groupMembers);
         navigate(ROUTES.EXPENSE_MAIN);
+    }
+
+    const onClickDeleteGroup = (idUser: string, groupName: string) => async ()  => {
+        try {
+            const result =  await deleteData(`members?idUser=${idUser}&groupName=${groupName}`)
+            console.log(result);
+            const findGroupIDX = userGroups.findIndex((item : any) => item.group.groupName === groupName );
+            if (findGroupIDX !== -1) {
+                const updatedGroups = [...userGroups];
+                updatedGroups.splice(findGroupIDX, 1);
+    
+                // setUserGroups로 새로운 배열로 업데이트
+                setUserGroups(updatedGroups);
+            }
+        } catch(error) {
+            console.log(error);
+        }
     }
 
     return (
@@ -119,10 +137,10 @@ const Calendar = () => {
                                         </Dropdown.Toggle>
                                         <Dropdown.Menu>
                                         {matchingGroups.map(({ group } : any, index) =>   
-                                            <Dropdown.Item onClick={onClickCalendarGroup(group.groupName, group.groupMembers)}>
+                                            <Dropdown.Item>
                                                 {group.groupName.length >5 ? group.groupName.slice(0,5)+'...' : group.groupName }
-                                                <StyledCalendarBtuoon variant="outline-primary" size='sm'>확인</StyledCalendarBtuoon>
-                                                <StyledCalendarBtuoon variant="outline-danger" size='sm' >삭제</StyledCalendarBtuoon>
+                                                <Button style={{marginLeft:'5px'}} variant="outline-primary" size='sm' onClick={onClickShowGroup(group.groupName, group.groupMembers)}>보기</Button>
+                                                <Button style={{marginLeft:'5px'}} variant="outline-danger" size='sm' onClick={onClickDeleteGroup(idUser, group.groupName)} >삭제</Button>
                                             </Dropdown.Item>
                                             )
                                         }
@@ -170,10 +188,6 @@ const StyledCalendarCol = styled(Col)<StyledCalendarColProps>`
     color :  ${({color}) => (color ? color : 'black')};
 `
 
-const StyledCalendarBtuoon = styled(Button)`
-    margin-left : '10px';
-    width: 50px;
-`
 
 const StyledArrow = styled.div<StyledCalendarArrowProps>`
   // 공통 스타일을 여기에 적용

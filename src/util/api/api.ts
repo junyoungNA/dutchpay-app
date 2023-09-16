@@ -1,4 +1,4 @@
-import {getData} from './apiInstance';
+import { getData} from './apiInstance';
 
 //MongoDB에서 expenses데이터 가져오기
 export const getExpenses = async (idUser : string, groupName : string) => {
@@ -20,6 +20,7 @@ export const getGroupMembers = async (idUser : string) => {
         throw new Error(error);
     } 
 }
+
 
 //캘린더에 유저가 생성한 그룹들 날짜에 맞게 가져오기
 export const getCalendarGroups = async (idUser : string , createdAt: string) => {

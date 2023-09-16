@@ -115,6 +115,24 @@ app.post('/members', async (req, res) => {
     }
 });
 
+
+app.delete('/members', async (req, res) => {
+    try {
+        const idUser = req.query.idUser;
+        const groupName = req.query.groupName; 
+        
+        console.log(idUser, groupName);
+        const result1 = await Members.deleteOne({ idUser, groupName });
+        const result2 = await Expense.deleteMany({ idUser, groupName });  
+        console.log(result1);      
+        console.log( result2);      
+        return res.status(204).send(); // 삭제가 성공하면 빈 응답(204 No Content)을 보냅니다.
+    } catch (error) {
+        console.error('멤버 삭제 오류:', error);
+        res.status(500).json({ error: '내부 서버 오류' });
+    }
+});
+
 app.get(`/expense`, async (req, res) => {
     try {
         const idUser = req.query.idUser; // 첫 번째 조건 파라미터
