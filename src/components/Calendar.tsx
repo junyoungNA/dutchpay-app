@@ -188,7 +188,6 @@ const StyledCalendarCol = styled(Col)<StyledCalendarColProps>`
     color :  ${({color}) => (color ? color : 'black')};
 `
 
-
 const StyledArrow = styled.div<StyledCalendarArrowProps>`
   // 공통 스타일을 여기에 적용
     margin: ${({ margin }) => margin && margin};

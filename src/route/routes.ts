@@ -5,4 +5,5 @@ export const ROUTES = {
     ADD_MEMBERS : '/members',
     EXPENSE_MAIN: '/expense',
     CALENDAR: '/calendar',
+    PLAN:'/plan'
 }

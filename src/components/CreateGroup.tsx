@@ -47,7 +47,7 @@ const CreateGroup = () => {
         setExsitingGroup(false);;
         if(form.checkValidity()) {
             setVaildGroupName(true);
-            navigate('/members');
+            // navigate('/members');
         } else {
             event.stopPropagation();
             setVaildGroupName(false)
@@ -67,7 +67,7 @@ const CreateGroup = () => {
                     required
                     maxLength={10}
                     placeholder='2022 제주도 여행(10자 이내)'
-                    onChange={(e) => {setGroupName(e.target.value)}}
+                    onChange={(e) => {setGroupName(e.target.value.trim());}}
                     style={{border : !validated ?'1px solid red' : '1px solid gray'}}
                     />
                 <Form.Control.Feedback type="invalid" data-validate={vaildGroupName} >
