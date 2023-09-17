@@ -1,5 +1,5 @@
 import Lottie from 'lottie-react';
-import { calendar, dutchpayButton, loginSide_animation } from '../aseets';
+import { calendar, dutchpayButton, loginSide_animation,plan } from '../aseets';
 import React from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { Container } from 'react-bootstrap';
@@ -23,6 +23,10 @@ const Login:React.FC = () => {
                     <ServiceLogo/>
                     <StyledGreetings>안녕하세요~ 플랜 B를 통해 <br/>언제든 계획을 수립하고 기록해보세요</StyledGreetings>
                     <SocialKakao/>
+                    <StyledButtonWrapper onClick={() => navigate(ROUTES.PLAN)} background='#e97522'>
+                        <StlyedPlanLottie animationData={plan}></StlyedPlanLottie>
+                        <StlyedNavBtn background='#e97522'>계획 짜러가기</StlyedNavBtn>
+                    </StyledButtonWrapper>
                     <StyledButtonWrapper onClick={() => navigate(ROUTES.CREATE_GROUP)} background='#ae7df9'>
                         <StlyedDutchpayLottie animationData={dutchpayButton}></StlyedDutchpayLottie>
                         <StlyedNavBtn background='#ae7df9'>더치페이 하러가기</StlyedNavBtn>
@@ -89,6 +93,14 @@ const StlyedCalendarLottie = styled(Lottie)`
     position: absolute;
     left: -35px;
     pointer-events: none;
+`
+
+const StlyedPlanLottie = styled(Lottie)`
+    width: 55px;
+    height: 40px;
+    position: absolute;
+    pointer-events: none;
+    left: 5px;
 `
 
 export default Login

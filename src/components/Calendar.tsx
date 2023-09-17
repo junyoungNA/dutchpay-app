@@ -133,7 +133,7 @@ const Calendar = () => {
                                     <span >{day}</span>
                                     {matchingGroups.length !== 0 &&
                                     <Dropdown>
-                                        <Dropdown.Toggle  style={{width:'50px', padding:'0 7px'}} variant="success" id="dropdown-basic" size='sm'>
+                                        <Dropdown.Toggle  style={{width:'55px', padding:'0 7px'}} variant="success" id="dropdown-basic" size='sm'>
                                             그룹
                                         </Dropdown.Toggle>
                                         <Dropdown.Menu>
