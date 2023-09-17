@@ -47,7 +47,7 @@ const CreateGroup = () => {
         setExsitingGroup(false);;
         if(form.checkValidity()) {
             setVaildGroupName(true);
-            // navigate('/members');
+            navigate('/members');
         } else {
             event.stopPropagation();
             setVaildGroupName(false)

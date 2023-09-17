@@ -13,19 +13,20 @@ import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../route/routes';
 import { groupMemberState } from '../state/groupMembers';
 import { deleteData } from '../util/api/apiInstance';
+import { currentDateState } from '../state/currentDate.state';
 
 const Calendar = () => {
     const navigate = useNavigate();
-    const {idUser,nickname} = useRecoilValue(kakaoUser);
+    const {idUser} = useRecoilValue(kakaoUser);
     const [userGroups, setUserGroups] = useState([]);
-    const [{year, month, currentDate}, setCalendar] = useRecoilState(calendarDateState);
+    const [{year, month}, setCalendar] = useRecoilState(calendarDateState);
     const setGroupName = useSetRecoilState(groupNameState);
     const setGroupMembers = useSetRecoilState(groupMemberState);
+    const {currentYear, currentMonth, currentDate} = useRecoilValue(currentDateState);
 
     const customDate = `${year}-${month < 10 ? '0'+ (month + 1): month + 1}`; //yyyy-mm;
     const getGroupMemberFetch = async(idUser : string) => {
         const resultGroups: any = await getCalendarGroups(idUser, customDate);
-        console.log(resultGroups, '그룹');
         setUserGroups(resultGroups);
     }
     
@@ -56,7 +57,6 @@ const Calendar = () => {
         const newDate = {
             year : newYear,
             month : newMonth,
-            currentDate : - 1 //현재 날짜는 -1로 설정
         }
         // console.log(newMonth, '새로운달');
         // console.log(newYear, '새로운년');
@@ -107,14 +107,14 @@ const Calendar = () => {
                         switch(day) {
                             case '일' : 
                             return (
-                                <Col xs={1}  key={day} style={{ color : '#b61233'}}>{day}</Col>
+                                <StyledCalendarDateCol xs={1}  key={day} color='#b61233'>{day}</StyledCalendarDateCol>
                             );
                             case '토' :
                             return (
-                                <Col xs={1} key={day} style={{ color : '#0a6ba3'}} >{day}</Col>
+                                <StyledCalendarDateCol xs={1} key={day} color='#0a6ba3' >{day}</StyledCalendarDateCol>
                                 );
                             default :
-                            return (<Col xs={1} key={day}>{day}</Col>);
+                            return (<StyledCalendarDateCol xs={1} key={day}>{day}</StyledCalendarDateCol>);
                         }
                     }
                 )}
@@ -123,16 +123,17 @@ const Calendar = () => {
                 <StyledCalendarRow key={rowIndex}>
                     {totalDate[rowIndex]?.map((day, colIndex) => {
                         if (day === 0) {
-                        return <Col xs={1} key={colIndex}></Col>;
+                        return <StyledCalendarDateCol xs={1} key={colIndex}></StyledCalendarDateCol>;
                     } else {
                     // 해당 날짜와 일치하는 userGroups의 요소들을 필터링하고 처리
                         const matchingGroups = userGroups.filter(({ date }) => date === String(day));
                         return (
-                                <Col xs={1} key={colIndex} color={currentDate === day ? '#ae7df9' : undefined}>
+                                <StyledCalendarDateCol xs={1} key={colIndex}  color={currentYear === year && currentMonth === month && currentDate === Number(day)  ? '#ae7df9' : undefined}
+                                >
                                     <span >{day}</span>
                                     {matchingGroups.length !== 0 &&
                                     <Dropdown>
-                                        <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                        <Dropdown.Toggle  style={{width:'50px', padding:'0 7px'}} variant="success" id="dropdown-basic" size='sm'>
                                             그룹
                                         </Dropdown.Toggle>
                                         <Dropdown.Menu>
@@ -147,7 +148,7 @@ const Calendar = () => {
                                         </Dropdown.Menu>
                                     </Dropdown> 
                                     }
-                                </Col>
+                                </StyledCalendarDateCol>
                             );
                         }
                     })}
@@ -186,6 +187,12 @@ const StyledCalendarCol = styled(Col)<StyledCalendarColProps>`
     min-height: ${(height) => height && height};
     border: ${(border) => border && border};;
     color :  ${({color}) => (color ? color : 'black')};
+`
+
+const StyledCalendarDateCol = styled(Col)<{color ?: string}>`
+    color: ${(proprs) => proprs.color &&  proprs.color};
+    padding : 0;
+    margin : 10px;
 `
 
 const StyledArrow = styled.div<StyledCalendarArrowProps>`
