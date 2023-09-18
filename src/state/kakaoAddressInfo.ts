@@ -1,6 +1,6 @@
 import {atom} from 'recoil';
 
-interface IKakaoAddressInfo  {
+export interface IKakaoAddressInfo  {
     address_name?: string,
     region_2depth_name?: string,
     lat: number, //x
