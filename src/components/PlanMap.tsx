@@ -5,11 +5,14 @@ import DaumPostcode from "react-daum-postcode";
 import axios from 'axios';
 import { useRecoilState } from 'recoil';
 import { IKakaoAddressInfo, kakaoAddressInfoState } from '../state/kakaoAddressInfo';
+import { Col, Row } from 'react-bootstrap';
+import styled from 'styled-components';
 
 const PlanMap = () => {
     const [{lat, lng, address_name, region_2depth_name}, setAddressInfo] = useRecoilState(kakaoAddressInfoState);
-    const [showPostcode, setShowPostcode] = useState(true); // DaumPostcode 컴포넌트를 보여줄지 여부
     const [searchList, setSerachList] = useState<IKakaoAddressInfo[]>([]);
+    const [zoomable, setZoomable] = useState(true) //zoom 막기
+
     const handleComplete = async (data: any) => {
         const searchTxt = data.address; // 검색한 주소
         const config = { headers: {Authorization : `KakaoAK ${process.env.REACT_APP_KAKAOREST_KEY}`}}; // 헤더 설정
@@ -32,34 +35,60 @@ const PlanMap = () => {
                 }
             })
     };
+
+    const onClickSerachRecord = (addressInfo : IKakaoAddressInfo)  => () => {
+        setAddressInfo(addressInfo);
+    }
     return (
         <OverlayWrapper>
-            <Map 
-                center={{ lat: lat, lng: lng }}   // 지도의 중심 좌표
-                style={{ width: '800px', height: '600px' }} // 지도 크기
-                level={3}                                   // 지도 확대 레벨
-                >
-                <MapMarker
-                    position={{
-                        // 인포윈도우가 표시될 위치입니다
-                        lat: lat,
-                        lng: lng,
-                    }}
-                >
-                    <span>{address_name}</span>
-                </MapMarker>
-            </Map>
-            {showPostcode && (
-                <DaumPostcode onComplete={handleComplete} autoClose={false} />
-            )}
+            <StyledPlanRow padding={'auto'}>
+                <StyledPlanCol xs={12} md={6}>
+                <StyledPlanMap 
+                    center={{ lat: lat, lng: lng }}   // 지도의 중심 좌표
+                    level={3}// 지도 확대 레벨
+                    zoomable={zoomable}
+                    >
+                    <MapMarker
+                        position={{
+                            // 인포윈도우가 표시될 위치입니다
+                            lat: lat,
+                            lng: lng,
+                        }}
+                    >
+                        {address_name !== '' && <span>{address_name}</span>}
+                    </MapMarker>
+                    <button onClick={() => setZoomable(false)}>지도 확대/축소 끄기</button>{" "}
+                    <button onClick={() => setZoomable(true)}>지도 확대/축소 켜기</button>
+                </StyledPlanMap>
+                </StyledPlanCol>
+                <StyledPlanCol xs={12} md={4}>
+                    <DaumPostcode onComplete={handleComplete} autoClose={false}  style={{height:'350px'}}/>
+                </StyledPlanCol>
+            </StyledPlanRow>
             <ul>
-                {searchList?.map(({address_name,lat,region_2depth_name,lng}) => 
-                    <li>{address_name}</li>
+                {searchList?.map((addressInfo) => 
+                    <li onClick={onClickSerachRecord(addressInfo)}>{addressInfo.address_name}</li>
                 )}
             </ul>
         </OverlayWrapper>
     );
         
 }
+
+const StyledPlanRow = styled(Row)`
+    display: flex;
+    justify-content: center;
+    padding: 0;
+`
+
+const StyledPlanMap = styled(Map)`
+    height: 500px;
+`
+
+const StyledPlanCol = styled(Col)`
+    margin: 30px;
+`
+
+
 
 export default PlanMap
