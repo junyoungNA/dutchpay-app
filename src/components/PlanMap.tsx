@@ -5,7 +5,7 @@ import DaumPostcode from "react-daum-postcode";
 import axios from 'axios';
 import { useRecoilState } from 'recoil';
 import { IKakaoAddressInfo, kakaoAddressInfoState } from '../state/kakaoAddressInfo';
-import { Col, Row, Button } from 'react-bootstrap';
+import { Col, Row, Button, Tabs, Tab } from 'react-bootstrap';
 import styled from 'styled-components';
 
 type TMarkers  = {
@@ -30,7 +30,7 @@ const PlanMap = () => {
         if (!map) return
         const ps = new kakao.maps.services.Places()
     
-        ps.keywordSearch("이태원 맛집", (data, status, _pagination) => {
+        ps.keywordSearch("서울역", (data, status, _pagination) => {
             if (status === kakao.maps.services.Status.OK) {
                 // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
                 // LatLngBounds 객체에 좌표를 추가합니다
@@ -109,8 +109,20 @@ const PlanMap = () => {
                     <Button onClick={() => setZoomable(true)}>지도 확대/축소 켜기</Button>
                 </StyledPlanMap>
                 </StyledPlanCol>
+                
                 <StyledPlanCol xs={12} md={4}>
-                    <DaumPostcode onComplete={handleComplete} autoClose={false}  style={{height:'350px'}}/>
+                <Tabs
+                    defaultActiveKey="profile"
+                    id="uncontrolled-tab-example"
+                    className="mb-3"
+                    >
+                    <Tab eventKey="category" title="카테고리 검색">
+                        
+                    </Tab>
+                    <Tab eventKey="location" title="장소 검색">
+                        <DaumPostcode onComplete={handleComplete} autoClose={false}  style={{height:'350px'}}/>
+                    </Tab>
+                    </Tabs>
                 </StyledPlanCol>
             </StyledPlanRow>
             <ul>
