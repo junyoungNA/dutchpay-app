@@ -18,45 +18,47 @@ interface IMarkers {
 }
 
 const PlanMap = () => {
-    const [{lat, lng, address_name, region_2depth_name}, setAddressInfo] = useRecoilState(kakaoAddressInfoState);
-    const [searchList, setSerachList] = useState<IKakaoAddressInfo[]>([]);
+    const [{x, y, address_name, region_2depth_name}, setAddressInfo] = useRecoilState(kakaoAddressInfoState);
+    const [searchList, setSearchList] = useState<IKakaoAddressInfo[] >([]);
     const [zoomable, setZoomable] = useState(true) //zoom 막기
     const [markers, setMarkers] = useState<IMarkers[]>([]);
     const [map, setMap] = useState<any>();
     const [info, setInfo] = useState<any>();
-    const [keyword, setKeyword] = useState('산책하기 좋은 곳');
-
+    const [keyword, setKeyword] = useState('서울역');
 
     useEffect(() => {
         if (!map) return
+        kakaoKewordSerach();
+    }, [map])
+
+    const kakaoKewordSerach = () => {
         const ps = new kakao.maps.services.Places()
-    
-        ps.keywordSearch(keyword, (data, status, _pagination) => {
+        ps.keywordSearch(keyword, (data:any, status, _pagination) => {
             if (status === kakao.maps.services.Status.OK) {
                 // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
                 // LatLngBounds 객체에 좌표를 추가합니다
                 const bounds = new kakao.maps.LatLngBounds()
-                let markers : any= []
-        
-                for (var i = 0; i < data.length; i++) {
+                const markers : any= [];
+                for (let i = 0; i < data.length; i++) {
                 // @ts-ignore
-                markers.push({
-                    position: {
-                        lat: data[i].y,
-                        lng: data[i].x,
-                    },
-                    content: data[i].place_name,
-                })
+                    markers.push({
+                        position: {
+                            lat: data[i].y,
+                            lng: data[i].x,
+                        },
+                        content: data[i].place_name,
+                    })
                 // @ts-ignore
-                bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x))
+                // extend 메소드: 이 메소드는 bounds 객체의 경계를 확장(extend)하는 데 사용됩니다
+                    bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x))
                 }
-                setMarkers(markers);
-        
-                // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
-                    map.setBounds(bounds)
+                    setMarkers(markers);
+                    setSearchList(data);
+                    // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+                    map.setBounds(bounds);
                 }
             })
-    }, [map])
+    }
     
 
 
@@ -71,8 +73,8 @@ const PlanMap = () => {
         //             const addressInfo = {
         //                 address_name: result.data.documents[0].address.address_name,
         //                 region_2depth_name: result.data.documents[0].address.region_2depth_name,
-        //                 lat: Number(result.data.documents[0].y),//위도
-        //                 lng: Number(result.data.documents[0].x)};
+        //                 y: Number(result.data.documents[0].y),//위도
+        //                 x: Number(result.data.documents[0].x)};
 
         //                 setAddressInfo(addressInfo);
         //                 setSerachList((prev) => [...prev, addressInfo]);
@@ -83,14 +85,16 @@ const PlanMap = () => {
     };
 
     const onClickSerachRecord = (addressInfo : IKakaoAddressInfo)  => () => {
+        const markerInfo = {position: {lat : addressInfo.y, lng:addressInfo.x}, content : addressInfo.place_name}
         setAddressInfo(addressInfo);
+        setInfo(markerInfo);
     }
     return (
         <OverlayWrapper>
             <StyledPlanRow padding={'auto'}>
                 <StyledPlanCol xs={12} md={6}>
                 <StyledPlanMap 
-                    center={{ lat: lat, lng: lng }}   // 지도의 중심 좌표
+                    center={{ lat: y, lng: x }}   // 지도의 중심 좌표
                     level={3}// 지도 확대 레벨
                     zoomable={zoomable}
                     onCreate={setMap}
@@ -113,7 +117,7 @@ const PlanMap = () => {
                 
                 <StyledPlanCol xs={12} md={4}>
                 <Tabs
-                    defaultActiveKey="profile"
+                    defaultActiveKey="category"
                     id="uncontrolled-tab-example"
                     className="mb-3"
                     >
@@ -124,9 +128,14 @@ const PlanMap = () => {
                             id="category_text"
                             aria-describedby="passwordHelpBlock"
                             onChange={(e) => setKeyword(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    kakaoKewordSerach();
+                                }
+                            }}
                         />
                         <Form.Text id="passwordHelpBlock" muted>
-                            키워드 검색 예시("서울역 맛집", "산책하기 좋은 곳")
+                            키워드 검색 예시("서울역 맛집", "인천 산책하기 좋은 곳")
                         </Form.Text>                    
                     </Tab>
                     <Tab eventKey="location" title="장소 검색">
