@@ -5,7 +5,7 @@ import DaumPostcode from "react-daum-postcode";
 import axios from 'axios';
 import { useRecoilState } from 'recoil';
 import { IKakaoAddressInfo, kakaoAddressInfoState } from '../state/kakaoAddressInfo';
-import { Col, Row, Button, Tabs, Tab } from 'react-bootstrap';
+import { Col, Row, Button, Tabs, Tab, Form } from 'react-bootstrap';
 import styled from 'styled-components';
 
 type TMarkers  = {
@@ -24,13 +24,14 @@ const PlanMap = () => {
     const [markers, setMarkers] = useState<IMarkers[]>([]);
     const [map, setMap] = useState<any>();
     const [info, setInfo] = useState<any>();
+    const [keyword, setKeyword] = useState('산책하기 좋은 곳');
 
 
     useEffect(() => {
         if (!map) return
         const ps = new kakao.maps.services.Places()
     
-        ps.keywordSearch("서울역", (data, status, _pagination) => {
+        ps.keywordSearch(keyword, (data, status, _pagination) => {
             if (status === kakao.maps.services.Status.OK) {
                 // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
                 // LatLngBounds 객체에 좌표를 추가합니다
@@ -116,8 +117,17 @@ const PlanMap = () => {
                     id="uncontrolled-tab-example"
                     className="mb-3"
                     >
-                    <Tab eventKey="category" title="카테고리 검색">
-                        
+                    <Tab eventKey="category" title="키워드 검색">
+                        <Form.Label htmlFor="category_text">키워드 검색</Form.Label>
+                        <Form.Control
+                            type="text"
+                            id="category_text"
+                            aria-describedby="passwordHelpBlock"
+                            onChange={(e) => setKeyword(e.target.value)}
+                        />
+                        <Form.Text id="passwordHelpBlock" muted>
+                            키워드 검색 예시("서울역 맛집", "산책하기 좋은 곳")
+                        </Form.Text>                    
                     </Tab>
                     <Tab eventKey="location" title="장소 검색">
                         <DaumPostcode onComplete={handleComplete} autoClose={false}  style={{height:'350px'}}/>
