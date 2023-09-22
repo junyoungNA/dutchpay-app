@@ -8,8 +8,6 @@ import { ROUTES } from './routes'
 import Login from '../components/Login'
 import PlanMap from '../components/PlanMap'
 
-
-
 const Router:React.FC<{}> = () => {
     
     return (

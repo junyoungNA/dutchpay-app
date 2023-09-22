@@ -1,11 +1,11 @@
-import React , {useEffect, useState} from 'react'
-import { Map, MapMarker } from 'react-kakao-maps-sdk';
+import  {useEffect, useState} from 'react'
+import { Map, MapMarker,CustomOverlayMap } from 'react-kakao-maps-sdk';
 import OverlayWrapper from './shared/OverlayWrapper';
 import DaumPostcode from "react-daum-postcode";
 import axios from 'axios';
 import { useRecoilState } from 'recoil';
 import { IKakaoAddressInfo, kakaoAddressInfoState } from '../state/kakaoAddressInfo';
-import { Col, Row, Button, Tabs, Tab, Form } from 'react-bootstrap';
+import { Col, Row, Button, Tabs, Tab, Form,ListGroup, Card, CloseButton  } from 'react-bootstrap';
 import styled from 'styled-components';
 
 type TMarkers  = {
@@ -18,12 +18,12 @@ interface IMarkers {
 }
 
 const PlanMap = () => {
-    const [{x, y, address_name, region_2depth_name}, setAddressInfo] = useRecoilState(kakaoAddressInfoState);
+    const [{x, y, address_name, region_2depth_name, place_name, road_address_name}, setAddressInfo] = useRecoilState(kakaoAddressInfoState);
     const [searchList, setSearchList] = useState<IKakaoAddressInfo[] >([]);
     const [zoomable, setZoomable] = useState(true) //zoom 막기
     const [markers, setMarkers] = useState<IMarkers[]>([]);
     const [map, setMap] = useState<any>();
-    const [info, setInfo] = useState<any>();
+    const [markerInfo, setMarkerInfo] = useState<any>({});
     const [keyword, setKeyword] = useState('서울역');
 
     useEffect(() => {
@@ -39,14 +39,15 @@ const PlanMap = () => {
                 // LatLngBounds 객체에 좌표를 추가합니다
                 const bounds = new kakao.maps.LatLngBounds()
                 const markers : any= [];
+                console.log(data, '가져온 데이터');
                 for (let i = 0; i < data.length; i++) {
                 // @ts-ignore
                     markers.push({
+                        ...data[i],
                         position: {
                             lat: data[i].y,
                             lng: data[i].x,
-                        },
-                        content: data[i].place_name,
+                        }
                     })
                 // @ts-ignore
                 // extend 메소드: 이 메소드는 bounds 객체의 경계를 확장(extend)하는 데 사용됩니다
@@ -85,9 +86,8 @@ const PlanMap = () => {
     };
 
     const onClickSerachRecord = (addressInfo : IKakaoAddressInfo)  => () => {
-        const markerInfo = {position: {lat : addressInfo.y, lng:addressInfo.x}, content : addressInfo.place_name}
         setAddressInfo(addressInfo);
-        setInfo(markerInfo);
+        setMarkerInfo(addressInfo);
     }
     return (
         <OverlayWrapper>
@@ -100,16 +100,28 @@ const PlanMap = () => {
                     onCreate={setMap}
                     >
                     {markers.map((marker : any) => (
-                        <MapMarker
-                            key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
-                            position={marker.position}
-                            onClick={() => setInfo(marker)}
-                            >
-                            {info &&info.content === marker.content && (
-                                <div style={{color:"#000"}}>{marker.content}</div>
-                            )}
-                        </MapMarker>
-                ))}
+                        <>
+                            <MapMarker
+                                key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
+                                position={marker.position}
+                                onClick={() => {setMarkerInfo(marker); console.log(marker)}}
+                                />
+                                {markerInfo && markerInfo.place_name === marker.place_name && (
+                                    <CustomOverlayMap position={marker.position} >
+                                        <StyledMapCard>
+                                            
+                                            <Card.Body >
+                                                <CloseButton/>
+                                                <Card.Title>{markerInfo.place_name}</Card.Title>
+                                                <Card.Text>{markerInfo.address_name}, <br/>{markerInfo.road_address_name}</Card.Text>
+                                                <Card.Link href="#">Card Link</Card.Link>
+                                                <Card.Link href="#">Another Link</Card.Link>
+                                            </Card.Body> 
+                                        </StyledMapCard>
+                                    </CustomOverlayMap>
+                                )}
+                        </>
+                    ))}
                     <Button onClick={() => setZoomable(false)}>지도 확대/축소 끄기</Button>{" "}
                     <Button onClick={() => setZoomable(true)}>지도 확대/축소 켜기</Button>
                 </StyledPlanMap>
@@ -136,7 +148,12 @@ const PlanMap = () => {
                         />
                         <Form.Text id="passwordHelpBlock" muted>
                             키워드 검색 예시("서울역 맛집", "인천 산책하기 좋은 곳")
-                        </Form.Text>                    
+                        </Form.Text>
+                        <ListGroup as='ol' numbered>
+                            {searchList?.map((addressInfo) => 
+                                <ListGroup.Item action key={addressInfo.id} onClick={onClickSerachRecord(addressInfo)}>{addressInfo.place_name}</ListGroup.Item>
+                            )}
+                        </ListGroup>                    
                     </Tab>
                     <Tab eventKey="location" title="장소 검색">
                         <DaumPostcode onComplete={handleComplete} autoClose={false}  style={{height:'350px'}}/>
@@ -144,11 +161,7 @@ const PlanMap = () => {
                     </Tabs>
                 </StyledPlanCol>
             </StyledPlanRow>
-            <ul>
-                {searchList?.map((addressInfo) => 
-                    <li onClick={onClickSerachRecord(addressInfo)}>{addressInfo.address_name}</li>
-                )}
-            </ul>
+            
         </OverlayWrapper>
     );
         
@@ -168,6 +181,16 @@ const StyledPlanCol = styled(Col)`
     margin: 30px;
 `
 
+const StyledMapCard = styled(Card)`
+    /* 다른 공통 스타일 속성 추가 가능 */
+    & > .card-body {
+        padding: 10px;
+        height: inherit;
+        & > .card-title {
+
+        }
+    }
+`
 
 
 export default PlanMap
