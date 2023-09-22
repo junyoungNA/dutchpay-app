@@ -109,13 +109,12 @@ const PlanMap = () => {
                                 {markerInfo && markerInfo.place_name === marker.place_name && (
                                     <CustomOverlayMap position={marker.position} >
                                         <StyledMapCard>
-                                            
                                             <Card.Body >
-                                                <CloseButton/>
+                                                <StyledColseBtn onClick={() => setMarkerInfo(null)}/>
                                                 <Card.Title>{markerInfo.place_name}</Card.Title>
                                                 <Card.Text>{markerInfo.address_name}, <br/>{markerInfo.road_address_name}</Card.Text>
-                                                <Card.Link href="#">Card Link</Card.Link>
-                                                <Card.Link href="#">Another Link</Card.Link>
+                                                <Card.Link href={`https://map.kakao.com/link/to/${markerInfo.id}`} target={"_blank"} >길찾기</Card.Link>
+                                                <Card.Link href={`https://map.kakao.com/link/map/${markerInfo.id}`} target={"_blank"}>지도보기</Card.Link>
                                             </Card.Body> 
                                         </StyledMapCard>
                                     </CustomOverlayMap>
@@ -182,14 +181,23 @@ const StyledPlanCol = styled(Col)`
 `
 
 const StyledMapCard = styled(Card)`
+    position: relative;
+    padding: 10px 20px;
     /* 다른 공통 스타일 속성 추가 가능 */
     & > .card-body {
-        padding: 10px;
         height: inherit;
         & > .card-title {
-
+        }
+        & > .card-text {
+            margin: 0;
         }
     }
+`
+
+const StyledColseBtn = styled(CloseButton)`
+    position: absolute;
+    top: 0;
+    right: 0;
 `
 
 
