@@ -24,6 +24,8 @@ const PlanMap = () => {
     const [markers, setMarkers] = useState<IMarkers[]>([]);
     const [map, setMap] = useState<any>();
     const [markerInfo, setMarkerInfo] = useState<any>({});
+    const [departure, setDeparture] = useState(''); // 출발지
+    const [arrive, setArrive] = useState(''); //도착지
     const [keyword, setKeyword] = useState('서울역');
 
     useEffect(() => {
@@ -93,39 +95,43 @@ const PlanMap = () => {
         <OverlayWrapper>
             <StyledPlanRow padding={'auto'}>
                 <StyledPlanCol xs={12} md={6}>
-                <StyledPlanMap 
-                    center={{ lat: y, lng: x }}   // 지도의 중심 좌표
-                    level={3}// 지도 확대 레벨
-                    zoomable={zoomable}
-                    onCreate={setMap}
-                    >
-                    {markers.map((marker : any) => (
-                        <>
-                            <MapMarker
-                                key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
-                                position={marker.position}
-                                onClick={() => {setMarkerInfo(marker); console.log(marker)}}
-                                />
-                                {markerInfo && markerInfo.place_name === marker.place_name && (
-                                    <CustomOverlayMap position={marker.position} >
-                                        <StyledMapCard>
-                                            <Card.Body >
-                                                <StyledColseBtn onClick={() => setMarkerInfo(null)}/>
-                                                <Card.Title>{markerInfo.place_name}</Card.Title>
-                                                <Card.Text>{markerInfo.address_name}, <br/>{markerInfo.road_address_name}</Card.Text>
-                                                <Card.Link href={`https://map.kakao.com/link/to/${markerInfo.id}`} target={"_blank"} >길찾기</Card.Link>
-                                                <Card.Link href={`https://map.kakao.com/link/map/${markerInfo.id}`} target={"_blank"}>지도보기</Card.Link>
-                                            </Card.Body> 
-                                        </StyledMapCard>
-                                    </CustomOverlayMap>
-                                )}
-                        </>
-                    ))}
-                    <Button onClick={() => setZoomable(false)}>지도 확대/축소 끄기</Button>{" "}
-                    <Button onClick={() => setZoomable(true)}>지도 확대/축소 켜기</Button>
-                </StyledPlanMap>
+                    <StyledPlanMap 
+                        center={{ lat: y, lng: x }}   // 지도의 중심 좌표
+                        level={3}// 지도 확대 레벨
+                        zoomable={zoomable}
+                        onCreate={setMap}
+                        >
+                        {markers.map((marker : any) => (
+                            // `https://map.kakao.com/?sName=&eName=고속터미널 길찾기 url`
+                            <>
+                                <MapMarker
+                                    key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
+                                    position={marker.position}
+                                    onClick={() => {setMarkerInfo(marker); console.log(marker)}}
+                                    />
+                                    {markerInfo && markerInfo.place_name === marker.place_name && (
+                                        <CustomOverlayMap position={marker.position} >
+                                            <StyledMapCard>
+                                                <Card.Body >
+                                                    <StyledColseBtn onClick={() => setMarkerInfo(null)}/>
+                                                    <Card.Title>{markerInfo.place_name}</Card.Title>
+                                                    <Card.Text>{markerInfo.road_address_name}</Card.Text>
+                                                    <Card.Text>{markerInfo.address_name}</Card.Text>
+                                                    <Card.Link href={`https://map.kakao.com/?sName=${departure}&eName=${arrive}`} target={"_blank"} >길찾기</Card.Link>
+                                                    <Button variant="outline-secondary" onClick={() => setDeparture(markerInfo.place_name)}>출발지로 설정</Button>
+                                                    <Button variant="outline-success" onClick={() => setArrive(markerInfo.place_name)}>도착지로 설정</Button>
+                                                </Card.Body> 
+                                            </StyledMapCard>
+                                        </CustomOverlayMap>
+                                    )}
+                            </>
+                        ))}
+                        <Button onClick={() => setZoomable(false)}>지도 확대/축소 끄기</Button>{" "}
+                        <Button onClick={() => setZoomable(true)}>지도 확대/축소 켜기</Button>
+                    </StyledPlanMap>
+                    {departure && <span>현재 출발지 : {departure}</span>}
+                    {arrive && <span>현재 도착지 : {arrive}</span>}
                 </StyledPlanCol>
-                
                 <StyledPlanCol xs={12} md={4}>
                 <Tabs
                     defaultActiveKey="category"
@@ -196,8 +202,8 @@ const StyledMapCard = styled(Card)`
 
 const StyledColseBtn = styled(CloseButton)`
     position: absolute;
-    top: 0;
-    right: 0;
+    top: 5px;
+    right: 5px;
 `
 
 
