@@ -32,20 +32,6 @@ const PlanMap = () => {
         if (!map) return
         kakaoKewordSerach();
     }, [map])
-
-    const [count, setCount] = useState(0);
-    useEffect(() => {
-        // 타이머 설정
-        const intervalId = setInterval(() => {
-            setCount((prevCount) => prevCount + 1);
-            }, 1000);
-        
-            // Clean-up 함수 정의
-            return () => {
-            // 타이머 중지
-            clearInterval(intervalId);
-        };
-      }, []); // 빈 배열을 전달하여 이펙트는 컴포넌트가 처음 렌더링될 때만 실행됩니다.
     
 
     const kakaoKewordSerach = () => {
@@ -56,7 +42,7 @@ const PlanMap = () => {
                 // LatLngBounds 객체에 좌표를 추가합니다
                 const bounds = new kakao.maps.LatLngBounds()
                 const markers : any= [];
-                console.log(data, '가져온 데이터');
+                // console.log(data, '가져온 데이터');
                 for (let i = 0; i < data.length; i++) {
                 // @ts-ignore
                     markers.push({
@@ -84,22 +70,28 @@ const PlanMap = () => {
         const searchTxt = data.address; // 검색한 주소
         const config = { headers: {Authorization : `KakaoAK ${process.env.REACT_APP_KAKAOREST_KEY}`}}; // 헤더 설정
         const url = 'https://dapi.kakao.com/v2/local/search/address.json?query='+searchTxt; // REST API url에 data.address값 전송
-        // axios.get(url, config).then(function(result) { // API호출
-        //     if(result.data !== undefined || result.data !== null){
-        //         if(result.data.documents[0].x && result.data.documents[0].y) {
-        //               // Kakao Local API로 검색한 주소 정보 및 위도, 경도값 저장 
-        //             const addressInfo = {
-        //                 address_name: result.data.documents[0].address.address_name,
-        //                 region_2depth_name: result.data.documents[0].address.region_2depth_name,
-        //                 y: Number(result.data.documents[0].y),//위도
-        //                 x: Number(result.data.documents[0].x)};
-
-        //                 setAddressInfo(addressInfo);
-        //                 setSerachList((prev) => [...prev, addressInfo]);
-        //                 // setShowPostcode(false);
-        //             }
-        //         }
-        //     })
+        await axios.get(url, config).then(async function(result) { // API호출
+            if(result.data !== undefined || result.data !== null){
+                if(result.data.documents[0].x && result.data.documents[0].y) {
+                      // Kakao Local API로 검색한 주소 정보 및 위도, 경도값 저장 
+                    console.log(result.data,'검색어 입력');
+                    const markers : any= [];
+                    const addressInfo = {
+                        address_name: result.data.documents[0].address.address_name,
+                        road_address_name :result.data.documents[0].road_address.address_name,
+                        region_2depth_name: result.data.documents[0].address.region_2depth_name,
+                        y: Number(result.data.documents[0].y),//위도
+                        x: Number(result.data.documents[0].x),
+                        position : {lat : Number(result.data.documents[0].y), lng: Number(result.data.documents[0].x)},
+                    };
+                        markers.push(addressInfo)
+                        setMarkers(markers);
+                        setAddressInfo(addressInfo);
+                        setSearchList((prev) => [...prev, addressInfo]);
+                        // setShowPostcode(fxalse);
+                    }
+                }
+        })
     };
 
     const onClickSerachRecord = (addressInfo : IKakaoAddressInfo)  => () => {
@@ -122,7 +114,7 @@ const PlanMap = () => {
                                 <MapMarker
                                     key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
                                     position={marker.position}
-                                    onClick={() => {setMarkerInfo(marker); console.log(marker)}}
+                                    onClick={() => setMarkerInfo(marker)}
                                     />
                                     {markerInfo && markerInfo.place_name === marker.place_name && (
                                         <CustomOverlayMap position={marker.position} >
@@ -148,8 +140,8 @@ const PlanMap = () => {
                         <Button onClick={() => setZoomable(false)}>지도 확대/축소 끄기</Button>{" "}
                         <Button onClick={() => setZoomable(true)}>지도 확대/축소 켜기</Button>
                     </StyledPlanMap>
-                    {departure && <div>현재 출발지 : {departure}</div>}
-                    {arrive && <div>현재 도착지 : {arrive}</div>}
+                    {departure && <div> 출발지 : {departure}</div>}
+                    {arrive && <div> 도착지 : {arrive}</div>}
                 </StyledPlanCol>
                 <StyledPlanCol xs={12} md={4}>
                 <Tabs
