@@ -33,6 +33,21 @@ const PlanMap = () => {
         kakaoKewordSerach();
     }, [map])
 
+    const [count, setCount] = useState(0);
+    useEffect(() => {
+        // 타이머 설정
+        const intervalId = setInterval(() => {
+            setCount((prevCount) => prevCount + 1);
+            }, 1000);
+        
+            // Clean-up 함수 정의
+            return () => {
+            // 타이머 중지
+            clearInterval(intervalId);
+        };
+      }, []); // 빈 배열을 전달하여 이펙트는 컴포넌트가 처음 렌더링될 때만 실행됩니다.
+    
+
     const kakaoKewordSerach = () => {
         const ps = new kakao.maps.services.Places()
         ps.keywordSearch(keyword, (data:any, status, _pagination) => {
@@ -117,9 +132,13 @@ const PlanMap = () => {
                                                     <Card.Title>{markerInfo.place_name}</Card.Title>
                                                     <Card.Text>{markerInfo.road_address_name}</Card.Text>
                                                     <Card.Text>{markerInfo.address_name}</Card.Text>
-                                                    <Card.Link href={`https://map.kakao.com/?sName=${departure}&eName=${arrive}`} target={"_blank"} >길찾기</Card.Link>
-                                                    <Button variant="outline-secondary" onClick={() => setDeparture(markerInfo.place_name)}>출발지로 설정</Button>
-                                                    <Button variant="outline-success" onClick={() => setArrive(markerInfo.place_name)}>도착지로 설정</Button>
+                                                    <StyledDirectionBtn variant="secondary" onClick={() => setDeparture(markerInfo.place_name)}>출발지로 설정</StyledDirectionBtn>
+                                                    <StyledDirectionBtn variant="danger" onClick={() => setArrive(markerInfo.place_name)}>도착지로 설정</StyledDirectionBtn>
+                                                    <Card.Link href={`https://map.kakao.com/?sName=${departure}&eName=${arrive}`} target={"_blank"} >
+                                                        <StyledDirectionBtn variant="success" >
+                                                            길찾기
+                                                        </StyledDirectionBtn>
+                                                    </Card.Link>
                                                 </Card.Body> 
                                             </StyledMapCard>
                                         </CustomOverlayMap>
@@ -129,8 +148,8 @@ const PlanMap = () => {
                         <Button onClick={() => setZoomable(false)}>지도 확대/축소 끄기</Button>{" "}
                         <Button onClick={() => setZoomable(true)}>지도 확대/축소 켜기</Button>
                     </StyledPlanMap>
-                    {departure && <span>현재 출발지 : {departure}</span>}
-                    {arrive && <span>현재 도착지 : {arrive}</span>}
+                    {departure && <div>현재 출발지 : {departure}</div>}
+                    {arrive && <div>현재 도착지 : {arrive}</div>}
                 </StyledPlanCol>
                 <StyledPlanCol xs={12} md={4}>
                 <Tabs
@@ -155,8 +174,11 @@ const PlanMap = () => {
                             키워드 검색 예시("서울역 맛집", "인천 산책하기 좋은 곳")
                         </Form.Text>
                         <ListGroup as='ol' numbered>
-                            {searchList?.map((addressInfo) => 
-                                <ListGroup.Item action key={addressInfo.id} onClick={onClickSerachRecord(addressInfo)}>{addressInfo.place_name}</ListGroup.Item>
+                            {searchList?.map((addressInfo: any) => 
+                                <ListGroup.Item action key={addressInfo.id} onClick={onClickSerachRecord(addressInfo)}>{addressInfo.place_name}
+                                    <StyledDirectionBtn variant="secondary" onClick={() => setDeparture(addressInfo?.place_name)}>출발지</StyledDirectionBtn>
+                                    <StyledDirectionBtn variant="danger" onClick={() => setArrive(addressInfo?.place_name)}>도착지</StyledDirectionBtn>
+                                </ListGroup.Item>
                             )}
                         </ListGroup>                    
                     </Tab>
@@ -166,7 +188,6 @@ const PlanMap = () => {
                     </Tabs>
                 </StyledPlanCol>
             </StyledPlanRow>
-            
         </OverlayWrapper>
     );
         
@@ -204,6 +225,14 @@ const StyledColseBtn = styled(CloseButton)`
     position: absolute;
     top: 5px;
     right: 5px;
+`
+
+
+const StyledDirectionBtn = styled(Button)`
+    padding: 5px;
+    font-size: 10px;
+    margin-right:10px;
+    margin-top: 5px;
 `
 
 
