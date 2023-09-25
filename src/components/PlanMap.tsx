@@ -5,7 +5,7 @@ import DaumPostcode from "react-daum-postcode";
 import axios from 'axios';
 import { useRecoilState } from 'recoil';
 import { IKakaoAddressInfo, kakaoAddressInfoState } from '../state/kakaoAddressInfo';
-import { Col, Row, Button, Tabs, Tab, Form,ListGroup, Card, CloseButton  } from 'react-bootstrap';
+import { Col, Row, Button, Tabs, Tab, Form,ListGroup, Card, CloseButton, Badge  } from 'react-bootstrap';
 import styled from 'styled-components';
 
 type TMarkers  = {
@@ -124,8 +124,8 @@ const PlanMap = () => {
                                                     <Card.Title>{markerInfo.place_name}</Card.Title>
                                                     <Card.Text>{markerInfo.road_address_name}</Card.Text>
                                                     <Card.Text>{markerInfo.address_name}</Card.Text>
-                                                    <StyledDirectionBtn variant="secondary" onClick={() => setDeparture(markerInfo.place_name)}>출발지로 설정</StyledDirectionBtn>
-                                                    <StyledDirectionBtn variant="danger" onClick={() => setArrive(markerInfo.place_name)}>도착지로 설정</StyledDirectionBtn>
+                                                    {departure !== markerInfo.place_name && <StyledDirectionBtn variant="secondary" onClick={() => setDeparture(markerInfo.place_name)}>출발지로 설정</StyledDirectionBtn>}
+                                                    {arrive !== markerInfo.place_name && <StyledDirectionBtn variant="secondary" onClick={() => setArrive(markerInfo.place_name)}>도착지로 설정</StyledDirectionBtn>}
                                                     <Card.Link href={`https://map.kakao.com/?sName=${departure}&eName=${arrive}`} target={"_blank"} >
                                                         <StyledDirectionBtn variant="success" >
                                                             길찾기
@@ -167,10 +167,15 @@ const PlanMap = () => {
                         </Form.Text>
                         <ListGroup as='ol' numbered>
                             {searchList?.map((addressInfo: any) => 
-                                <ListGroup.Item action key={addressInfo.id} onClick={onClickSerachRecord(addressInfo)}>{addressInfo.place_name}
-                                    <StyledDirectionBtn variant="secondary" onClick={() => setDeparture(addressInfo?.place_name)}>출발지</StyledDirectionBtn>
-                                    <StyledDirectionBtn variant="danger" onClick={() => setArrive(addressInfo?.place_name)}>도착지</StyledDirectionBtn>
-                                </ListGroup.Item>
+                                <StyledSearchListItem action key={addressInfo.id} onClick={onClickSerachRecord(addressInfo)}>
+                                    <div style={{background: `${departure === addressInfo?.place_name && 'blue' ||  arrive === addressInfo?.place_name && 'red' }`}}>{addressInfo.place_name}</div>
+                                    <StyledeBtnWrapper>
+                                        {!arrive && departure === addressInfo?.place_name && <StyledDirectionBtn variant='success' disabled>현재 출발지</StyledDirectionBtn>}
+                                        {arrive === addressInfo?.place_name && <StyledDirectionBtn variant='dark' disabled>현재 도착지</StyledDirectionBtn>}
+                                        {departure !== addressInfo?.place_name &&<StyledDirectionBtn variant="secondary" onClick={() => setDeparture(addressInfo?.place_name)}>출발지</StyledDirectionBtn>}
+                                        {addressInfo?.place_name && <StyledDirectionBtn variant="danger" onClick={() => setArrive(addressInfo?.place_name)}>도착지</StyledDirectionBtn>}
+                                    </StyledeBtnWrapper>
+                                </StyledSearchListItem>
                             )}
                         </ListGroup>                    
                     </Tab>
@@ -213,6 +218,17 @@ const StyledMapCard = styled(Card)`
     }
 `
 
+const StyledSearchListItem = styled(ListGroup.Item)`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+`
+
+const StyledeBtnWrapper = styled.div`
+    display: flex;
+    gap: 10px; 
+`
+
 const StyledColseBtn = styled(CloseButton)`
     position: absolute;
     top: 5px;
@@ -222,7 +238,7 @@ const StyledColseBtn = styled(CloseButton)`
 
 const StyledDirectionBtn = styled(Button)`
     padding: 5px;
-    font-size: 10px;
+    font-size: 12px;
     margin-right:10px;
     margin-top: 5px;
 `
