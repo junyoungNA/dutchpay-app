@@ -17,6 +17,11 @@ interface IMarkers {
     position? : TMarkers;
 }
 
+interface StyledPlaceNameProps {
+    isDeparture?: boolean;
+    isArrive?: boolean;
+}
+
 const PlanMap = () => {
     const [{x, y, address_name, region_2depth_name, place_name, road_address_name}, setAddressInfo] = useRecoilState(kakaoAddressInfoState);
     const [searchList, setSearchList] = useState<IKakaoAddressInfo[] >([]);
@@ -185,7 +190,9 @@ const PlanMap = () => {
                         <ListGroup as='ol' numbered>
                             {searchList?.map((addressInfo: any) => 
                                 <StyledSearchListItem action key={addressInfo.id} onClick={onClickSerachRecord(addressInfo)}>
-                                    <StyledCurrentPlaceDiv isDeparture={departure === addressInfo?.place_name} isArrive={arrive=== addressInfo?.place_name}>{addressInfo.place_name}</StyledCurrentPlaceDiv>
+                                    {departure === addressInfo?.place_name && <StyledCurrentPlaceDiv background='#198754'>{addressInfo.place_name}</StyledCurrentPlaceDiv> } 
+                                    {arrive === addressInfo?.place_name && <StyledCurrentPlaceDiv background='#dc3545'>{addressInfo.place_name}</StyledCurrentPlaceDiv>} 
+                                    {arrive !== addressInfo?.place_name && departure !== addressInfo?.place_name && <StyledCurrentPlaceDiv>{addressInfo.place_name}</StyledCurrentPlaceDiv>}
                                     <StyledeBtnWrapper>
                                         { departure === addressInfo?.place_name && <StyledDirectionBtn variant='success' disabled>현재 출발지</StyledDirectionBtn>}
                                         { arrive === addressInfo?.place_name && <StyledDirectionBtn variant='danger' disabled>현재 도착지</StyledDirectionBtn>}
@@ -267,12 +274,11 @@ const StyledDirectionBtn = styled(Button)`
     margin-top: 5px;
 `
 
-const StyledCurrentPlaceDiv = styled.div<{ isDeparture?: boolean, isArrive?: boolean}>`
+const StyledCurrentPlaceDiv = styled.div<{ background?: string, }>`
     background: ${props =>
-        props.isDeparture ? '#198754' :
-        props.isArrive ? '#dc3545' : 'white'};
+        props?.background ? props.background : 'white'};
     color: ${props =>
-        props.isDeparture || props.isArrive  ? 'white' : 'black'};;
+        props?.background ? 'white' : 'black'};;
     padding: 5px 10px;
     border-radius: 30px;
 `
