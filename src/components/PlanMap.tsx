@@ -98,6 +98,23 @@ const PlanMap = () => {
         setAddressInfo(addressInfo);
         setMarkerInfo(addressInfo);
     }
+
+    const onClickChangePoint = (placeName: string, type: "departure" | "arrive") => () => {
+        // state 가 arrive면 setDeparture를 해야하고 departure면 setArrive
+            if (type === "departure") {
+                setDeparture(placeName);
+                if (arrive === placeName) {
+                    setArrive('');
+                }
+            } 
+
+            if (type === "arrive") {
+                setArrive(placeName);
+                if (departure === placeName) {
+                    setDeparture('');
+                }
+            }
+    }
     return (
         <OverlayWrapper>
             <StyledPlanRow padding={'auto'}>
@@ -124,8 +141,8 @@ const PlanMap = () => {
                                                     <Card.Title>{markerInfo.place_name}</Card.Title>
                                                     <Card.Text>{markerInfo.road_address_name}</Card.Text>
                                                     <Card.Text>{markerInfo.address_name}</Card.Text>
-                                                    {departure !== markerInfo.place_name && <StyledDirectionBtn variant="secondary" onClick={() => setDeparture(markerInfo.place_name)}>출발지로 설정</StyledDirectionBtn>}
-                                                    {arrive !== markerInfo.place_name && <StyledDirectionBtn variant="secondary" onClick={() => setArrive(markerInfo.place_name)}>도착지로 설정</StyledDirectionBtn>}
+                                                    {departure !== markerInfo.place_name && <StyledDirectionBtn variant="secondary" onClick={onClickChangePoint(markerInfo.place_name,'departure')}>출발지로 설정</StyledDirectionBtn>}
+                                                    {arrive !== markerInfo.place_name && <StyledDirectionBtn variant="secondary" onClick={onClickChangePoint(markerInfo.place_name, 'arrive')}>도착지로 설정</StyledDirectionBtn>}
                                                     <Card.Link href={`https://map.kakao.com/?sName=${departure}&eName=${arrive}`} target={"_blank"} >
                                                         <StyledDirectionBtn variant="success" >
                                                             길찾기
@@ -168,12 +185,19 @@ const PlanMap = () => {
                         <ListGroup as='ol' numbered>
                             {searchList?.map((addressInfo: any) => 
                                 <StyledSearchListItem action key={addressInfo.id} onClick={onClickSerachRecord(addressInfo)}>
-                                    <div style={{background: `${departure === addressInfo?.place_name && 'blue' ||  arrive === addressInfo?.place_name && 'red' }`}}>{addressInfo.place_name}</div>
+                                    <StyledCurrentPlaceDiv isDeparture={departure === addressInfo?.place_name} isArrive={arrive=== addressInfo?.place_name}>{addressInfo.place_name}</StyledCurrentPlaceDiv>
                                     <StyledeBtnWrapper>
-                                        {!arrive && departure === addressInfo?.place_name && <StyledDirectionBtn variant='success' disabled>현재 출발지</StyledDirectionBtn>}
-                                        {arrive === addressInfo?.place_name && <StyledDirectionBtn variant='dark' disabled>현재 도착지</StyledDirectionBtn>}
-                                        {departure !== addressInfo?.place_name &&<StyledDirectionBtn variant="secondary" onClick={() => setDeparture(addressInfo?.place_name)}>출발지</StyledDirectionBtn>}
-                                        {addressInfo?.place_name && <StyledDirectionBtn variant="danger" onClick={() => setArrive(addressInfo?.place_name)}>도착지</StyledDirectionBtn>}
+                                        { departure === addressInfo?.place_name && <StyledDirectionBtn variant='success' disabled>현재 출발지</StyledDirectionBtn>}
+                                        { arrive === addressInfo?.place_name && <StyledDirectionBtn variant='danger' disabled>현재 도착지</StyledDirectionBtn>}
+                                        {departure !== addressInfo?.place_name && <StyledDirectionBtn variant="secondary"    
+                                            onClick={onClickChangePoint(addressInfo?.place_name, 'departure')}>
+                                                출발지
+                                        </StyledDirectionBtn>}
+                                        { arrive !== addressInfo?.place_name && <StyledDirectionBtn variant="danger"    
+                                            onClick={onClickChangePoint(addressInfo?.place_name, 'arrive')}
+                                            >    
+                                                도착지
+                                            </StyledDirectionBtn>}
                                     </StyledeBtnWrapper>
                                 </StyledSearchListItem>
                             )}
@@ -241,6 +265,16 @@ const StyledDirectionBtn = styled(Button)`
     font-size: 12px;
     margin-right:10px;
     margin-top: 5px;
+`
+
+const StyledCurrentPlaceDiv = styled.div<{ isDeparture?: boolean, isArrive?: boolean}>`
+    background: ${props =>
+        props.isDeparture ? '#198754' :
+        props.isArrive ? '#dc3545' : 'white'};
+    color: ${props =>
+        props.isDeparture || props.isArrive  ? 'white' : 'black'};;
+    padding: 5px 10px;
+    border-radius: 30px;
 `
 
 
