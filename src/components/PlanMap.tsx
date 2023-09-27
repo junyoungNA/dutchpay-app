@@ -7,8 +7,6 @@ import { useRecoilState } from 'recoil';
 import { IKakaoAddressInfo, kakaoAddressInfoState } from '../state/kakaoAddressInfo';
 import { Col, Row, Button, Tabs, Tab, Form,ListGroup, Card, CloseButton, Badge  } from 'react-bootstrap';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
-import { isAnyArrayBuffer } from 'util/types';
 
 type TMarkers  = {
     lat: string,
@@ -20,7 +18,6 @@ interface IMarkers {
 }
 
 const PlanMap = () => {
-    const navigate = useNavigate();
     const [{x, y, address_name, region_2depth_name, place_name, road_address_name}, setAddressInfo] = useRecoilState(kakaoAddressInfoState);
     const [searchList, setSearchList] = useState<IKakaoAddressInfo[] >([]);
     const [zoomable, setZoomable] = useState(true) //zoom 막기
@@ -122,16 +119,20 @@ const PlanMap = () => {
         //카테고리 선택시 실행될 함수 
         //location 에서 category이동시에 이전에 검색됐던 내용들을 다시 마커설정
         if(eventKey === 'category' && searchList.length > 0) {
+            const bounds = new kakao.maps.LatLngBounds();
             console.log(searchList,'기존마커들');
-            const markers : any[] = searchList.map( (item : any) =>  ({
-                ...item,
-                position: {
-                    lat: item.y,
-                    lng: item.x,
-                }
-            }));
-            setMarkers(markers);
-        }
+            const markers : any[] = searchList.map( (item : any) =>  {
+                bounds.extend(new kakao.maps.LatLng(item.y, item.x));
+                return {
+                    ...item,
+                    position: {
+                        lat: item.y,
+                        lng: item.x,
+                    }
+                }})
+                setMarkers(markers);
+                map.setBounds(bounds);
+            }
     }
 
     return (
