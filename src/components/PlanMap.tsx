@@ -133,6 +133,10 @@ const PlanMap = () => {
                 setMarkers(markers);
                 map.setBounds(bounds);
             }
+        
+            if(eventKey === 'location' ) {
+                const bounds = new kakao.maps.LatLngBounds();
+            }
     }
 
     return (
