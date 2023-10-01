@@ -5,7 +5,7 @@ import DaumPostcode from "react-daum-postcode";
 import axios from 'axios';
 import { useRecoilState } from 'recoil';
 import { IKakaoAddressInfo, kakaoAddressInfoState } from '../state/kakaoAddressInfo';
-import { Col, Row, Button, Tabs, Tab, Form,ListGroup, Card, CloseButton, Badge  } from 'react-bootstrap';
+import { Col, Row, Button, Tabs, Tab, Form,ListGroup, Card, CloseButton  } from 'react-bootstrap';
 import styled from 'styled-components';
 
 type TMarkers  = {
@@ -18,7 +18,7 @@ interface IMarkers {
 }
 
 const PlanMap = () => {
-    const [{x, y, address_name, region_2depth_name, place_name, road_address_name}, setAddressInfo] = useRecoilState(kakaoAddressInfoState);
+    const [{x, y, place_name, road_address_name}, setAddressInfo] = useRecoilState(kakaoAddressInfoState);
     const [searchList, setSearchList] = useState<IKakaoAddressInfo[] >([]);
     const [zoomable, setZoomable] = useState(true) //zoom 막기
     const [markers, setMarkers] = useState<IMarkers[]>([]);
@@ -78,7 +78,7 @@ const PlanMap = () => {
                         place_name: result.data.documents[0].address.address_name,
                         // address_name: result.data.documents[0].address.address_name,
                         road_address_name :result.data.documents[0].road_address.address_name,
-                        region_2depth_name: result.data.documents[0].address.region_2depth_name,
+                        // region_2depth_name: result.data.documents[0].address.region_2depth_name,
                         y: Number(result.data.documents[0].y),//위도
                         x: Number(result.data.documents[0].x),
                         position : {lat : Number(result.data.documents[0].y), lng: Number(result.data.documents[0].x)},
@@ -94,6 +94,7 @@ const PlanMap = () => {
     };
 
     const onClickSerachRecord = (addressInfo : IKakaoAddressInfo)  => () => {
+        console.log(addressInfo);
         setAddressInfo(addressInfo);
         setMarkerInfo(addressInfo);
     }
@@ -135,6 +136,7 @@ const PlanMap = () => {
             }
         
             if(eventKey === 'location' ) {
+                console.log(x, y, place_name, road_address_name, '로케이션');
                 const bounds = new kakao.maps.LatLngBounds();
             }
     }
@@ -158,7 +160,7 @@ const PlanMap = () => {
                                     position={marker.position}
                                     onClick={() => setMarkerInfo(marker)}
                                     />
-                                    {markerInfo && markerInfo.place_name === marker.place_name && (
+                                    {markerInfo && markerInfo.x === marker.x && markerInfo.y === marker.y && (
                                         <CustomOverlayMap position={marker.position} >
                                             <StyledMapCard>
                                                 <Card.Body >
