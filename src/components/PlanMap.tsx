@@ -19,11 +19,13 @@ interface IMarkers {
 
 const PlanMap = () => {
     const [{x, y, place_name, road_address_name}, setAddressInfo] = useRecoilState(kakaoAddressInfoState);
-    const [searchList, setSearchList] = useState<IKakaoAddressInfo[] >([]);
+    const [searchList, setSearchList] = useState<IKakaoAddressInfo[] >([]); //키워드 검색기록
+    const [markers, setMarkers] = useState<IMarkers[]>([]); //키워드 검색들 마커들
+
+    const [directionRecord, setDirectionRecord] = useState([]); //길찾기한 기록들
     const [zoomable, setZoomable] = useState(true) //zoom 막기
-    const [markers, setMarkers] = useState<IMarkers[]>([]);
     const [map, setMap] = useState<any>();
-    const [markerInfo, setMarkerInfo] = useState<any>(null);
+    const [markerInfo, setMarkerInfo] = useState<any>(null); //현재 마커 정보
     const [departure, setDeparture] = useState(''); // 출발지
     const [arrive, setArrive] = useState(''); //도착지
     const [keyword, setKeyword] = useState('서울역');
@@ -64,7 +66,6 @@ const PlanMap = () => {
     
 
     const handleComplete = async (data: any) => {
-        console.log(data,'data가머냐');
         const searchTxt = data.address; // 검색한 주소
         const config = { headers: {Authorization : `KakaoAK ${process.env.REACT_APP_KAKAOREST_KEY}`}}; // 헤더 설정
         const url = 'https://dapi.kakao.com/v2/local/search/address.json?query='+searchTxt; // REST API url에 data.address값 전송
@@ -72,7 +73,7 @@ const PlanMap = () => {
             if(result.data !== undefined || result.data !== null){
                 if(result.data.documents[0].x && result.data.documents[0].y) {
                       // Kakao Local API로 검색한 주소 정보 및 위도, 경도값 저장 
-                    console.log(result.data,'검색어 입력');
+                    const bounds = new kakao.maps.LatLngBounds();
                     const markers : any= [];
                     const addressInfo = {
                         place_name: result.data.documents[0].address.address_name,
@@ -83,9 +84,11 @@ const PlanMap = () => {
                         x: Number(result.data.documents[0].x),
                         position : {lat : Number(result.data.documents[0].y), lng: Number(result.data.documents[0].x)},
                     };
-                        markers.push(addressInfo)
+                        bounds.extend(new kakao.maps.LatLng(result.data.documents[0].y, result.data.documents[0].x))
+                        markers.push(addressInfo);
                         setMarkers(markers);
                         setAddressInfo(addressInfo);
+                        map.setBounds(bounds);
                     }
                 }
         }).catch((error : any) => {
@@ -94,7 +97,6 @@ const PlanMap = () => {
     };
 
     const onClickSerachRecord = (addressInfo : IKakaoAddressInfo)  => () => {
-        console.log(addressInfo);
         setAddressInfo(addressInfo);
         setMarkerInfo(addressInfo);
     }
@@ -121,7 +123,6 @@ const PlanMap = () => {
         //location 에서 category이동시에 이전에 검색됐던 내용들을 다시 마커설정
         if(eventKey === 'category' && searchList.length > 0) {
             const bounds = new kakao.maps.LatLngBounds();
-            console.log(searchList,'기존마커들');
             const markers : any[] = searchList.map( (item : any) =>  {
                 bounds.extend(new kakao.maps.LatLng(item.y, item.x));
                 return {
@@ -134,18 +135,17 @@ const PlanMap = () => {
                 setMarkers(markers);
                 map.setBounds(bounds);
             }
-        
-            if(eventKey === 'location' ) {
-                console.log(x, y, place_name, road_address_name, '로케이션');
-                const bounds = new kakao.maps.LatLngBounds();
-            }
+            // if(eventKey === 'location' ) {
+            //     console.log(x, y, place_name, road_address_name, '로케이션');
+            //     const bounds = new kakao.maps.LatLngBounds();
+            // }
     }
 
     return (
         <OverlayWrapper>
             <StyledPlanRow padding={'auto'}>
                 {/* 맵부분 */}
-                <StyledPlanCol xs={12} sm={12} md={6}>
+                <StyledPlanCol xs={12} lg={6}>
                     <StyledPlanMap 
                         center={{ lat: y, lng: x }}   // 지도의 중심 좌표
                         level={3}// 지도 확대 레벨
@@ -170,7 +170,7 @@ const PlanMap = () => {
                                                     <Card.Text>{markerInfo.address_name}</Card.Text>
                                                     {departure !== markerInfo.place_name && <StyledDirectionBtn variant="secondary" onClick={onClickChangePoint(markerInfo.place_name,'departure')}>출발지로 설정</StyledDirectionBtn>}
                                                     {arrive !== markerInfo.place_name && <StyledDirectionBtn variant="secondary" onClick={onClickChangePoint(markerInfo.place_name, 'arrive')}>도착지로 설정</StyledDirectionBtn>}
-                                                    <Card.Link href={`https://map.kakao.com/?sName=${departure}&eName=${arrive}`} target={"_blank"} >
+                                                    <Card.Link href={`https://map.kakao.com/?sName=${departure}&eName=${markerInfo.place_name}`} target={"_blank"} >
                                                         <StyledDirectionBtn variant="success" >
                                                             길찾기
                                                         </StyledDirectionBtn>
@@ -182,14 +182,14 @@ const PlanMap = () => {
                             </>
                         ))}
                         <Button onClick={() => setZoomable(false)}>지도 확대/축소 끄기</Button>{" "}
-                        <Button onClick={() => setZoomable(true)}>지도 확대/축소 켜기</Button>
-                        <Button onClick={() => window.location.href = (`https://map.kakao.com/?sName=${departure}&eName=${arrive}`)}>길찾기</Button>
+                        <Button onClick={() => setZoomable(true)}>지도 확대/축소 켜기</Button>{" "}
+                        <Button onClick={() => window.open(`https://map.kakao.com/?sName=${departure}&eName=${arrive}`)}>길찾기</Button>
                     </StyledPlanMap>
                     {departure && <div> 출발지 : {departure}</div>}
                     {arrive && <div> 도착지 : {arrive}</div>}
                 </StyledPlanCol>
                 {/* 검색 탭 부분 */}
-                <StyledPlanCol xs={12} sm={12} md={4} >
+                <StyledPlanCol xs={12}  lg={4} >
                     <Tabs
                         defaultActiveKey="category"
                         onSelect={handleTabSelect} 
@@ -236,6 +236,13 @@ const PlanMap = () => {
                         </Tab>
                         <Tab eventKey="location" title="장소 검색">
                             <DaumPostcode onComplete={handleComplete} autoClose={false}  style={{height:'500px'}}/>
+                        </Tab>
+                        <Tab eventKey="record" title="길찾기 기록">
+                        <ListGroup as='ol' numbered>
+                        {/* {directionRecord?.map((item) => 
+                            
+                            )} */}
+                            </ListGroup>
                         </Tab>
                     </Tabs>
                 </StyledPlanCol>
