@@ -7,7 +7,7 @@ import { useRecoilState } from 'recoil';
 import { IKakaoAddressInfo, kakaoAddressInfoState } from '../state/kakaoAddressInfo';
 import { Col, Row, Button, Tabs, Tab, Form,ListGroup, Card, CloseButton  } from 'react-bootstrap';
 import styled from 'styled-components';
-
+import {ArrowRight} from 'react-bootstrap-icons'
 type TMarkers  = {
     lat: string,
     lng : string,
@@ -17,12 +17,17 @@ interface IMarkers {
     position? : TMarkers;
 }
 
+interface  IDirectionRecord {
+    arrive : string,
+    departure : string,
+}
+
 const PlanMap = () => {
     const [{x, y, place_name, road_address_name}, setAddressInfo] = useRecoilState(kakaoAddressInfoState);
     const [searchList, setSearchList] = useState<IKakaoAddressInfo[] >([]); //키워드 검색기록
     const [markers, setMarkers] = useState<IMarkers[]>([]); //키워드 검색들 마커들
 
-    const [directionRecord, setDirectionRecord] = useState([]); //길찾기한 기록들
+    const [directionRecord, setDirectionRecord] = useState<IDirectionRecord[]>([]); //길찾기한 기록들
     const [zoomable, setZoomable] = useState(true) //zoom 막기
     const [map, setMap] = useState<any>();
     const [markerInfo, setMarkerInfo] = useState<any>(null); //현재 마커 정보
@@ -101,6 +106,20 @@ const PlanMap = () => {
         setMarkerInfo(addressInfo);
     }
 
+    const onClickSearchDirection = (arrive? : string)=> {
+        console.log(arrive, '도착지보기');
+        if(arrive === '' || !arrive) return;
+        setDirectionRecord((prev : IDirectionRecord[]) => 
+            [
+                ...prev,
+                {
+                    departure : departure,
+                    arrive : arrive,
+                }
+            ]
+        );
+    }
+
     const onClickChangePoint = (placeName: string, type: "departure" | "arrive") => () => {
         // state 가 arrive면 setDeparture를 해야하고 departure면 setArrive
         if (type === "departure") {
@@ -134,11 +153,7 @@ const PlanMap = () => {
                 }})
                 setMarkers(markers);
                 map.setBounds(bounds);
-            }
-            // if(eventKey === 'location' ) {
-            //     console.log(x, y, place_name, road_address_name, '로케이션');
-            //     const bounds = new kakao.maps.LatLngBounds();
-            // }
+        }
     }
 
     return (
@@ -171,7 +186,7 @@ const PlanMap = () => {
                                                     {departure !== markerInfo.place_name && <StyledDirectionBtn variant="secondary" onClick={onClickChangePoint(markerInfo.place_name,'departure')}>출발지로 설정</StyledDirectionBtn>}
                                                     {arrive !== markerInfo.place_name && <StyledDirectionBtn variant="secondary" onClick={onClickChangePoint(markerInfo.place_name, 'arrive')}>도착지로 설정</StyledDirectionBtn>}
                                                     <Card.Link href={`https://map.kakao.com/?sName=${departure}&eName=${markerInfo.place_name}`} target={"_blank"} >
-                                                        <StyledDirectionBtn variant="success" >
+                                                        <StyledDirectionBtn variant="success" onClick={() => onClickSearchDirection(markerInfo.place_name)} >
                                                             길찾기
                                                         </StyledDirectionBtn>
                                                     </Card.Link>
@@ -183,7 +198,7 @@ const PlanMap = () => {
                         ))}
                         <Button onClick={() => setZoomable(false)}>지도 확대/축소 끄기</Button>{" "}
                         <Button onClick={() => setZoomable(true)}>지도 확대/축소 켜기</Button>{" "}
-                        <Button onClick={() => window.open(`https://map.kakao.com/?sName=${departure}&eName=${arrive}`)}>길찾기</Button>
+                        <Button onClick={() => {window.open(`https://map.kakao.com/?sName=${departure}&eName=${arrive}`); onClickSearchDirection(arrive)}}>길찾기</Button>
                     </StyledPlanMap>
                     {departure && <div> 출발지 : {departure}</div>}
                     {arrive && <div> 도착지 : {arrive}</div>}
@@ -238,10 +253,20 @@ const PlanMap = () => {
                             <DaumPostcode onComplete={handleComplete} autoClose={false}  style={{height:'500px'}}/>
                         </Tab>
                         <Tab eventKey="record" title="길찾기 기록">
-                        <ListGroup as='ol' numbered>
-                        {/* {directionRecord?.map((item) => 
-                            
-                            )} */}
+                            <ListGroup as='ol' numbered>
+                            {directionRecord?.map((record : IDirectionRecord , idx) => 
+                                <StyledSearchListItem action key={idx} onClick={() => window.open(`https://map.kakao.com/?sName=${record.departure}&eName=${record.arrive}`)}>
+                                    {record.departure !== '' ?
+                                        <>
+                                            <StyledDirectionBtn variant='success' disabled width={'25%'}>{record.departure}</StyledDirectionBtn>
+                                            <ArrowRight size={32}/>
+                                            <StyledDirectionBtn variant='danger' disabled  width={'25%'}>{record?.arrive}</StyledDirectionBtn>
+                                        </> 
+                                        :
+                                        <StyledDirectionBtn variant='danger' disabled width={'50%'} style={{margin:'auto'}}>{record?.arrive}</StyledDirectionBtn>
+                                    }
+                                </StyledSearchListItem >
+                                )}
                             </ListGroup>
                         </Tab>
                     </Tabs>
@@ -282,7 +307,7 @@ const StyledMapCard = styled(Card)`
     }
 `
 
-const StyledSearchListItem = styled(ListGroup.Item)`
+const StyledSearchListItem = styled(ListGroup.Item)<{justifyContent?:string}>`
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -300,11 +325,12 @@ const StyledColseBtn = styled(CloseButton)`
 `
 
 
-const StyledDirectionBtn = styled(Button)`
+const StyledDirectionBtn = styled(Button)<{width?:string}>`
     padding: 5px;
     font-size: 12px;
     margin-right:10px;
     margin-top: 5px;
+    width: ${({width}) => width};
 `
 
 const StyledCurrentPlaceDiv = styled.div<{ background?: string, }>`
