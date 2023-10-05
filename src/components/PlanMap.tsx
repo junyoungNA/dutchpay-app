@@ -8,6 +8,9 @@ import { IKakaoAddressInfo, kakaoAddressInfoState } from '../state/kakaoAddressI
 import { Col, Row, Button, Tabs, Tab, Form,ListGroup, Card, CloseButton  } from 'react-bootstrap';
 import styled from 'styled-components';
 import {ArrowRight} from 'react-bootstrap-icons'
+import {error_animation} from '../aseets';
+import Lottie from 'lottie-react';
+
 type TMarkers  = {
     lat: string,
     lng : string,
@@ -253,21 +256,33 @@ const PlanMap = () => {
                             <DaumPostcode onComplete={handleComplete} autoClose={false}  style={{height:'500px'}}/>
                         </Tab>
                         <Tab eventKey="record" title="길찾기 기록">
+                            {directionRecord.length === 0 && <><StyledErrorMsg>검색기록이 없어요ㅠ</StyledErrorMsg><Lottie animationData={error_animation}  loop={false}/></>}
                             <ListGroup as='ol' numbered>
-                            {directionRecord?.map((record : IDirectionRecord , idx) => 
-                                <StyledSearchListItem action key={idx} onClick={() => window.open(`https://map.kakao.com/?sName=${record.departure}&eName=${record.arrive}`)}>
-                                    {record.departure !== '' ?
-                                        <>
-                                            <StyledDirectionBtn variant='success' disabled width={'25%'}>{record.departure}</StyledDirectionBtn>
-                                            <ArrowRight size={32}/>
-                                            <StyledDirectionBtn variant='danger' disabled  width={'25%'}>{record?.arrive}</StyledDirectionBtn>
-                                        </> 
-                                        :
-                                        <StyledDirectionBtn variant='danger' disabled width={'50%'} style={{margin:'auto'}}>{record?.arrive}</StyledDirectionBtn>
-                                    }
-                                </StyledSearchListItem >
-                                )}
+                                {directionRecord?.map((record : IDirectionRecord , idx) => 
+                                    <StyledSearchListItem action key={idx} onClick={() => window.open(`https://map.kakao.com/?sName=${record.departure}&eName=${record.arrive}`)}>
+                                        {record.departure !== '' ?
+                                            <>
+                                                <StyledDirectionBtn variant='success' disabled width={'25%'}>{record.departure}</StyledDirectionBtn>
+                                                <ArrowRight size={32}/>
+                                                <StyledDirectionBtn variant='danger' disabled  width={'25%'}>{record?.arrive}</StyledDirectionBtn>
+                                            </> 
+                                            :
+                                            <StyledDirectionBtn variant='danger' disabled width={'50%'} style={{margin:'auto'}}>{record?.arrive}</StyledDirectionBtn>
+                                        }
+                                    </StyledSearchListItem >
+                                    )}
                             </ListGroup>
+                        </Tab>
+                        <Tab eventKey="plan" title="계획">
+                            <Form.Label htmlFor="plan_title">계획 구성하기</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    onChange={(e) => setKeyword(e.target.value)}
+                                    placeholder='이 플랜의 제목을 입력해주세요!'
+                                    minLength={1}
+                                    maxLength={20}
+                                />
+                            <Form.Label htmlFor="plan_title">현재까지 플랜</Form.Label>
                         </Tab>
                     </Tabs>
                 </StyledPlanCol>
@@ -324,7 +339,6 @@ const StyledColseBtn = styled(CloseButton)`
     right: 5px;
 `
 
-
 const StyledDirectionBtn = styled(Button)<{width?:string}>`
     padding: 5px;
     font-size: 12px;
@@ -340,6 +354,11 @@ const StyledCurrentPlaceDiv = styled.div<{ background?: string, }>`
         props?.background ? 'white' : 'black'};;
     padding: 5px 10px;
     border-radius: 30px;
+`
+
+const StyledErrorMsg = styled.h4`
+    text-align: center;
+
 `
 
 
