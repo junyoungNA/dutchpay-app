@@ -5,9 +5,10 @@ import DaumPostcode from "react-daum-postcode";
 import axios from 'axios';
 import { useRecoilState } from 'recoil';
 import { IKakaoAddressInfo, kakaoAddressInfoState } from '../state/kakaoAddressInfo';
-import { Col, Row, Button, Tabs, Tab, Form,ListGroup, Card, CloseButton  } from 'react-bootstrap';
+import { Col, Row, Button, Tabs, Tab, Form,ListGroup, Card, CloseButton, FormGroup  } from 'react-bootstrap';
 import styled from 'styled-components';
 import {ArrowRight} from 'react-bootstrap-icons'
+import {TbTilde} from 'react-icons/tb'
 import {error_animation} from '../aseets';
 import Lottie from 'lottie-react';
 
@@ -30,6 +31,7 @@ const PlanMap = () => {
     const [searchList, setSearchList] = useState<IKakaoAddressInfo[] >([]); //키워드 검색기록
     const [markers, setMarkers] = useState<IMarkers[]>([]); //키워드 검색들 마커들
 
+    const [activeTab, setActiveTab] = useState('category');
     const [directionRecord, setDirectionRecord] = useState<IDirectionRecord[]>([]); //길찾기한 기록들
     const [zoomable, setZoomable] = useState(true) //zoom 막기
     const [map, setMap] = useState<any>();
@@ -110,7 +112,6 @@ const PlanMap = () => {
     }
 
     const onClickSearchDirection = (arrive? : string)=> {
-        console.log(arrive, '도착지보기');
         if(arrive === '' || !arrive) return;
         setDirectionRecord((prev : IDirectionRecord[]) => 
             [
@@ -140,6 +141,13 @@ const PlanMap = () => {
         }
     }
 
+    // 지난 기록에서 설정을 눌러 출발지, 도착지 설정
+    const onClickRecordPlan = (departure : string, arrive : string) => (event : React.MouseEvent<HTMLButtonElement>) => {
+        event.stopPropagation();
+        setDeparture(departure);
+        setArrive(arrive);
+    }
+
     const handleTabSelect = (eventKey: string | null) => {
         //카테고리 선택시 실행될 함수 
         //location 에서 category이동시에 이전에 검색됐던 내용들을 다시 마커설정
@@ -156,6 +164,9 @@ const PlanMap = () => {
                 }})
                 setMarkers(markers);
                 map.setBounds(bounds);
+        }
+        if(eventKey) {
+            setActiveTab(eventKey);
         }
     }
 
@@ -211,6 +222,7 @@ const PlanMap = () => {
                     <Tabs
                         defaultActiveKey="category"
                         onSelect={handleTabSelect} 
+                        activeKey={activeTab}
                         className="mb-3"
                         >
                         <Tab eventKey="category" title="키워드 검색">
@@ -264,10 +276,15 @@ const PlanMap = () => {
                                             <>
                                                 <StyledDirectionBtn variant='success' disabled width={'25%'}>{record.departure}</StyledDirectionBtn>
                                                 <ArrowRight size={32}/>
-                                                <StyledDirectionBtn variant='danger' disabled  width={'25%'}>{record?.arrive}</StyledDirectionBtn>
+                                                <StyledDirectionBtn variant='danger' disabled  width={'25%'}>{record.arrive}</StyledDirectionBtn>
+                                                <StyledDirectionBtn  onClick={onClickRecordPlan(record.departure, record.arrive)}>설정</StyledDirectionBtn>
                                             </> 
                                             :
-                                            <StyledDirectionBtn variant='danger' disabled width={'50%'} style={{margin:'auto'}}>{record?.arrive}</StyledDirectionBtn>
+                                            <>
+                                                <StyledDirectionBtn variant='danger' disabled width={'50%'} style={{margin:'auto'}}>{record.arrive}</StyledDirectionBtn>
+                                                <StyledDirectionBtn  onClick={onClickRecordPlan(record.departure, record.arrive)}>설정</StyledDirectionBtn>
+                                            </>
+                                            
                                         }
                                     </StyledSearchListItem >
                                     )}
@@ -275,14 +292,52 @@ const PlanMap = () => {
                         </Tab>
                         <Tab eventKey="plan" title="계획">
                             <Form.Label htmlFor="plan_title">계획 구성하기</Form.Label>
-                                <Form.Control
+                                <StyledFormControl
                                     type="text"
                                     onChange={(e) => setKeyword(e.target.value)}
-                                    placeholder='이 플랜의 제목을 입력해주세요!'
+                                    placeholder='이 계획의 제목을 입력해주세요!'
                                     minLength={1}
                                     maxLength={20}
                                 />
-                            <Form.Label htmlFor="plan_title">현재까지 플랜</Form.Label>
+                                <StyledFormControl
+                                    type='date'
+                                    placeholder='계획의 날짜를 선택해 주세요.'
+                                    // onChange={(e) => setDate(e.target.value)}
+                                />
+                                <FormGroup style={{display:'flex', alignItems:'center',}}>
+                                    <StyledFormControl
+                                        type='text'
+                                        placeholder='출발지'
+                                        defaultValue={departure}
+                                    />
+                                    <StyledIcon>
+                                        <ArrowRight/>
+                                    </StyledIcon>
+                                    <StyledFormControl
+                                        type='text'
+                                        placeholder='도착지'
+                                        defaultValue={arrive}
+                                    />
+                                    <StyledDirectionBtn onClick={() => handleTabSelect('record')}>길찾기 기록</StyledDirectionBtn>
+                                </FormGroup>
+                                <FormGroup style={{display:'flex', alignItems:'center'}}>
+                                    <StyledFormControl
+                                        type='time'
+                                    />
+                                    <StyledIcon>
+                                        <TbTilde/>
+                                    </StyledIcon>
+                                    <StyledFormControl
+                                        type='time'
+                                    />
+                                </FormGroup>
+                                <StyledFormControl
+                                        as='textarea'
+                                        placeholder='내용을 입력해주세요.'
+                                        width='100%'
+                                        row={100}
+                                />
+                            {/* <Form.Label htmlFor="plan_title">계획의 걸리는 시간을 입력해주세요.</Form.Label> */}
                         </Tab>
                     </Tabs>
                 </StyledPlanCol>
@@ -291,6 +346,11 @@ const PlanMap = () => {
     );
         
 }
+
+const StyledIcon = styled.div`
+    font-size: 20px;
+    margin: 6px 5px 0 5px;
+`;
 
 const StyledPlanRow = styled(Row)`
     display: flex;
@@ -321,6 +381,7 @@ const StyledMapCard = styled(Card)`
         }
     }
 `
+
 
 const StyledSearchListItem = styled(ListGroup.Item)<{justifyContent?:string}>`
     display: flex;
@@ -358,7 +419,13 @@ const StyledCurrentPlaceDiv = styled.div<{ background?: string, }>`
 
 const StyledErrorMsg = styled.h4`
     text-align: center;
+`
 
+const StyledFormControl = styled(Form.Control)<{width?: string, marginRight?: string}>`
+    width : ${({width}) => width};
+    margin-top : 10px;
+    resize: none;
+    /* margin-right: 10px; */
 `
 
 
