@@ -11,6 +11,7 @@ import {ArrowRight} from 'react-bootstrap-icons'
 import {TbTilde} from 'react-icons/tb'
 import {error_animation} from '../aseets';
 import Lottie from 'lottie-react';
+import CategoryTab from './plan/Tabs/CategoryTab';
 
 type TMarkers  = {
     lat: string,
@@ -27,7 +28,7 @@ interface  IDirectionRecord {
 }
 
 const PlanMap = () => {
-    const [{x, y, place_name, road_address_name}, setAddressInfo] = useRecoilState(kakaoAddressInfoState);
+    const [{x, y}, setAddressInfo] = useRecoilState(kakaoAddressInfoState);
     const [searchList, setSearchList] = useState<IKakaoAddressInfo[] >([]); //키워드 검색기록
     const [markers, setMarkers] = useState<IMarkers[]>([]); //키워드 검색들 마커들
 
@@ -225,44 +226,15 @@ const PlanMap = () => {
                         activeKey={activeTab}
                         className="mb-3"
                         >
-                        <Tab eventKey="category" title="키워드 검색">
-                            <Form.Label htmlFor="category_text">키워드 검색</Form.Label>
-                            <Form.Control
-                                type="text"
-                                id="category_text"
-                                aria-describedby="passwordHelpBlock"
-                                onChange={(e) => setKeyword(e.target.value)}
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter') {
-                                        kakaoKewordSerach();
-                                    }
-                                }}
-                            />
-                            <Form.Text id="passwordHelpBlock" muted>
-                                키워드 검색 예시("서울역 맛집", "인천 산책하기 좋은 곳")
-                            </Form.Text>
-                            <ListGroup as='ol' numbered>
-                                {searchList?.map((addressInfo: any) => 
-                                    <StyledSearchListItem action key={addressInfo.id} onClick={onClickSerachRecord(addressInfo)}>
-                                        {departure === addressInfo?.place_name && <StyledCurrentPlaceDiv background='#198754'>{addressInfo.place_name}</StyledCurrentPlaceDiv> } 
-                                        {arrive === addressInfo?.place_name && <StyledCurrentPlaceDiv background='#dc3545'>{addressInfo.place_name}</StyledCurrentPlaceDiv>} 
-                                        {arrive !== addressInfo?.place_name && departure !== addressInfo?.place_name && <StyledCurrentPlaceDiv>{addressInfo.place_name}</StyledCurrentPlaceDiv>}
-                                        <StyledeBtnWrapper>
-                                            { departure === addressInfo?.place_name && <StyledDirectionBtn variant='success' disabled>현재 출발지</StyledDirectionBtn>}
-                                            { arrive === addressInfo?.place_name && <StyledDirectionBtn variant='danger' disabled>현재 도착지</StyledDirectionBtn>}
-                                            {departure !== addressInfo?.place_name && <StyledDirectionBtn variant="secondary"    
-                                                onClick={onClickChangePoint(addressInfo?.place_name, 'departure')}>
-                                                    출발지
-                                            </StyledDirectionBtn>}
-                                            { arrive !== addressInfo?.place_name && <StyledDirectionBtn variant="danger"    
-                                                onClick={onClickChangePoint(addressInfo?.place_name, 'arrive')}
-                                                >    
-                                                    도착지
-                                            </StyledDirectionBtn>}
-                                        </StyledeBtnWrapper>
-                                    </StyledSearchListItem>
-                                )}
-                            </ListGroup>                    
+                        <Tab eventKey='category' title='카테고리 검색'>
+                            <CategoryTab 
+                                searchList={searchList} 
+                                setKeyword={setKeyword}
+                                kakaoKewordSerach={kakaoKewordSerach}
+                                onClickChangePoint={onClickChangePoint}
+                                onClickSerachRecord={onClickSerachRecord}
+                                departure={departure}
+                                arrive={arrive}/>
                         </Tab>
                         <Tab eventKey="location" title="장소 검색">
                             <DaumPostcode onComplete={handleComplete} autoClose={false}  style={{height:'500px'}}/>
@@ -304,7 +276,7 @@ const PlanMap = () => {
                                     placeholder='계획의 날짜를 선택해 주세요.'
                                     // onChange={(e) => setDate(e.target.value)}
                                 />
-                                <FormGroup style={{display:'flex', alignItems:'center',}}>
+                                <StyledFormGroup>
                                     <StyledFormControl
                                         type='text'
                                         placeholder='출발지'
@@ -318,9 +290,9 @@ const PlanMap = () => {
                                         placeholder='도착지'
                                         defaultValue={arrive}
                                     />
-                                    <StyledDirectionBtn onClick={() => handleTabSelect('record')}>길찾기 기록</StyledDirectionBtn>
-                                </FormGroup>
-                                <FormGroup style={{display:'flex', alignItems:'center'}}>
+                                    <StyledDirectionBtn onClick={() => handleTabSelect('record')} width='100%'>길찾기 기록</StyledDirectionBtn>
+                                </StyledFormGroup>
+                                <StyledFormGroup>
                                     <StyledFormControl
                                         type='time'
                                     />
@@ -330,14 +302,17 @@ const PlanMap = () => {
                                     <StyledFormControl
                                         type='time'
                                     />
-                                </FormGroup>
+                                </StyledFormGroup>
                                 <StyledFormControl
                                         as='textarea'
-                                        placeholder='내용을 입력해주세요.'
+                                        placeholder='내용을 입력해주세요 (20자 이내).'
+                                        maxLength={20}
+                                        minLength={1}
                                         width='100%'
+                                        height='15vh'
                                         row={100}
                                 />
-                            {/* <Form.Label htmlFor="plan_title">계획의 걸리는 시간을 입력해주세요.</Form.Label> */}
+                            <Button>저장하기</Button>
                         </Tab>
                     </Tabs>
                 </StyledPlanCol>
@@ -383,13 +358,13 @@ const StyledMapCard = styled(Card)`
 `
 
 
-const StyledSearchListItem = styled(ListGroup.Item)<{justifyContent?:string}>`
+export const StyledSearchListItem = styled(ListGroup.Item)<{justifyContent?:string}>`
     display: flex;
     justify-content: space-between;
     align-items: center;
 `
 
-const StyledeBtnWrapper = styled.div`
+export const StyledeBtnWrapper = styled.div`
     display: flex;
     gap: 10px; 
 `
@@ -400,7 +375,7 @@ const StyledColseBtn = styled(CloseButton)`
     right: 5px;
 `
 
-const StyledDirectionBtn = styled(Button)<{width?:string}>`
+export const StyledDirectionBtn = styled(Button)<{width?:string}>`
     padding: 5px;
     font-size: 12px;
     margin-right:10px;
@@ -408,7 +383,7 @@ const StyledDirectionBtn = styled(Button)<{width?:string}>`
     width: ${({width}) => width};
 `
 
-const StyledCurrentPlaceDiv = styled.div<{ background?: string, }>`
+export const StyledCurrentPlaceDiv = styled.div<{ background?: string, }>`
     background: ${props =>
         props?.background ? props.background : 'white'};
     color: ${props =>
@@ -420,13 +395,16 @@ const StyledCurrentPlaceDiv = styled.div<{ background?: string, }>`
 const StyledErrorMsg = styled.h4`
     text-align: center;
 `
+const StyledFormGroup = styled(FormGroup)`
+    display:flex;
+    align-items:center; 
+    gap:10px;
+`
 
-const StyledFormControl = styled(Form.Control)<{width?: string, marginRight?: string}>`
+const StyledFormControl = styled(Form.Control)<{width?: string, marginRight?: string, height?:string,}>`
     width : ${({width}) => width};
     margin-top : 10px;
     resize: none;
-    /* margin-right: 10px; */
+    height: ${({height}) => height};
 `
-
-
 export default PlanMap
