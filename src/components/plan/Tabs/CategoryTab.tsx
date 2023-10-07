@@ -3,7 +3,7 @@ import { IKakaoAddressInfo } from '../../../state/kakaoAddressInfo';
 import { Tab, Form , ListGroup } from 'react-bootstrap';
 import { StyledCurrentPlaceDiv, StyledDirectionBtn, StyledSearchListItem, StyledeBtnWrapper } from '../../PlanMap';
 
-interface ICategoryTabProps {
+export interface ICategoryTabProps {
     searchList: IKakaoAddressInfo[];
     setKeyword: (value: string) => void; 
     kakaoKewordSerach: () => void;

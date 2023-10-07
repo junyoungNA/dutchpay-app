@@ -5,13 +5,11 @@ import DaumPostcode from "react-daum-postcode";
 import axios from 'axios';
 import { useRecoilState } from 'recoil';
 import { IKakaoAddressInfo, kakaoAddressInfoState } from '../state/kakaoAddressInfo';
-import { Col, Row, Button, Tabs, Tab, Form,ListGroup, Card, CloseButton, FormGroup  } from 'react-bootstrap';
+import { Col, Row, Button, Tabs, Tab,ListGroup, Card, CloseButton } from 'react-bootstrap';
 import styled from 'styled-components';
-import {ArrowRight} from 'react-bootstrap-icons'
-import {TbTilde} from 'react-icons/tb'
-import {error_animation} from '../aseets';
-import Lottie from 'lottie-react';
-import CategoryTab from './plan/Tabs/CategoryTab';
+import CategoryTab, { ICategoryTabProps } from './plan/Tabs/CategoryTab';
+import RecordTab, { IRecordTabProps } from './plan/Tabs/RecordTab';
+import MakePlanTab, { IMakePlanTabProps } from './plan/Tabs/MakePlanTab';
 
 type TMarkers  = {
     lat: string,
@@ -22,10 +20,77 @@ interface IMarkers {
     position? : TMarkers;
 }
 
-interface  IDirectionRecord {
+export interface  IDirectionRecord {
     arrive : string,
     departure : string,
 }
+
+const TabCategoryList = [
+    {
+        eventKey :'category',
+        title : '카테고리 검색',
+        component: ({
+            searchList, 
+            setKeyword, 
+            kakaoKewordSerach, 
+            onClickChangePoint,
+            onClickSerachRecord,
+            departure,
+            arrive} : ICategoryTabProps)   => (
+            <CategoryTab
+                searchList={searchList}
+                setKeyword={setKeyword}
+                kakaoKewordSerach={kakaoKewordSerach}
+                onClickChangePoint={onClickChangePoint}
+                onClickSerachRecord={onClickSerachRecord}
+                departure={departure}
+                arrive={arrive}
+            />
+        ),
+    },
+    {
+        eventKey :'location',
+        title : '장소 검색',
+        component : ({handleComplete} :{ handleComplete: (data: any) => void }) => (
+            <DaumPostcode 
+                onComplete={handleComplete} 
+                autoClose={false}  
+                style={{height:'500px'}}/>
+        )
+    },
+    {
+        eventKey :'record',
+        title : '길찾기 기록',
+        component : ({
+            directionRecord,
+            onClickRecordPlan
+        } : IRecordTabProps) => 
+        (
+            <RecordTab
+                directionRecord= {directionRecord}
+                onClickRecordPlan = {onClickRecordPlan}
+            />
+        ),
+    },
+    {
+        eventKey :'makePlan',
+        title : '계획',
+        component : ({
+            departure, 
+            arrive, 
+            setKeyword,
+            handleTabSelect
+        } : IMakePlanTabProps) =>  
+        (
+            <MakePlanTab
+                departure={departure}
+                arrive={arrive}
+                setKeyword={setKeyword}
+                handleTabSelect={handleTabSelect}
+            />
+        )
+    }
+]
 
 const PlanMap = () => {
     const [{x, y}, setAddressInfo] = useRecoilState(kakaoAddressInfoState);
@@ -81,7 +146,7 @@ const PlanMap = () => {
         const config = { headers: {Authorization : `KakaoAK ${process.env.REACT_APP_KAKAOREST_KEY}`}}; // 헤더 설정
         const url = 'https://dapi.kakao.com/v2/local/search/address.json?query='+searchTxt; // REST API url에 data.address값 전송
         await axios.get(url, config).then(async function(result) { // API호출
-            if(result.data !== undefined || result.data !== null){
+            if(result.data !== undefined || result.data !== null) {
                 if(result.data.documents[0].x && result.data.documents[0].y) {
                       // Kakao Local API로 검색한 주소 정보 및 위도, 경도값 저장 
                     const bounds = new kakao.maps.LatLngBounds();
@@ -226,106 +291,30 @@ const PlanMap = () => {
                         activeKey={activeTab}
                         className="mb-3"
                         >
-                        <Tab eventKey='category' title='카테고리 검색'>
-                            <CategoryTab 
-                                searchList={searchList} 
-                                setKeyword={setKeyword}
-                                kakaoKewordSerach={kakaoKewordSerach}
-                                onClickChangePoint={onClickChangePoint}
-                                onClickSerachRecord={onClickSerachRecord}
-                                departure={departure}
-                                arrive={arrive}/>
-                        </Tab>
-                        <Tab eventKey="location" title="장소 검색">
-                            <DaumPostcode onComplete={handleComplete} autoClose={false}  style={{height:'500px'}}/>
-                        </Tab>
-                        <Tab eventKey="record" title="길찾기 기록">
-                            {directionRecord.length === 0 && <><StyledErrorMsg>검색기록이 없어요ㅠ</StyledErrorMsg><Lottie animationData={error_animation}  loop={false}/></>}
-                            <ListGroup as='ol' numbered>
-                                {directionRecord?.map((record : IDirectionRecord , idx) => 
-                                    <StyledSearchListItem action key={idx} onClick={() => window.open(`https://map.kakao.com/?sName=${record.departure}&eName=${record.arrive}`)}>
-                                        {record.departure !== '' ?
-                                            <>
-                                                <StyledDirectionBtn variant='success' disabled width={'25%'}>{record.departure}</StyledDirectionBtn>
-                                                <ArrowRight size={32}/>
-                                                <StyledDirectionBtn variant='danger' disabled  width={'25%'}>{record.arrive}</StyledDirectionBtn>
-                                                <StyledDirectionBtn  onClick={onClickRecordPlan(record.departure, record.arrive)}>설정</StyledDirectionBtn>
-                                            </> 
-                                            :
-                                            <>
-                                                <StyledDirectionBtn variant='danger' disabled width={'50%'} style={{margin:'auto'}}>{record.arrive}</StyledDirectionBtn>
-                                                <StyledDirectionBtn  onClick={onClickRecordPlan(record.departure, record.arrive)}>설정</StyledDirectionBtn>
-                                            </>
-                                            
-                                        }
-                                    </StyledSearchListItem >
-                                    )}
-                            </ListGroup>
-                        </Tab>
-                        <Tab eventKey="plan" title="계획">
-                            <Form.Label htmlFor="plan_title">계획 구성하기</Form.Label>
-                                <StyledFormControl
-                                    type="text"
-                                    onChange={(e) => setKeyword(e.target.value)}
-                                    placeholder='이 계획의 제목을 입력해주세요!'
-                                    minLength={1}
-                                    maxLength={20}
-                                />
-                                <StyledFormControl
-                                    type='date'
-                                    placeholder='계획의 날짜를 선택해 주세요.'
-                                    // onChange={(e) => setDate(e.target.value)}
-                                />
-                                <StyledFormGroup>
-                                    <StyledFormControl
-                                        type='text'
-                                        placeholder='출발지'
-                                        defaultValue={departure}
-                                    />
-                                    <StyledIcon>
-                                        <ArrowRight/>
-                                    </StyledIcon>
-                                    <StyledFormControl
-                                        type='text'
-                                        placeholder='도착지'
-                                        defaultValue={arrive}
-                                    />
-                                    <StyledDirectionBtn onClick={() => handleTabSelect('record')} width='100%'>길찾기 기록</StyledDirectionBtn>
-                                </StyledFormGroup>
-                                <StyledFormGroup>
-                                    <StyledFormControl
-                                        type='time'
-                                    />
-                                    <StyledIcon>
-                                        <TbTilde/>
-                                    </StyledIcon>
-                                    <StyledFormControl
-                                        type='time'
-                                    />
-                                </StyledFormGroup>
-                                <StyledFormControl
-                                        as='textarea'
-                                        placeholder='내용을 입력해주세요 (20자 이내).'
-                                        maxLength={20}
-                                        minLength={1}
-                                        width='100%'
-                                        height='15vh'
-                                        row={100}
-                                />
-                            <Button>저장하기</Button>
-                        </Tab>
+                        {/*  TabCategoryList map을 돌면 각각 탭 컴포넌트 return*/}
+                        {TabCategoryList.map(({eventKey, title, component}) => (
+                            <Tab eventKey={eventKey} title={title} >
+                                {component({
+                                    searchList,
+                                    setKeyword,
+                                    kakaoKewordSerach,
+                                    onClickChangePoint,
+                                    onClickSerachRecord,
+                                    departure,
+                                    arrive,
+                                    handleComplete,
+                                    directionRecord,
+                                    onClickRecordPlan,
+                                    handleTabSelect
+                                })}
+                            </Tab>
+                        ))}
                     </Tabs>
                 </StyledPlanCol>
             </StyledPlanRow>
         </OverlayWrapper>
     );
-        
 }
-
-const StyledIcon = styled.div`
-    font-size: 20px;
-    margin: 6px 5px 0 5px;
-`;
 
 const StyledPlanRow = styled(Row)`
     display: flex;
@@ -392,19 +381,4 @@ export const StyledCurrentPlaceDiv = styled.div<{ background?: string, }>`
     border-radius: 30px;
 `
 
-const StyledErrorMsg = styled.h4`
-    text-align: center;
-`
-const StyledFormGroup = styled(FormGroup)`
-    display:flex;
-    align-items:center; 
-    gap:10px;
-`
-
-const StyledFormControl = styled(Form.Control)<{width?: string, marginRight?: string, height?:string,}>`
-    width : ${({width}) => width};
-    margin-top : 10px;
-    resize: none;
-    height: ${({height}) => height};
-`
 export default PlanMap
