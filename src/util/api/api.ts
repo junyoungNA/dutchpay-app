@@ -49,7 +49,6 @@ export const getExsitingGroup = async (idUser : string, groupName : string) => {
 }
 
 // 유저의 그룹 생성날짜와 받아온 totalDate의 날짜 데이터를 맵핑
-
 const filterUserGroup = (resultGroups : any) => {
     if(!resultGroups) return;
     // const formattedDay = `${year}-${month + 1}-${day < 10 ? '0' + day : day}`;
