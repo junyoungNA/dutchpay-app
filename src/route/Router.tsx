@@ -60,7 +60,7 @@ const routerData: RouterElement[] = [
         path: ROUTES.PLAN,
         label: 'PlanMap',
         element: <PlanMap />,
-        withAuth: false,
+        withAuth: true,
     }
 ];
 

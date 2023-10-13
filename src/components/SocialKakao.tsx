@@ -18,8 +18,6 @@ const SocialKakao = () => {
             const nickname = data.profile.properties.nickname; //kakao 유저 닉네임
             setUser({nickname, idUser });
             const result = await postData('user',{accessToken, nickname , idUser});
-            // console.log(result);
-            // navigate(ROUTES.CREATE_GROUP);
         } catch (error) {
             console.log(error);
         }
