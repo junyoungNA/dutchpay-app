@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const port = 4000;
 require('dotenv').config();
+const jwt = require('jsonwebtoken');
+
 
 const mongoose = require ('mongoose');
 const User = require('./schema/user'); // User 모델 가져오기
@@ -32,11 +34,18 @@ app.post('/user', async (req, res) => {
 
         const existingUser = await User.findOne({ idUser });
         if (existingUser) {
-            return res.status(200).json({ msg: '사용자가 이미 저장되어 있습니다.' });
+            const token = jwt.sign({ originToken: accessToken }, process.env.JWT_SECRET, {
+                expiresIn: '1h', // 토큰 유효 기간 설정 (예: 1시간)
+            });
+            res.status(200).json({ message: 'Kakao 로그인이 성공했습니다', token });
+        } else {
+            const user = new User({ accessToken, nickname, idUser });
+            await user.save(); // 사용자 데이터를 데이터베이스에 저장
+            const token = jwt.sign({  orginToken: accessToken }, process.env.JWT_SECRET, {
+                expiresIn: '1h', // 토큰 유효 기간 설정 (예: 1시간)
+            });
+            res.status(200).json({ message: 'Kakao 로그인이 성공했습니다', token })
         }
-        const user = new User({ accessToken, nickname, idUser });
-        await user.save(); // 사용자 데이터를 데이터베이스에 저장
-        res.status(201).json(user); // 저장된 사용자 데이터를 JSON 형식으로 응답
     } catch (error) {
         console.error('사용자 생성 오류:', error);
         res.status(500).json({ error: '내부 서버 오류' });

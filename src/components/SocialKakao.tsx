@@ -12,12 +12,13 @@ const SocialKakao = () => {
     
     const kakaoOnSuccess = async (data : any)=> {
         try {
-            console.log(data);
+            console.log(data,'가져온 데이터정보');
             const accessToken = data.response.access_token; // 엑세스 토큰 백엔드로 전달
             const idUser = data.profile.id; // 엑세스 토큰 백엔드로 전달
             const nickname = data.profile.properties.nickname; //kakao 유저 닉네임
             setUser({nickname, idUser });
             const result = await postData('user',{accessToken, nickname , idUser});
+            console.log(result, 'token인가?');
         } catch (error) {
             console.log(error);
         }
