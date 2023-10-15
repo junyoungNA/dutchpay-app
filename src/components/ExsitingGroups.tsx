@@ -1,9 +1,10 @@
 import { Container } from 'react-bootstrap'
-import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import {groupMemberState} from '../state/groupMembers';
 import { useSetRecoilState } from 'recoil';
 import { groupNameState } from '../state/groupName';
+import { useRouter } from '../hooks/useRouter';
+import { ROUTES } from '../route/routes';
 
 interface IUserGrooups {
     _id: string,
@@ -21,12 +22,12 @@ interface IExsitingGroupsProps {
 const ExsitingGroups= ({userGroups, nickname} : IExsitingGroupsProps) => {
     const setGroupMembers = useSetRecoilState(groupMemberState);
     const setGroupName = useSetRecoilState(groupNameState);
-    const navigate = useNavigate();
+    const {routeTo} = useRouter();
 
     const userExpenseNavgiation  = (groupName : string, groupMembers : string[]) => {
         setGroupMembers(groupMembers);
         setGroupName(groupName);
-        navigate('/expense');
+        routeTo(ROUTES.EXPENSE_MAIN);
     }
 
     return (

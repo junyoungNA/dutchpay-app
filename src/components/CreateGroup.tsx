@@ -3,15 +3,15 @@ import CenteredOverlayForm from './CenteredOverlayForm'
 import {groupNameState} from '../state/groupName';
 import {useRecoilValue, useRecoilState} from 'recoil';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { kakaoUser } from '../state/kakaoUser';
 import  {getExsitingGroup} from '../util/api/api'
 import { StyledErrorMessage } from './AddMembers';
+import { useRouter } from '../hooks/useRouter';
 
 
 //그룹의 이름 정하는 컴포넌트
 const CreateGroup = () => {
-    const navigate = useNavigate();
+    const {routeTo} = useRouter();
     const {idUser} = useRecoilValue(kakaoUser);
 
     //bootstrap에서 지원해주는 form 태그안에 input 요소들의
@@ -47,7 +47,7 @@ const CreateGroup = () => {
         setExsitingGroup(false);;
         if(form.checkValidity()) {
             setVaildGroupName(true);
-            navigate('/members');
+            routeTo('/members');
         } else {
             event.stopPropagation();
             setVaildGroupName(false)

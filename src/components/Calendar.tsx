@@ -9,14 +9,14 @@ import { ArrowRight, ArrowLeft } from 'react-bootstrap-icons';
 import { kakaoUser } from '../state/kakaoUser';
 import {  getCalendarGroups } from '../util/api/api';
 import { groupNameState } from '../state/groupName';
-import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../route/routes';
 import { groupMemberState } from '../state/groupMembers';
 import { deleteData } from '../util/api/apiInstance';
 import { currentDateState } from '../state/currentDate.state';
+import { useRouter } from '../hooks/useRouter';
 
 const Calendar = () => {
-    const navigate = useNavigate();
+    const {routeTo} = useRouter();
     const {idUser} = useRecoilValue(kakaoUser);
     const [userGroups, setUserGroups] = useState([]);
     const [{year, month}, setCalendar] = useRecoilState(calendarDateState);
@@ -66,7 +66,7 @@ const Calendar = () => {
     const onClickShowGroup = (groupName : string , groupMembers : string[]) => () => {
         setGroupName(groupName);
         setGroupMembers(groupMembers);
-        navigate(ROUTES.EXPENSE_MAIN);
+        routeTo(ROUTES.EXPENSE_MAIN);
     }
 
     const onClickDeleteGroup = (idUser: string, groupName: string) => async ()  => {

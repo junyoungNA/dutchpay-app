@@ -7,7 +7,7 @@ import { calendar, dutchpay, plan } from '../../aseets';
 import Lottie from 'lottie-react';
 import {ROUTES} from '../../route/routes'
 import { kakaoUser } from '../../state/kakaoUser';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from '../../hooks/useRouter';
 
 // Lottie 애니메이션 데이터를 나타내는 타입 정의
     
@@ -81,7 +81,7 @@ const routeBtnData = [
 
 
 const RouteBtns = () => {
-    const navigate = useNavigate();
+    const {routeTo} = useRouter();
     const {nickname} = useRecoilValue(kakaoUser);
 
     useEffect(() => {
@@ -92,7 +92,7 @@ const RouteBtns = () => {
             <SocialKakao/>
                 {routeBtnData.map((btn : IRouteBtnData ,idx:number) => (
                     btn.withAuth && !nickname  ? null : 
-                    <StyledButtonWrapper onClick={() => navigate(btn.path)} background={btn.color} key={idx}>
+                    <StyledButtonWrapper onClick={() => routeTo(btn.path)} background={btn.color} key={idx}>
                         {btn.lottie()}
                     <StlyedNavBtn background={btn.color}>{btn.text}</StlyedNavBtn>
                 </StyledButtonWrapper>

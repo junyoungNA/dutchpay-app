@@ -5,17 +5,16 @@ import { InputTags } from 'react-bootstrap-tagsinput';
 import React, { useEffect, useState } from 'react';
 import { groupNameState } from '../state/groupName';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../route/routes';
 import { kakaoUser } from '../state/kakaoUser';
 import { postData } from '../util/api/apiInstance';
 import { memberIdState } from '../state/memberId';
 import getCalenderDate from '../util/getCurrentDate';
+import { useRouter } from '../hooks/useRouter';
 
 //멤버 추가 컴포넌트
 const AddMembers = () => {
-    
-    const navigate = useNavigate();
+    const {routeTo} = useRouter();
     const [groupMembers,setGroupMembers] = useRecoilState(groupMemberState);
     const userInfo = useRecoilValue(kakaoUser);
     const setMemberId = useSetRecoilState(memberIdState);
@@ -33,7 +32,7 @@ const AddMembers = () => {
             const result : any = await postData('members',{idUser :userInfo.idUser, groupMembers, groupName, createdAt});
             setMemberId(result._id);
             if(groupMembers.length > 0) {
-                navigate(ROUTES.EXPENSE_MAIN); 
+                routeTo(ROUTES.EXPENSE_MAIN); 
             } 
         } catch (error : any) {
             console.log(error);
