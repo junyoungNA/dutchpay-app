@@ -56,7 +56,7 @@ const routerData: RouterElement[] = [
         withAuth: false,
     },
     {
-        id: 4,
+        id: 5,
         path: ROUTES.PLAN,
         label: 'PlanMap',
         element: <PlanMap />,
