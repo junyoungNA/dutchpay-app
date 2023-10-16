@@ -26,6 +26,35 @@ app.get('/',(req, res) => {
     res.send('hello word');
 })
 
+
+
+function verifyToken(clientToken, kakaoAccessToken) {
+    try {
+        const decoded = jwt.verify(clientToken, process.env.JWT_SECRET);
+        if (decoded.originToken === kakaoAccessToken) {
+        // 클라이언트로부터 받은 accessToken과 일치
+        return true;
+        } else {
+        return false;
+        }
+    } catch (error) {
+        console.log(error, '토큰 디코딩 실패 및 오류');
+        return false;
+    }
+}
+
+// // 클라이언트에서 전달받은 JWT 토큰을 검증
+// const clientToken = req.body.token; // 클라이언트에서 전송한 JWT 토큰
+// const kakaoAccessToken = existingUser.accessToken; // 서버에 저장된 카카오 로그인 accessToken
+
+// if (verifyToken(clientToken, kakaoAccessToken)) {
+//   // JWT 토큰이 유효하고 accessToken과 일치함
+//   res.status(200).json({ message: 'JWT 토큰 검증 성공' });
+// } else {
+//   // JWT 토큰이 유효하지 않거나 accessToken과 일치하지 않음
+//   res.status(401).json({ message: 'JWT 토큰 검증 실패' });
+// }
+
     
 // 사용자 데이터 삽입을 처리하는 라우트 생성
 app.post('/user', async (req, res) => {

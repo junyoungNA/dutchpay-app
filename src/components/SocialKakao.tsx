@@ -6,6 +6,11 @@ import styled from "styled-components";
 import { postData } from "../util/api/apiInstance";
 import { StyledButtonWrapper } from "../aseets/styled/ButtonWrapper";
 
+type TKakaoLoginRes = {
+    message: string,
+    token:string,
+}
+
 const SocialKakao = () => {
     const  [user,setUser] = useRecoilState(kakaoUser);
     const kakaoClientId = process.env.REACT_APP_API_KEY!;
@@ -17,8 +22,8 @@ const SocialKakao = () => {
             const idUser = data.profile.id; // 엑세스 토큰 백엔드로 전달
             const nickname = data.profile.properties.nickname; //kakao 유저 닉네임
             setUser({nickname, idUser });
-            const result = await postData('user',{accessToken, nickname , idUser});
-            console.log(result, 'token인가?');
+            const result: any = await postData('user',{accessToken, nickname , idUser});
+            localStorage.setItem('token', result.token);
         } catch (error) {
             console.log(error);
         }
