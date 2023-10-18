@@ -28,22 +28,21 @@ app.get('/',(req, res) => {
 
 
 
-function verifyToken(clientToken, kakaoAccessToken) {
-    try {
-        const decoded = jwt.verify(clientToken, process.env.JWT_SECRET);
-        if (decoded.originToken === kakaoAccessToken) {
-        // 클라이언트로부터 받은 accessToken과 일치
-        return true;
-        } else {
-        return false;
-        }
-    } catch (error) {
-        console.log(error, '토큰 디코딩 실패 및 오류');
-        return false;
-    }
-}
+// function verifyToken(clientToken, kakaoAccessToken) {
+//     try {
+//         const decoded = jwt.verify(clientToken, process.env.JWT_SECRET);
+//         if (decoded.originToken === kakaoAccessToken) {
+//         // 클라이언트로부터 받은 accessToken과 일치
+//         return true;
+//         } else {
+//         return false;
+//         }
+//     } catch (error) {
+//         console.log(error, '토큰 디코딩 실패 및 오류');
+//         return false;
+//     }
+// }
 
-// // 클라이언트에서 전달받은 JWT 토큰을 검증
 // const clientToken = req.body.token; // 클라이언트에서 전송한 JWT 토큰
 // const kakaoAccessToken = existingUser.accessToken; // 서버에 저장된 카카오 로그인 accessToken
 
@@ -62,19 +61,14 @@ app.post('/user', async (req, res) => {
         const { accessToken, nickname, idUser } = req.body;
 
         const existingUser = await User.findOne({ idUser });
-        if (existingUser) {
-            const token = jwt.sign({ originToken: accessToken }, process.env.JWT_SECRET, {
-                expiresIn: '1h', // 토큰 유효 기간 설정 (예: 1시간)
-            });
-            res.status(200).json({ message: 'Kakao 로그인이 성공했습니다', token });
-        } else {
+        if (!existingUser) {
             const user = new User({ accessToken, nickname, idUser });
             await user.save(); // 사용자 데이터를 데이터베이스에 저장
-            const token = jwt.sign({  orginToken: accessToken }, process.env.JWT_SECRET, {
-                expiresIn: '1h', // 토큰 유효 기간 설정 (예: 1시간)
-            });
-            res.status(200).json({ message: 'Kakao 로그인이 성공했습니다', token })
-        }
+        } 
+        // const token = jwt.sign({  orginToken: accessToken }, process.env.JWT_SECRET, {
+        //     expiresIn: '1h', // 토큰 유효 기간 설정 (예: 1시간)
+        // });
+        res.status(200).json({ message: 'Kakao 로그인이 성공했습니다' })
     } catch (error) {
         console.error('사용자 생성 오류:', error);
         res.status(500).json({ error: '내부 서버 오류' });
