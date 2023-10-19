@@ -68,7 +68,7 @@ const routeBtnData = [
         lottie:() => <StlyedDutchpayLottie animationData={dutchpay} />,
         color:'#ae7df9',
         text : '더치페이 하러가기',
-        withAuth : false
+        withAuth : true
     },
     {
         path:ROUTES.CALENDAR,

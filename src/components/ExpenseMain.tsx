@@ -39,8 +39,6 @@ const LeftPane: React.FC<{}> = () => {
     )
 }
     
-
-
 const RightPane: React.FC<{}> = () =>{
     const groupName = useRecoilValue(groupNameState);
     return (

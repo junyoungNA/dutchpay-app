@@ -6,14 +6,13 @@ import styled from "styled-components";
 import { postData } from "../util/api/apiInstance";
 import { StyledButtonWrapper } from "../aseets/styled/ButtonWrapper";
 
-type TKakaoLoginRes = {
-    message: string,
-    token:string,
-}
-
 const SocialKakao = () => {
     const  [user,setUser] = useRecoilState(kakaoUser);
     const kakaoClientId = process.env.REACT_APP_API_KEY!;
+
+    const showAlert = (msg : string) => {
+        alert(msg);
+    }
     
     const kakaoOnSuccess = async (data : any)=> {
         try {
@@ -21,16 +20,19 @@ const SocialKakao = () => {
             const accessToken = data.response.access_token; // 엑세스 토큰 백엔드로 전달
             const idUser = data.profile.id; // 엑세스 토큰 백엔드로 전달
             const nickname = data.profile.properties.nickname; //kakao 유저 닉네임
-            setUser({nickname, idUser });
             const result: any = await postData('user',{accessToken, nickname , idUser});
-            localStorage.setItem('token', result.token);
+            // localStorage.setItem('token', result.token);
+            if(!result) showAlert('로그인 오류');
+            setUser({nickname, idUser });
         } catch (error) {
+            showAlert('로그인 오류');
             console.log(error);
         }
     }
 
     const kakaoOnFailure = (error :any) => {
         console.log(error);
+        alert('카카오 로그인 에러발생')
     };
 
     return(

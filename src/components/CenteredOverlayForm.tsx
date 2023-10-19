@@ -16,7 +16,7 @@ interface CenteredOverlayFormProps {
 const CenteredOverlayForm = ({children, title, handleSubmit, validated} : CenteredOverlayFormProps) => {
     return (
         <StyledCenteralizedContainer>
-            <ServiceLogo/>
+            {/* <ServiceLogo/> */}
             <OverlayWrapper>
                 <Container>
                     {/*noValidate 웹 폼의 유효성 검사(validations)를 비활성화하는 역할 */}
