@@ -31,7 +31,7 @@ const LeftPane: React.FC<{}> = () => {
         <StyledContainer>
         {/* 정산 결과 컴포넌트 렌더링 */}
             <Stack gap={5}> 
-                <ServiceLogo/>
+                {/* <ServiceLogo/> */}
                 <AddExpenseForm/>
                 <SettlementSummary/>
             </Stack>
