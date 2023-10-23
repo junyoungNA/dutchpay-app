@@ -52,6 +52,7 @@ const AddExpenseForm = () => {
         const payerValid = payer !== (null || '');
         const amountValid = amount > 0 && amount < 1000000;
         if(!amountValid) {
+            console.log('가격 에러 발생');
             if(amount < 0) setAmountError('금액을 입력해주세요');
             if(amount > 1000000) setAmountError('1000000원 이하로 입력해주세요.');
         }

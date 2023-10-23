@@ -6,7 +6,6 @@ import styled from 'styled-components'
 import { useRecoilValue } from 'recoil'
 import { groupNameState } from '../state/groupName'
 import SettlementSummary from './SettlementSummary'
-import ServiceLogo from './shared/ServiceLogo'
 //비용 정산하는 페이지
 const Expense = () => {
     return (

@@ -7,11 +7,9 @@ import { useRouter } from '../hooks/useRouter';
 import { ROUTES } from '../route/routes';
 
 interface IUserGrooups {
-    _id: string,
     groupName : string,
     groupMembers : string[],
     idUser : string,
-    __v : number
 }
 
 interface IExsitingGroupsProps {

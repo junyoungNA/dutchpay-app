@@ -3,12 +3,11 @@ import { Container,Row, Button } from 'react-bootstrap';
 import styled from 'styled-components'
 import OverlayWrapper from './shared/OverlayWrapper';
 import { Form } from 'react-bootstrap';
-import ServiceLogo from './shared/ServiceLogo';
 
 interface CenteredOverlayFormProps {
     children: ReactNode;
     validated? : boolean,
-    handleSubmit : (event : FormEvent<HTMLFormElement>) => void;
+    handleSubmit? : (event : FormEvent<HTMLFormElement>) => void;
     title : string;
 }
 
@@ -16,7 +15,6 @@ interface CenteredOverlayFormProps {
 const CenteredOverlayForm = ({children, title, handleSubmit, validated} : CenteredOverlayFormProps) => {
     return (
         <StyledCenteralizedContainer>
-            {/* <ServiceLogo/> */}
             <OverlayWrapper>
                 <Container>
                     {/*noValidate 웹 폼의 유효성 검사(validations)를 비활성화하는 역할 */}

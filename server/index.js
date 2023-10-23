@@ -76,6 +76,21 @@ app.post('/user', async (req, res) => {
 });
 
 
+
+app.get(`/groups`, async (req, res) => {
+    try {
+        const idUser = req.query.idUser; // 첫 번째 조건 파라미터
+        const groupMembrs = await Members.find({
+            idUser: idUser
+        })
+        res.status(201).json(groupMembrs); // 저장된 사용자 데이터를 JSON 형식으로 응답
+    } catch (error) {
+        console.error('사용자 생성 오류:', error);
+        res.status(500).json({ error: '내부 서버 오류' });
+    }
+});
+
+
 app.get(`/members`, async (req, res) => {
     try {
         const idUser = req.query.idUser; // 첫 번째 조건 파라미터
