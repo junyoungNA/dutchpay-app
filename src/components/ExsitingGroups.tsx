@@ -5,19 +5,13 @@ import { useSetRecoilState } from 'recoil';
 import { groupNameState } from '../state/groupName';
 import { useRouter } from '../hooks/useRouter';
 import { ROUTES } from '../route/routes';
-
-interface IUserGrooups {
-    groupName : string,
-    groupMembers : string[],
-    idUser : string,
-}
+import { IUserGroups } from './Dutchpay';
 
 interface IExsitingGroupsProps {
-    userGroups : IUserGrooups[]
-    nickname: string
+    userGroups : IUserGroups[]
 }
 
-const ExsitingGroups= ({userGroups, nickname} : IExsitingGroupsProps) => {
+const ExsitingGroups: React.FC<IExsitingGroupsProps> = ({userGroups}) => {
     const setGroupMembers = useSetRecoilState(groupMemberState);
     const setGroupName = useSetRecoilState(groupNameState);
     const {routeTo} = useRouter();
@@ -30,7 +24,6 @@ const ExsitingGroups= ({userGroups, nickname} : IExsitingGroupsProps) => {
 
     return (
         <StyledGroupContainer>
-            <h5>{nickname} 속한 그룹 목록!</h5>
             {userGroups.map(({groupName, groupMembers}) => 
                 <div key={groupName}>
                     <span >{groupName}</span>

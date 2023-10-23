@@ -1,18 +1,26 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import CenteredOverlayForm from './CenteredOverlayForm';
 import { getUserGroups } from '../util/api/api';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { kakaoUser } from '../state/kakaoUser';
+import ExsitingGroups from './ExsitingGroups';
+
+export interface IUserGroups {
+    groupName : string,
+    groupMembers : string[],
+    idUser : string,
+}
 
 
 const Dutchpay= () => {
-    const {idUser} = useRecoilValue(kakaoUser);
-
+    const {idUser, nickname} = useRecoilValue(kakaoUser);
+    const [userGroupsInfo, setUserGroups] = useState<IUserGroups[]>([]);
     const fetchData = async (idUser : string) => {
         try {
-            const exsitingGroup: any = await getUserGroups(idUser);
-            console.log(exsitingGroup, '존재하는 그룹');
-            return exsitingGroup;
+            const  userGroups: IUserGroups[] = await getUserGroups(idUser);
+            console.log(userGroups, '존재하는 그룹');
+            setUserGroups(userGroups);
+            return userGroups;
         } catch (error : any) {
             console.log(error,'에러 발생');
         }
@@ -23,15 +31,9 @@ const Dutchpay= () => {
     }, []);
     return (
         <CenteredOverlayForm    
-            title='더치페이 그룹 목록'
+            title={`${nickname}더치페이 그룹 목록`}
         >
-            <div>
-
-            </div>
-            {/* <ExsitingGroups
-                userGroups ={}
-                nickname={}
-            /> */}
+            <ExsitingGroups userGroups ={userGroupsInfo}/>
         </CenteredOverlayForm> 
     )
 }
