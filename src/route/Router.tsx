@@ -8,6 +8,7 @@ import { ROUTES } from './routes'
 import Login from '../components/Login'
 import PlanMap from '../components/PlanMap'
 import GeneralLayout from '../layout/Generallayout'
+import Dutchpay from '../components/Dutchpay'
 
 interface RouterElement {
     id: number // 페이지 아이디 (반복문용 고유값)
@@ -32,6 +33,13 @@ const routerData: RouterElement[] = [
         path: ROUTES.CREATE_GROUP,
         label: 'CreateGroup',
         element: <CreateGroup />,
+        withAuth: true,
+    },
+    {
+        id: 2,
+        path: ROUTES.DUTCHPAY,
+        label: 'Dutchpay',
+        element: <Dutchpay />,
         withAuth: true,
     },
     {

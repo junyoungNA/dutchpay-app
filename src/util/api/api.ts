@@ -27,7 +27,7 @@ export const getUserGroups = async (idUser : string) => {
         const result :any = await getData(`groups?idUser=${idUser}`);
         return result;
     } catch(error : any) {
-        // console.log(error, 'api호출 오류');
+        console.log(error, 'api호출 오류');
         throw new Error(error);
     } 
 }

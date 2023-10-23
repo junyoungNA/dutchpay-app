@@ -64,7 +64,7 @@ const routeBtnData = [
 
     },
     {
-        path:ROUTES.CREATE_GROUP,
+        path:ROUTES.DUTCHPAY,
         lottie:() => <StlyedDutchpayLottie animationData={dutchpay} />,
         color:'#ae7df9',
         text : '더치페이 하러가기',
