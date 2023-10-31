@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import CenteredOverlayForm from './CenteredOverlayForm';
 import { getUserGroups } from '../util/api/api';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import { kakaoUser } from '../state/kakaoUser';
 import ExsitingGroups from './ExsitingGroups';
 

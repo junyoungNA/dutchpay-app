@@ -27,7 +27,7 @@ const CenteredOverlayForm = ({children, title, handleSubmit, validated} : Center
                                 {children}
                             </Row>
                             <Row className='align-items-end'>
-                                <StyledSubmitdButton>저장</StyledSubmitdButton>
+                                <StyledSubmitdButton>새로 만들기</StyledSubmitdButton>
                             </Row>
                         </StyledCentralizedContent>
                     </Form>
@@ -50,7 +50,7 @@ const StyledCenteralizedContainer = styled(Container)`
 `
 
 const StyledTitle = styled.h2`
-    text-align: right;
+    text-align: center;
     overflow-wrap: break-word;
     word-break: keep-all;
     line-height : 35px;
@@ -71,6 +71,7 @@ const StyledSubmitdButton = styled(Button).attrs({
     display : flex;
     align-items : center;
     justify-content: center;
+    margin-top: 3vh;
     padding : 15px;
     display: flex;
     background-color: #6610F2;
