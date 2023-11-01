@@ -95,23 +95,9 @@ app.delete(`/groups`, async (req, res) => {
     try {
         const idUser = req.query.idUser; // 첫 번째 조건 파라미터
         const groupName = req.query.groupName;
-        // const groupMembrs = await Members.find({
-        //     $and: [
-        //         { idUser:idUser }, // 첫 번째 조건 필드
-        //         { groupName: groupName}, // 두 번째 조건 필드
-        // ]},);
-
-        // const groupExpense = await Expense.find({
-        //     $and: [
-        //         { idUser:idUser }, // 첫 번째 조건 필드
-        //         { groupName: groupName}, // 두 번째 조건 필드
-        // ]},);
-
-          // Members 테이블에서 조건에 맞는 문서 삭제
+        console.log(groupName, groupName.length, '그룹이름');
         const result1 = await Members.deleteMany({ idUser: idUser, groupName: groupName });
-
-        // Expense 테이블에서 조건에 맞는 문서 삭제
-        const result2 =await Expense.deleteMany({ idUser: idUser, groupName: groupName });
+        const result2 = await Expense.deleteMany({ idUser: idUser, groupName: groupName });
         console.log(result1, result2, '결과');
 
         // res.status(201).json(groupMembrs); // 저장된 사용자 데이터를 JSON 형식으로 응답

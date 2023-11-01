@@ -4,6 +4,7 @@ import { getUserGroups } from '../util/api/api';
 import { useRecoilValue } from 'recoil';
 import { kakaoUser } from '../state/kakaoUser';
 import ExsitingGroups from './ExsitingGroups';
+import { useRouter } from '../hooks/useRouter';
 
 export interface IUserGroups {
     groupName : string,
@@ -14,6 +15,7 @@ export interface IUserGroups {
 
 const Dutchpay= () => {
     const {idUser, nickname} = useRecoilValue(kakaoUser);
+    const {routeTo} = useRouter();
     const [userGroupsInfo, setUserGroups] = useState<IUserGroups[]>([]);
     const fetchData = async (idUser : string) => {
         try {
@@ -26,8 +28,19 @@ const Dutchpay= () => {
         }
     };
     useEffect(() => {
-        const result = fetchData(idUser);
-        console.log(result);
+        const fetchDataAndHandleResult = async () => {
+            try {
+                const result = await fetchData(idUser);
+                console.log(result);
+                if (result === undefined || result.length === 0) {
+                    routeTo('/group')
+                }
+            } catch (error) {
+                console.log(error, '에러 발생');
+            }
+        };
+    
+        fetchDataAndHandleResult();
     }, []);
     return (
         <CenteredOverlayForm    

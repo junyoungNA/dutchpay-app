@@ -2,7 +2,7 @@
 
 export const ROUTES = {
     DUTCHPAY:'/dutchpay',
-    CREATE_GROUP : '/gorup',
+    CREATE_GROUP : '/group',
     ADD_MEMBERS : '/members',
     EXPENSE_MAIN: '/expense',
     CALENDAR: '/calendar',

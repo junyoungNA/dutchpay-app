@@ -27,7 +27,7 @@ const CenteredOverlayForm = ({children, title, handleSubmit, validated} : Center
                                 {children}
                             </Row>
                             <Row className='align-items-end'>
-                                <StyledSubmitdButton>새로 만들기</StyledSubmitdButton>
+                                <StyledSubmitdButton>저장</StyledSubmitdButton>
                             </Row>
                         </StyledCentralizedContent>
                     </Form>
