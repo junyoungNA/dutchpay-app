@@ -27,6 +27,7 @@ const AddMembers = () => {
     const handleSubmit = async (event : React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         try { 
+            if(!groupNameDuplicationCheck(groupMembers)) return;
             setValidated(true);
             const createdAt = getCalenderDate() ; //오늘날짜 yyyy-mm-dd
             const result : any = await postData('members',{idUser :userInfo.idUser, groupMembers, groupName, createdAt});
@@ -37,6 +38,12 @@ const AddMembers = () => {
         } catch (error : any) {
             console.log(error);
         }
+    }
+
+    const groupNameDuplicationCheck = (groupMembers : string[]) => {
+        const setGroupMembers = [...new Set(groupMembers)];//중복체크
+        // console.log(setGroupMembers, groupMembers,'그룹 체크');
+        return groupMembers.length === setGroupMembers.length ? true : false;
     }
     const header = `${groupName}의 속한 멤버들의 이름을 넣어주세요`;
 
@@ -60,6 +67,7 @@ const AddMembers = () => {
                 // style={{border : !validated ? '2px solid red' : '1px solid gray'}}
             />
             {validated && groupMembers.length === 0 &&<StyledErrorMessage>그룹 멤버들의 이름을 입력해주세요.</StyledErrorMessage>}
+            {!groupNameDuplicationCheck(groupMembers) &&<StyledErrorMessage>그룹 멤버들의 이름이 중복되었어요.</StyledErrorMessage>}
         </CenteredOverlayForm>
     )
 }
