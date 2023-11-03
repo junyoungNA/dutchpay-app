@@ -27,7 +27,7 @@ const Expense = () => {
 
 const LeftPane: React.FC<{}> = () => {
     return (
-        <StyledContainer>
+        <StyledContainer style={{width:'40vw'}}>
         {/* 정산 결과 컴포넌트 렌더링 */}
             <Stack gap={5}> 
                 {/* <ServiceLogo/> */}
@@ -41,7 +41,7 @@ const LeftPane: React.FC<{}> = () => {
 const RightPane: React.FC<{}> = () =>{
     const groupName = useRecoilValue(groupNameState);
     return (
-        <StyledContainer>
+        <StyledContainer style={{width:'50vw'}}>
             <Row>
                 <StyledGroupName>{groupName || '그룹 이름'} </StyledGroupName>
                  {/* TODO: 그룹명 헤더 렌더링 */}
@@ -54,11 +54,11 @@ const RightPane: React.FC<{}> = () =>{
 }
 
 const StyledContainer = styled(Container)`
-    padding: 100px 31px;
+    padding: 80px 31px;
 `
 
 const StyledGroupName = styled.h2`
-    margin-bottom: 60px;
+    margin-bottom: 15px;
     text-align: center;
     font-weight: 700;
     font-size: 40px;
