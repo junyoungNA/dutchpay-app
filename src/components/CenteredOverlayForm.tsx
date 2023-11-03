@@ -9,10 +9,11 @@ interface CenteredOverlayFormProps {
     validated? : boolean,
     handleSubmit? : (event : FormEvent<HTMLFormElement>) => void;
     title : string;
+    route?: () => void;
 }
 
 //그룹 멤버 컴포넌트와 그룹 이름을 공통적으로 사용되는 컴포넌트
-const CenteredOverlayForm = ({children, title, handleSubmit, validated} : CenteredOverlayFormProps) => {
+const CenteredOverlayForm = ({children, title, handleSubmit, validated, route} : CenteredOverlayFormProps) => {
     return (
         <StyledCenteralizedContainer>
             <OverlayWrapper>
@@ -27,7 +28,7 @@ const CenteredOverlayForm = ({children, title, handleSubmit, validated} : Center
                                 {children}
                             </Row>
                             <Row className='align-items-end'>
-                                <StyledSubmitdButton>저장</StyledSubmitdButton>
+                                {route ? <StyledSubmitdButton onClick={(event) => {event.preventDefault();route();}}>더치페이그룹 새로 만들기</StyledSubmitdButton> : <StyledSubmitdButton>저장</StyledSubmitdButton> }
                             </Row>
                         </StyledCentralizedContent>
                     </Form>

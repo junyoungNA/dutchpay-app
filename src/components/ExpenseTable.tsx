@@ -62,6 +62,7 @@ const StyledThead = styled.thead`
     font-weight: 700;
     font-size: 22px;
     line-height: 29px;
+    white-space: nowrap;
     th {
         color: #683DA6 ;
         padding: 10px 8px;

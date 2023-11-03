@@ -5,6 +5,7 @@ import { useRecoilValue } from 'recoil';
 import { kakaoUser } from '../state/kakaoUser';
 import ExsitingGroups from './ExsitingGroups';
 import { useRouter } from '../hooks/useRouter';
+import { ROUTES } from '../route/routes';
 
 export interface IUserGroups {
     groupName : string,
@@ -33,7 +34,7 @@ const Dutchpay= () => {
                 const result = await fetchData(idUser);
                 console.log(result);
                 if (result === undefined || result.length === 0) {
-                    routeTo('/group')
+                    routeTo(ROUTES.CREATE_GROUP)
                 }
             } catch (error) {
                 console.log(error, '에러 발생');
@@ -45,6 +46,7 @@ const Dutchpay= () => {
     return (
         <CenteredOverlayForm    
             title={`${nickname}더치페이 그룹 목록`}
+            route={() => routeTo(ROUTES.CREATE_GROUP)}
         >
             <ExsitingGroups userGroups ={userGroupsInfo}/>
         </CenteredOverlayForm> 

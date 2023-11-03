@@ -197,7 +197,7 @@ export const StyledTitle = styled.h3`
     color: #FFFBFB;
     text-align : center;
     font-weight: 700;
-    font-size: 40px;
+    font-size: 35px;
     line-height: 40px;
     letter-spacing: 0.25;
     margin-bottom:15px;

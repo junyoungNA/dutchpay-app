@@ -12,11 +12,11 @@ const Expense = () => {
         // fluid 페이지의 가로 너비에 맞추어 그리드 컨텐츠를 채우려고 시도
         <Container fluid>
             <Row>
-                <Col xs={12} sm={5} md={4}>
+                <Col xs={12} sm={5}>
                     {/* 비용추가 폼 */}
                     <LeftPane/> 
                 </Col>
-                <Col>
+                <Col >
                     <RightPane/>
                     {/* TODO: 비용 리스트 컴포넌트 렌더링 */}
                 </Col>
@@ -27,7 +27,7 @@ const Expense = () => {
 
 const LeftPane: React.FC<{}> = () => {
     return (
-        <StyledContainer style={{width:'40vw'}}>
+        <StyledContainer >
         {/* 정산 결과 컴포넌트 렌더링 */}
             <Stack gap={5}> 
                 {/* <ServiceLogo/> */}
@@ -41,7 +41,7 @@ const LeftPane: React.FC<{}> = () => {
 const RightPane: React.FC<{}> = () =>{
     const groupName = useRecoilValue(groupNameState);
     return (
-        <StyledContainer style={{width:'50vw'}}>
+        <StyledContainer>
             <Row>
                 <StyledGroupName>{groupName || '그룹 이름'} </StyledGroupName>
                  {/* TODO: 그룹명 헤더 렌더링 */}
