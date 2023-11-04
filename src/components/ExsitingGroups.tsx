@@ -52,7 +52,7 @@ const ExsitingGroups: React.FC<IExsitingGroupsProps> = ({userGroups}) => {
 export default ExsitingGroups
 
 const StyledGroupContainer = styled(Container) `
-    height: 600px;
+    height: 400px;
     overflow: auto;
 
 `
@@ -61,6 +61,7 @@ const StyledGroupDiv = styled.div`
         font-weight: 600;
         margin: 15px;
         display: flex;
+
         justify-content: space-evenly;
 `
 

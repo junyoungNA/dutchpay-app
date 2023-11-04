@@ -21,7 +21,6 @@ const Dutchpay= () => {
     const fetchData = async (idUser : string) => {
         try {
             const  userGroups: IUserGroups[] = await getUserGroups(idUser);
-            console.log(userGroups, '존재하는 그룹');
             setUserGroups(userGroups);
             return userGroups;
         } catch (error : any) {

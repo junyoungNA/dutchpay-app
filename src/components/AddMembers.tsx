@@ -11,38 +11,45 @@ import { postData } from '../util/api/apiInstance';
 import { memberIdState } from '../state/memberId';
 import getCalenderDate from '../util/getCurrentDate';
 import { useRouter } from '../hooks/useRouter';
+import { getExsitingGroup } from '../util/api/api';
 
 //멤버 추가 컴포넌트
 const AddMembers = () => {
     const {routeTo} = useRouter();
     const [groupMembers,setGroupMembers] = useRecoilState(groupMemberState);
-    const userInfo = useRecoilValue(kakaoUser);
+    const {idUser} = useRecoilValue(kakaoUser);
     const setMemberId = useSetRecoilState(memberIdState);
     const resetMembers = useResetRecoilState(groupMemberState)
-    
+
     const groupName = useRecoilValue(groupNameState);
     const [validated, setValidated] = useState(false); 
+    const [errorMsg, setErrorMsg] = useState('')
 
     //inputTages 이름을 추가하지 않을시 에러메세지를 위한 state
     const handleSubmit = async (event : React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         try { 
             if(!groupNameDuplicationCheck(groupMembers)) return;
+            const exsitingGroup: any = await getExsitingGroup(idUser, groupName);
+            console.log(exsitingGroup, '존재하는 그룹 클라이언트');
             setValidated(true);
             const createdAt = getCalenderDate() ; //오늘날짜 yyyy-mm-dd
-            const result : any = await postData('members',{idUser :userInfo.idUser, groupMembers, groupName, createdAt});
+            const result : any = await postData('members',{idUser :idUser, groupMembers, groupName, createdAt});
             setMemberId(result._id);
             if(groupMembers.length > 0) {
                 routeTo(ROUTES.EXPENSE_MAIN); 
             } 
         } catch (error : any) {
+            if(error.message === 'Error: Request failed with status code 400') {
+                routeTo(ROUTES.DUTCHPAY);
+                alert('이미 존재하는 그룹입니다. 다시 그룹을 생성해주세요.');
+            }
             console.log(error);
         }
     }
 
     const groupNameDuplicationCheck = (groupMembers : string[]) => {
         const setGroupMembers = [...new Set(groupMembers)];//중복체크
-        // console.log(setGroupMembers, groupMembers,'그룹 체크');
         return groupMembers.length === setGroupMembers.length ? true : false;
     }
     const header = `${groupName}의 속한 멤버들의 이름을 넣어주세요`;
@@ -64,7 +71,6 @@ const AddMembers = () => {
                 onTags={(value : any) => {setGroupMembers(value.values)}}
                 data-testid="input-member-names"
                 values={groupMembers}
-                // style={{border : !validated ? '2px solid red' : '1px solid gray'}}
             />
             {validated && groupMembers.length === 0 &&<StyledErrorMessage>그룹 멤버들의 이름을 입력해주세요.</StyledErrorMessage>}
             {!groupNameDuplicationCheck(groupMembers) &&<StyledErrorMessage>그룹 멤버들의 이름이 중복되었어요.</StyledErrorMessage>}
