@@ -82,7 +82,7 @@ app.get(`/groups`, async (req, res) => {
         const idUser = req.query.idUser; // 첫 번째 조건 파라미터
         const groupMembrs = await Members.find({
             idUser: idUser
-        })
+        });
         res.status(201).json(groupMembrs); // 저장된 사용자 데이터를 JSON 형식으로 응답
     } catch (error) {
         console.error('사용자 생성 오류:', error);
@@ -95,12 +95,16 @@ app.delete(`/groups`, async (req, res) => {
     try {
         const idUser = req.query.idUser; // 첫 번째 조건 파라미터
         const groupName = req.query.groupName;
-        console.log(groupName, groupName.length, '그룹이름');
         const result1 = await Members.deleteMany({ idUser: idUser, groupName: groupName });
         const result2 = await Expense.deleteMany({ idUser: idUser, groupName: groupName });
-        console.log(result1, result2, '결과');
-
-        // res.status(201).json(groupMembrs); // 저장된 사용자 데이터를 JSON 형식으로 응답
+        console.log(result1, result2,'결과아');
+        if (result1.acknowledged === true && result2.acknowledged === true) {
+            const groupMembrs = await Members.find({
+                idUser: idUser
+            }) 
+            console.log('그룹 정보 가져오아', groupMembrs);
+            res.status(201).json(groupMembrs); // 저장된 사용자 데이터를 JSON 형식으로 응답
+        }
     } catch (error) {
         console.error('사용자 생성 오류:', error);
         res.status(500).json({ error: '내부 서버 오류' });

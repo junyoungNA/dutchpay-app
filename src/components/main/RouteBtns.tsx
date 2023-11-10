@@ -84,9 +84,9 @@ const RouteBtns = () => {
     const {routeTo} = useRouter();
     const {nickname} = useRecoilValue(kakaoUser);
 
-    useEffect(() => {
-        console.log('유저 정보', nickname);
-    }, [nickname]);
+    // useEffect(() => {
+    //     // console.log('유저 정보', nickname);
+    // }, [nickname]);
     return (
         <>
             <SocialKakao/>

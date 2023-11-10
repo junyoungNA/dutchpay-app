@@ -8,6 +8,8 @@ import { ROUTES } from '../route/routes';
 import { IUserGroups } from './Dutchpay';
 import { kakaoUser } from '../state/kakaoUser';
 import { deleteGroups } from '../util/api/api';
+import { useEffect, useState } from 'react';
+
 
 interface IExsitingGroupsProps {
     userGroups : IUserGroups[]
@@ -18,6 +20,11 @@ const ExsitingGroups: React.FC<IExsitingGroupsProps> = ({userGroups}) => {
     const setGroupName = useSetRecoilState(groupNameState);
     const {idUser} = useRecoilValue(kakaoUser);
     const {routeTo} = useRouter();
+    const [groups, setGroups] = useState<IUserGroups[]>([]);
+
+    useEffect(() => {
+        setGroups(userGroups);
+    },[userGroups]);
 
     const userExpenseNavgiation  = (groupName : string, groupMembers : string[]) => {
         setGroupMembers(groupMembers);
@@ -27,7 +34,10 @@ const ExsitingGroups: React.FC<IExsitingGroupsProps> = ({userGroups}) => {
 
     const deleteGroupsHandler = async (idUser : string , groupName : string) => {
         try {
+            if(window.confirm('해당 그룹을 삭제하시겠습니까?') === false) return;
             const  result: any = await deleteGroups(idUser, groupName);
+            setGroups(result);
+            alert(`${groupName} 그룹을 삭제하였습니다.`);
             console.log(result, '존재하는 그룹');
         } catch (error : any) {
             console.log(error,'에러 발생');
@@ -36,8 +46,8 @@ const ExsitingGroups: React.FC<IExsitingGroupsProps> = ({userGroups}) => {
 
     return (
         <StyledGroupContainer>
-            {userGroups.map(({groupName, groupMembers}) => 
-                <StyledGroupDiv key={groupName}>
+            {groups.map(({_id, groupName, groupMembers}) => 
+                <StyledGroupDiv key={_id}>
                     <span >{groupName}</span>
                     <ButtonGroup >
                         <StyledGroupBtn onClick={() => userExpenseNavgiation(groupName, groupMembers)}>보기</StyledGroupBtn>

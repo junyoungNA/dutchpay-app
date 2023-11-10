@@ -63,6 +63,7 @@ export const getExsitingGroup = async (idUser : string, groupName : string) => {
 export const deleteGroups = async (idUser : string, groupName : string) => {
     try {
         const result :any = await deleteData(`groups?idUser=${idUser}&groupName=${groupName}`);
+        console.log(result,'결과입니다아아');
         return result;
     } catch(error : any) {
         // console.log(error, 'api호출 오류');

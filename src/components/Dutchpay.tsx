@@ -8,6 +8,7 @@ import { useRouter } from '../hooks/useRouter';
 import { ROUTES } from '../route/routes';
 
 export interface IUserGroups {
+    _id : string,
     groupName : string,
     groupMembers : string[],
     idUser : string,
@@ -27,6 +28,7 @@ const Dutchpay= () => {
             console.log(error,'에러 발생');
         }
     };
+
     useEffect(() => {
         const fetchDataAndHandleResult = async () => {
             try {
@@ -39,9 +41,9 @@ const Dutchpay= () => {
                 console.log(error, '에러 발생');
             }
         };
-    
         fetchDataAndHandleResult();
     }, []);
+
     return (
         <CenteredOverlayForm    
             title={`${nickname}더치페이 그룹 목록`}
