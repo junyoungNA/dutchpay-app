@@ -46,7 +46,7 @@ const Dutchpay= () => {
 
     return (
         <CenteredOverlayForm    
-            title={`${nickname}더치페이 그룹 목록`}
+            title={`${nickname}님의 더치페이 그룹 목록`}
             route={() => routeTo(ROUTES.CREATE_GROUP)}
         >
             <ExsitingGroups userGroups ={userGroupsInfo}/>

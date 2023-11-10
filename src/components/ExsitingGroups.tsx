@@ -48,7 +48,7 @@ const ExsitingGroups: React.FC<IExsitingGroupsProps> = ({userGroups}) => {
         <StyledGroupContainer>
             {groups.map(({_id, groupName, groupMembers}) => 
                 <StyledGroupDiv key={_id}>
-                    <span >{groupName}</span>
+                    <span style={{fontSize:"22px"}}>{groupName}</span>
                     <ButtonGroup >
                         <StyledGroupBtn onClick={() => userExpenseNavgiation(groupName, groupMembers)}>보기</StyledGroupBtn>
                         <StyledGroupBtn  type="button" onClick={(event) => {deleteGroupsHandler(idUser, groupName); event.stopPropagation();} }>삭제</StyledGroupBtn>
@@ -75,7 +75,7 @@ const StyledGroupDiv = styled.div`
         justify-content: space-evenly;
 `
 
-const StyledGroupBtn = styled.button`
+export const StyledGroupBtn = styled.button`
     border: none;
     background-color: #8f4fb4;
     color: #fff1f1;

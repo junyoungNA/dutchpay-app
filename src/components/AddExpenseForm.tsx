@@ -28,8 +28,6 @@ const AddExpenseForm = () => {
     const [isAmountValid, setAmountValid] = useState(false);
     const [isPayerValid, setPayerValid] = useState(false);
 
-    const [amountErrorMsg, setAmountError] = useState('');
-
     const fetchData = async (idUser : string, groupName : string) => {
         try {
             const expenses: any = await getExpenses(idUser, groupName);
@@ -51,11 +49,6 @@ const AddExpenseForm = () => {
         const desceValid = desc.length > 0;
         const payerValid = payer !== (null || '');
         const amountValid = amount > 0 && amount < 1000000;
-        if(!amountValid) {
-            console.log('가격 에러 발생');
-            if(amount < 0) setAmountError('금액을 입력해주세요');
-            if(amount > 1000000) setAmountError('1000000원 이하로 입력해주세요.');
-        }
         setDescValid(desceValid);
         setPayerValid(payerValid);
         setAmountValid(amountValid);
@@ -132,7 +125,7 @@ const AddExpenseForm = () => {
                                 isInvalid = {!isAmountValid && validated}
                                 onChange={({target}) => setAmount(Number(target.value))}
                                 placeholder='비용은 얼마였나요?.'/>
-                            <StyledFormControlFeedback type='invalid' data-valid={isAmountValid}>{amountErrorMsg}</StyledFormControlFeedback>
+                            <StyledFormControlFeedback type='invalid' data-valid={isAmountValid} styled={{fontSize:'14px'}}>금액은 1원 이상 <br /> 1000000원 이하로 입력해주세요.</StyledFormControlFeedback>
                         </StyledFormGroup>
                     </Col>
                     <Col xs={12} lg={6}>

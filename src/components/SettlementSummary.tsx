@@ -40,7 +40,7 @@ const SettlementSummary = () => {
 }
 
 const StyledWrapper = styled.div`
-    padding : 50px;
+    padding : 30px;
     background-color: #6838A1;
     color: #FFFBFB;
     box-shadow: 3px 0px 4px rgba(0, 0, 0, 0.25);

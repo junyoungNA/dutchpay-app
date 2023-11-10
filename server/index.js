@@ -233,6 +233,21 @@ app.get(`/expense`, async (req, res) => {
     }
 });
 
+//expense 삭제하기
+app.delete(`/expense`, async (req, res) => {
+    try {
+        const idUser = req.query.idUser; // 첫 번째 조건 파라미터
+        const groupName = req.query.groupName; // 두 번째 조건 파라미터
+        const expenseName = req.query.expenseName; // 두 번째 조건 파라미터
+        const result = await Expense.deleteOne({ idUser, groupName, desc:expenseName });
+        console.log(result,'expense 삭제정보');
+        res.status(201).json(result); // 저장된 사용자 데이터를 JSON 형식으로 응답
+    } catch (error) {
+        console.error('사용자 생성 오류:', error);
+        res.status(500).json({ error: '내부 서버 오류' });
+    }
+});
+
 
 app.post('/expense', async (req, res) => {
     try {

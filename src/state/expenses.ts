@@ -6,6 +6,7 @@ export interface IExpenseState {
     amount :  number;
     payer : string,
     idUser : string,
+    groupName : string,
 }
 export const expensesState = atom({
     key: 'expense', // unique ID (with respect to other atoms/selectors)

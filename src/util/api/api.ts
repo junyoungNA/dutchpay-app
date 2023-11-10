@@ -63,7 +63,16 @@ export const getExsitingGroup = async (idUser : string, groupName : string) => {
 export const deleteGroups = async (idUser : string, groupName : string) => {
     try {
         const result :any = await deleteData(`groups?idUser=${idUser}&groupName=${groupName}`);
-        console.log(result,'결과입니다아아');
+        return result;
+    } catch(error : any) {
+        // console.log(error, 'api호출 오류');
+        throw new Error(error);
+    } 
+}
+
+export const deleteExpense = async (idUser : string, groupName : string, expenseName:string) => {
+    try {
+        const result :any = await deleteData(`expense?idUser=${idUser}&groupName=${groupName}&expenseName=${expenseName}`);
         return result;
     } catch(error : any) {
         // console.log(error, 'api호출 오류');
