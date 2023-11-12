@@ -31,7 +31,7 @@ const AddExpenseForm = () => {
     const fetchData = async (idUser : string, groupName : string) => {
         try {
             const expenses: any = await getExpenses(idUser, groupName);
-            console.log(expenses, '클라이언트 받은 데이터');
+            // console.log(expenses, '클라이언트 받은 데이터');
             if(!expenses) return;
             setExpense(expenses);
         } catch (error) {
@@ -68,7 +68,7 @@ const AddExpenseForm = () => {
                 groupName,
             }
             const result = await postData('expense', newExpense);
-            console.log(result, '클라이언트 reuslt');
+            // console.log(result, '클라이언트 reuslt');
             setExpense((prevExpenses) =>[
                 ...prevExpenses,
                 newExpense

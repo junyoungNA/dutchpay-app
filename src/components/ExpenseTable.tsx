@@ -8,6 +8,7 @@ import { useEffect } from 'react'
 import { deleteExpense, getExpenses } from '../util/api/api'
 import { groupNameState } from '../state/groupName'
 import { Button } from 'react-bootstrap' 
+
 const ExpenseTable = () => {
     const {idUser} = useRecoilValue(kakaoUser);
     const groupName =  useRecoilValue(groupNameState);
@@ -36,7 +37,7 @@ const ExpenseTable = () => {
             const  result: any = await deleteExpense(idUser, groupName, expenseName);
             console.log(result, '클라이언트 삭제 정보');
             alert('해당 더치페이 정보를 삭제하였습니다.');
-            if(result.msg === '데이터가 없습니다.') return;
+            if(result.msg === '데이터가 없습니다.') return setExpense([]);
             setExpense(result);
         } catch (error : any) {
             console.log(error,'에러 발생');

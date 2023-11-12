@@ -51,6 +51,7 @@ const AddMembers = () => {
         const setGroupMembers = [...new Set(groupMembers)];//중복체크
         return groupMembers.length === setGroupMembers.length ? true : false;
     }
+
     const header = `${groupName}의 속한 멤버들의 이름을 넣어주세요`;
 
     useEffect(() => {
