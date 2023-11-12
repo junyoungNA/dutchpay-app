@@ -34,8 +34,10 @@ const ExpenseTable = () => {
         try {
             if(window.confirm('해당 더치페이 정보를 삭제하시겠습니까?') === false) return;
             const  result: any = await deleteExpense(idUser, groupName, expenseName);
-            console.log(result, '클라이언트 삭제 정보')
+            console.log(result, '클라이언트 삭제 정보');
             alert('해당 더치페이 정보를 삭제하였습니다.');
+            if(result.msg === '데이터가 없습니다.') return;
+            setExpense(result);
         } catch (error : any) {
             console.log(error,'에러 발생');
         }

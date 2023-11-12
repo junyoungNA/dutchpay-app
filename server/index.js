@@ -192,9 +192,7 @@ app.delete('/members', async (req, res) => {
         
         console.log(idUser, groupName);
         const result1 = await Members.deleteOne({ idUser, groupName });
-        const result2 = await Expense.deleteMany({ idUser, groupName });  
-        console.log(result1);      
-        console.log( result2);      
+        const result2 = await Expense.deleteMany({ idUser, groupName });      
         return res.status(204).send(); // 삭제가 성공하면 빈 응답(204 No Content)을 보냅니다.
     } catch (error) {
         console.error('멤버 삭제 오류:', error);
@@ -216,17 +214,7 @@ app.get(`/expense`, async (req, res) => {
         if (!allExpenses || allExpenses.length === 0) {
             return res.status(404).json({ msg: '데이터가 없습니다.' });
         }
-        const refinedExpenses = allExpenses.map(({groupName,idUser, desc, date ,amount, payer}) => {
-            return {
-                groupName: groupName,
-                idUser: idUser,
-                desc:desc,
-                date: date,
-                amount: amount,
-                payer:payer,
-            };
-        });
-        res.status(201).json(refinedExpenses); // 저장된 사용자 데이터를 JSON 형식으로 응답
+        res.status(201).json(allExpenses); // 저장된 사용자 데이터를 JSON 형식으로 응답
     } catch (error) {
         console.error('사용자 생성 오류:', error);
         res.status(500).json({ error: '내부 서버 오류' });
@@ -239,9 +227,28 @@ app.delete(`/expense`, async (req, res) => {
         const idUser = req.query.idUser; // 첫 번째 조건 파라미터
         const groupName = req.query.groupName; // 두 번째 조건 파라미터
         const expenseName = req.query.expenseName; // 두 번째 조건 파라미터
-        const result = await Expense.deleteOne({ idUser, groupName, desc:expenseName });
+        console.log(idUser, groupName, expenseName, '정보');
+        const result = await Expense.deleteOne({
+            $and: [
+                {idUser : idUser}, 
+                {groupName: groupName}, 
+                {desc:expenseName}
+            ]
+        });
         console.log(result,'expense 삭제정보');
-        res.status(201).json(result); // 저장된 사용자 데이터를 JSON 형식으로 응답
+        if(result.deletedCount === 1 && result.acknowledged === true ) {
+            const allExpenses = await Expense.find({    
+                $and: [
+                    { idUser:idUser }, // 첫 번째 조건 필드
+                    { groupName: groupName }, // 두 번째 조건 필드
+            ]},);
+            // console.log(allExpenses, '찾은값');
+            if (!allExpenses || allExpenses.length === 0) {
+                return res.status(201).json({ msg: '데이터가 없습니다.' });
+            }
+            console.log(allExpenses,'삭제후 정보');
+            res.status(201).json(allExpenses); // 저장된 사용자 데이터를 JSON 형식으로 응답
+        }
     } catch (error) {
         console.error('사용자 생성 오류:', error);
         res.status(500).json({ error: '내부 서버 오류' });

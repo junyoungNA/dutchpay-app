@@ -23,7 +23,6 @@ const AddMembers = () => {
 
     const groupName = useRecoilValue(groupNameState);
     const [validated, setValidated] = useState(false); 
-    const [errorMsg, setErrorMsg] = useState('')
 
     //inputTages 이름을 추가하지 않을시 에러메세지를 위한 state
     const handleSubmit = async (event : React.FormEvent<HTMLFormElement>) => {
