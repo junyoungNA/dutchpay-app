@@ -16,16 +16,31 @@ const SocialKakao = () => {
     
     const kakaoOnSuccess = async (data : any)=> {
         try {
-            console.log(data,'가져온 데이터정보');
+            // console.log(data,'가져온 데이터정보');
             const accessToken = data.response.access_token; // 엑세스 토큰 백엔드로 전달
             const idUser = data.profile.id; // 엑세스 토큰 백엔드로 전달
             const nickname = data.profile.properties.nickname; //kakao 유저 닉네임
             const result: any = await postData('user',{accessToken, nickname , idUser});
-            // localStorage.setItem('token', result.token);
+            localStorage.setItem('kakaoUserId', idUser);
             if(!result) showAlert('로그인 오류');
             setUser({nickname, idUser });
         } catch (error) {
             showAlert('로그인 오류');
+            console.log(error);
+        }
+    }
+
+    const kakaoLogout = async (data : any) => {
+        try {
+            console.log(data,'가져온 데이터정보');
+            // const accessToken = data.response.access_token; // 엑세스 토큰 백엔드로 전달
+            // const idUser = data.profile.id; // 엑세스 토큰 백엔드로 전달
+            // const nickname = data.profile.properties.nickname; //kakao 유저 닉네임
+            // const result: any = await postData('user',{accessToken, nickname , idUser});
+            localStorage.removeItem('kakaoUserId');
+            setUser({ nickname: '', idUser: '' });
+            console.log('로그아웃');
+        } catch (error) {
             console.log(error);
         }
     }
@@ -37,16 +52,17 @@ const SocialKakao = () => {
 
     return(
         <StyledButtonWrapper background="#fef01b">
-            {!user.nickname ? 
-                <StyledKakao
+               <StyledKakao
                     token={kakaoClientId}
                     onSuccess={kakaoOnSuccess}
                     onFail={kakaoOnFailure}
-                    // onLogout={responseKaKao}
+                    onLogout={kakaoLogout}
                 />
+            {/* {!user.nickname ? 
+             
             :  
-                <span>{user.nickname}님 환영해요~!</span>
-            }
+                // <span>{user.nickname}님 환영해요~!</span>
+            } */}
             <StyledImage src='./images/kakao.png' alt='카카오 이미지'/>
         </StyledButtonWrapper>
     )
