@@ -1,12 +1,15 @@
 import KakaoLogin from "react-kakao-login";
 import { useRecoilState } from "recoil";
 import { kakaoUser } from "../state/kakaoUser";
-import {Image } from 'react-bootstrap';
 import styled from "styled-components";
 import { postData } from "../util/api/apiInstance";
 import { StyledButtonWrapper } from "../aseets/styled/ButtonWrapper";
+import { Image } from "react-bootstrap";
+import { useState } from "react";
 
 const SocialKakao = () => {
+    const [isHovered, setIsHovered] = useState(false); //카카오 로그인 버튼 마우스이벤트
+
     const  [user,setUser] = useRecoilState(kakaoUser);
     const kakaoClientId = process.env.REACT_APP_API_KEY!;
 
@@ -50,19 +53,27 @@ const SocialKakao = () => {
         alert('카카오 로그인 에러발생')
     };
 
+    const onRouteBtnMouseInoutHandler = (isEnter : boolean) => {
+        setIsHovered(isEnter);
+    }
+
     return(
         <StyledButtonWrapper background="#fef01b">
-               <StyledKakao
+            <StyledKakaoLoginBtn 
+                onMouseEnter={() => onRouteBtnMouseInoutHandler(true)}
+                onMouseLeave={() => onRouteBtnMouseInoutHandler(false)}
+            >
+                {!user.nickname ? 
+                    <StyledKakao
                     token={kakaoClientId}
                     onSuccess={kakaoOnSuccess}
                     onFail={kakaoOnFailure}
                     onLogout={kakaoLogout}
                 />
-            {/* {!user.nickname ? 
-             
-            :  
-                // <span>{user.nickname}님 환영해요~!</span>
-            } */}
+                :  
+                <span>{isHovered ? '카카오 로그아웃' : `${user.nickname}님 환영해요~!`}</span>
+                }
+            </StyledKakaoLoginBtn>
             <StyledImage src='./images/kakao.png' alt='카카오 이미지'/>
         </StyledButtonWrapper>
     )
@@ -77,8 +88,14 @@ const StyledKakao = styled(KakaoLogin) `
     bottom: 2px;
     background:none !important;
     cursor: pointer;
-;
 `
+
+const StyledKakaoLoginBtn = styled.button`
+    background-color: inherit;
+    border: none;
+    font-weight: 900;
+`
+
 const StyledImage = styled(Image) `
     width: 40px;
     height: 40px;
