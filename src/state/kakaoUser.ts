@@ -3,6 +3,8 @@ import {atom} from 'recoil';
 type TypekakaoUser = {
     nickname : string,
     idUser : string,
+    accessToken? : string,
+    refreshToken? : string,
 }
 
 export const kakaoUser = atom({
