@@ -11,6 +11,7 @@ const client: Axios = axios.create({
 
 //: GET 메서드
 export const getData = async <T>(url: string, config?: AxiosRequestConfig): Promise<APIResponse<T>> => {
+    
     try {
         const response = await client.get<APIResponse<T>>(url, config);
         return response.data;

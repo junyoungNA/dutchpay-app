@@ -5,17 +5,15 @@ import styled from "styled-components";
 import { postData } from "../util/api/apiInstance";
 import { StyledButtonWrapper } from "../aseets/styled/ButtonWrapper";
 import { Image } from "react-bootstrap";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import showAlert from "../util/shoAlert";
 import Cookies from "universal-cookie";
 
 const SocialKakao = () => {
-    const [isLogin, setIsLogin] = useState(false); //카카오 로그인 버튼 마우스이벤트
     const cookies = new Cookies();
     const  [user,setUser] = useRecoilState(kakaoUser);
     const kakaoClientId = process.env.REACT_APP_API_KEY!;
 
-    
     const kakaoOnSuccess = async (data : any)=> {
         try {
             console.log(data,'가져온 데이터정보');
@@ -28,7 +26,7 @@ const SocialKakao = () => {
             const idUser = data.profile.id; // 엑세스 토큰 백엔드로 전달
             const nickname = data.profile.properties.nickname; //kakao 유저 닉네임
             const result: any = await postData('user',{accessToken, nickname , idUser});
-            localStorage.setItem('kakaoUserId', idUser);
+            localStorage.setItem('accessToken', accessToken);
             if(!result) showAlert('로그인 오류');
             setUser({nickname, idUser, refreshToken,accessToken });
         } catch (error) {
@@ -46,8 +44,6 @@ const SocialKakao = () => {
             // const result: any = await postData('user',{accessToken, nickname , idUser});
             localStorage.removeItem('kakaoUserId');
             setUser({ nickname: '', idUser: '' });
-            setIsLogin((prev) => false);
-            console.log('로그아웃',isLogin);
         } catch (error) {
             console.log(error);
         }
