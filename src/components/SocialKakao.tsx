@@ -2,33 +2,30 @@ import KakaoLogin from "react-kakao-login";
 import { useRecoilState } from "recoil";
 import { kakaoUser } from "../state/kakaoUser";
 import styled from "styled-components";
-import { postData } from "../util/api/apiInstance";
+import {  postData } from "../util/api/apiInstance";
 import { StyledButtonWrapper } from "../aseets/styled/ButtonWrapper";
-import { Image } from "react-bootstrap";
-import {  useState } from "react";
+import { Image } from "react-bootstrap"; 
 import showAlert from "../util/shoAlert";
-import Cookies from "universal-cookie";
+import { cookies, getKakaoUserInfo } from "../util/api/authApi";
 
 const SocialKakao = () => {
-    const cookies = new Cookies();
     const  [user,setUser] = useRecoilState(kakaoUser);
     const kakaoClientId = process.env.REACT_APP_API_KEY!;
+    // getKakaoToken으로 토큰을 가져온 후,(kakaoLogin을 통해 한번에 토큰까지 가져오므로 패스)
+    // getKakaoInfo로 토큰에 담긴 사용자 ID를 읽어온다. 
+    // 그리고 해당 ID로 DB에 접근하여 새로운 계정을 생성하거나 
+    // 기존 계정을 가져와 프론트엔드로 전달한다.
 
     const kakaoOnSuccess = async (data : any)=> {
         try {
-            console.log(data,'가져온 데이터정보');
-            cookies.set("kakaoAccess", data.response.access_token, {
-                path: "/",
-                maxAge: 60 * 60 * 24 * 30,
-            })
-            const accessToken = data.response.access_token; // 엑세스 토큰 백엔드로 전달
-            const refreshToken = data.response.refresh_Token; // 엑세스 토큰 백엔드로 전달
-            const idUser = data.profile.id; // 엑세스 토큰 백엔드로 전달
-            const nickname = data.profile.properties.nickname; //kakao 유저 닉네임
-            const result: any = await postData('user',{accessToken, nickname , idUser});
-            localStorage.setItem('accessToken', accessToken);
+            const {access_token, refresh_token, expires_in, refresh_token_expires_in  } = data.response;
+            const nickname = data.profile.properties.nickname;
+            const {id : idUser} = await getKakaoUserInfo(access_token);
+            console.log('getKakaoUserInfo' ,idUser);
+            const result: any = await postData('user',{nickname, idUser, refresh_token, access_token, expires_in, refresh_token_expires_in});
             if(!result) showAlert('로그인 오류');
-            setUser({nickname, idUser, refreshToken,accessToken });
+            console.log(result);
+            // setUser({nickname, idUser, accessToken :access_token, refreshToken : refresh_token});
         } catch (error) {
             showAlert('로그인 오류');
             console.log(error);

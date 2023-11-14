@@ -58,17 +58,30 @@ app.get('/',(req, res) => {
 // 사용자 데이터 삽입을 처리하는 라우트 생성
 app.post('/user', async (req, res) => {
     try {
-        const { accessToken, nickname, idUser } = req.body;
-
+        const { 
+            access_token, 
+            refresh_token,
+            refresh_token_expires_in, 
+            expires_in, 
+            nickname, 
+            idUser 
+            } = req.body;
         const existingUser = await User.findOne({ idUser });
         if (!existingUser) {
-            const user = new User({ accessToken, nickname, idUser });
+            const user = new User({ access_token, refresh_token, nickname, idUser });
             await user.save(); // 사용자 데이터를 데이터베이스에 저장
         } 
-        // const token = jwt.sign({  orginToken: accessToken }, process.env.JWT_SECRET, {
-        //     expiresIn: '1h', // 토큰 유효 기간 설정 (예: 1시간)
-        // });
-        res.status(200).json({ message: 'Kakao 로그인이 성공했습니다' })
+        const token = jwt.sign({  orginToken: access_token }, process.env.JWT_SECRET, {
+            expiresIn: '1h', // 토큰 유효 기간 설정 (예: 1시간)
+        });
+            // 쿠키에 설정
+        res.cookie('kakao_access_token', access_token, { httpOnly: true });
+        res.cookie('kakao_expires_in', Date.now() + expires_in * 1000);
+        res.cookie('kakao_refresh_token', refresh_token, { httpOnly: true });
+        res.cookie('kakao_refresh_token_expires_in', Date.now() + refresh_token_expires_in * 1000);
+        res.cookie('access_token', token, { maxAge: 1000 * 60 * 60 * 24 * 7, httpOnly: true });
+
+        res.status(200).json({ accessToken: token });
     } catch (error) {
         console.error('사용자 생성 오류:', error);
         res.status(500).json({ error: '내부 서버 오류' });
