@@ -12,6 +12,7 @@ const Expense = require('./schema/expense'); // User 모델 가져오기
 const Plan = require('./schema/plan');
 
 const cors = require('cors'); // cors 모듈 추가
+const { default: axios } = require('axios');
 app.use(cors()); // 모든 출처에서의 요청을 허용
 app.use(express.json()); // JSON 요청 본문 파싱 설정
 
@@ -54,6 +55,9 @@ app.get('/',(req, res) => {
 //   res.status(401).json({ message: 'JWT 토큰 검증 실패' });
 // }
 
+
+
+
     
 // 사용자 데이터 삽입을 처리하는 라우트 생성
 app.post('/user', async (req, res) => {
@@ -66,11 +70,15 @@ app.post('/user', async (req, res) => {
             nickname, 
             idUser 
             } = req.body;
+
+        const {id} = await axios.get('https://kapi.kakao.com/v2/user/me', {headers : {'Authorization' : `Bearer ${access_token}`, 'Content-Type' : 'application/json'}});
+        if(id !== idUser) throw new Error('카카오 로그인  사용자 정보 오류');
         const existingUser = await User.findOne({ idUser });
         if (!existingUser) {
             const user = new User({ access_token, refresh_token, nickname, idUser });
             await user.save(); // 사용자 데이터를 데이터베이스에 저장
-        } 
+        }
+        //받은 인가로 해당 유저 정보가 맞는지 확인
         const token = jwt.sign({  orginToken: access_token }, process.env.JWT_SECRET, {
             expiresIn: '1h', // 토큰 유효 기간 설정 (예: 1시간)
         });
@@ -87,7 +95,6 @@ app.post('/user', async (req, res) => {
         res.status(500).json({ error: '내부 서버 오류' });
     }
 });
-
 
 
 app.get(`/groups`, async (req, res) => {

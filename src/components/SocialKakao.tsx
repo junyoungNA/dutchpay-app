@@ -1,31 +1,32 @@
 import KakaoLogin from "react-kakao-login";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useResetRecoilState } from "recoil";
 import { kakaoUser } from "../state/kakaoUser";
 import styled from "styled-components";
 import {  postData } from "../util/api/apiInstance";
 import { StyledButtonWrapper } from "../aseets/styled/ButtonWrapper";
 import { Image } from "react-bootstrap"; 
 import showAlert from "../util/shoAlert";
-import { cookies, getKakaoUserInfo } from "../util/api/authApi";
 
 const SocialKakao = () => {
     const  [user,setUser] = useRecoilState(kakaoUser);
+    const  resetKakaoUSer = useResetRecoilState(kakaoUser);
     const kakaoClientId = process.env.REACT_APP_API_KEY!;
     // getKakaoToken으로 토큰을 가져온 후,(kakaoLogin을 통해 한번에 토큰까지 가져오므로 패스)
-    // getKakaoInfo로 토큰에 담긴 사용자 ID를 읽어온다. 
+    // getKakaoInfo로 토큰에 담긴 사용자 ID를 읽어온다. // 이부분은 백엔드에서 해야함!
     // 그리고 해당 ID로 DB에 접근하여 새로운 계정을 생성하거나 
     // 기존 계정을 가져와 프론트엔드로 전달한다.
 
     const kakaoOnSuccess = async (data : any)=> {
         try {
-            const {access_token, refresh_token, expires_in, refresh_token_expires_in  } = data.response;
+            console.log(data)
+            const {access_token, refresh_token, expires_in, refresh_token_expires_in, id:idUser } = data.response;
             const nickname = data.profile.properties.nickname;
-            const {id : idUser} = await getKakaoUserInfo(access_token);
-            console.log('getKakaoUserInfo' ,idUser);
-            const result: any = await postData('user',{nickname, idUser, refresh_token, access_token, expires_in, refresh_token_expires_in});
-            if(!result) showAlert('로그인 오류');
-            console.log(result);
-            // setUser({nickname, idUser, accessToken :access_token, refreshToken : refresh_token});
+
+            const {accessToken}: any = await postData('user',{nickname, idUser, refresh_token, access_token, expires_in, refresh_token_expires_in});
+            if(!accessToken) showAlert('카카오 로그인 오류');
+            console.log(accessToken);
+            localStorage.setItem('accessToken', accessToken);
+            setUser({nickname, idUser, accessToken, refreshToken : refresh_token});
         } catch (error) {
             showAlert('로그인 오류');
             console.log(error);
@@ -39,8 +40,8 @@ const SocialKakao = () => {
             // const idUser = data.profile.id; // 엑세스 토큰 백엔드로 전달
             // const nickname = data.profile.properties.nickname; //kakao 유저 닉네임
             // const result: any = await postData('user',{accessToken, nickname , idUser});
-            localStorage.removeItem('kakaoUserId');
-            setUser({ nickname: '', idUser: '' });
+            localStorage.removeItem('accessToken');
+            resetKakaoUSer();
         } catch (error) {
             console.log(error);
         }
@@ -51,10 +52,6 @@ const SocialKakao = () => {
         alert('카카오 로그인 에러발생')
     };
 
-    // const onRouteBtnMouseInoutHandler = (isEnter : boolean) => {
-    //     setIsHovered(isEnter);
-    // }
-
     return(
         <StyledButtonWrapper background="#fef01b">
                 <StyledKakao
@@ -63,7 +60,7 @@ const SocialKakao = () => {
                     onFail={kakaoOnFailure}
                     onLogout={kakaoLogout}
                 >
-                {user.idUser !== '' && user.nickname !== undefined ? `${user.nickname}님 환영해요~` : '카카오로 로그인'}
+                {user.idUser !== '' && user.nickname !== undefined ? `카카오 로그아웃` : '카카오 로그인'}
                 </StyledKakao>
             <StyledImage src='./images/kakao.png' alt='카카오 이미지'/>
         </StyledButtonWrapper>
