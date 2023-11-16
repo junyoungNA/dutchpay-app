@@ -17,13 +17,10 @@ const GeneralLayout: React.FC<GeneralLayoutProps> = ({children}) => {
         // 로그인 여부 확인 ('/profile' 호출 성공여부 확인)
         // 로그인 성공시 userProfile 상태 업데이트
         // 로그인 실패시 로그인 페이지로 이동 ('/login')
-        const token = localStorage.getItem('accessToken');
-        console.log(token,'layout 토큰');
-        if(!token) return routeTo('/login');
-        const result = await getKakaoUserInfo(token);
+        const result = await getKakaoUserInfo();
         console.log(result,'layout 확인결과');
-        if(!result) return routeTo('/login');
-    }, [])
+        // if(!result) return routeTo('/');
+    }, [children])
 
     useEffect(() => {
     // TODO 3-2: 페이지 이동시 마다 로그인 여부를 확인하는 함수 실행

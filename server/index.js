@@ -55,7 +55,33 @@ app.get('/',(req, res) => {
 //   res.status(401).json({ message: 'JWT 토큰 검증 실패' });
 // }
 
+app.get('/user', async (req, res) => {
+    try {
+        const authorizationHeader = req.headers.authorization;
+        // "Bearer " 다음의 부분이 토큰이 됩니다.
+        const accessToken = authorizationHeader.split(' ')[1];
+        // console.log(accessToken);
 
+        // JWT 토큰 검증
+        const {orginToken} = jwt.verify(accessToken, process.env.JWT_SECRET);
+        // console.log(orginToken,'decodeToken')
+        // 검증된 토큰 내의 orginToken을 이용하여 카카오로부터 받은 토큰 검증
+        const {data} = await axios.get('https://kapi.kakao.com/v2/user/me', {
+            headers: {
+                'Authorization': `Bearer ${orginToken}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        const {id, properties} = data;
+        if (!id) throw new Error('카카오 로그인 사용자 정보 오류');
+
+        // 토큰 검증이 성공하면 프론트엔드에 응답
+        res.status(200).json({id, nickname: properties.nickname});
+    } catch (error) {
+        console.error('사용자 검증 오류:', error);
+        res.status(500).json({ error: '내부 서버 오류' });
+    }
+});
 
 
     

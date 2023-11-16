@@ -25,7 +25,7 @@ const SocialKakao = () => {
             const {accessToken}: any = await postData('user',{nickname, idUser, refresh_token, access_token, expires_in, refresh_token_expires_in});
             if(!accessToken) showAlert('카카오 로그인 오류');
             // console.log(accessToken);
-            localStorage.setItem('accessToken', accessToken);
+            localStorage.setItem(process.env.REACT_APP_ACCESS_TOKEN as string, accessToken);
             setUser({nickname, idUser, accessToken, refreshToken : refresh_token});
         } catch (error) {
             showAlert('로그인 오류');
