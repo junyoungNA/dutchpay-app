@@ -24,7 +24,7 @@ const SocialKakao = () => {
 
             const {accessToken}: any = await postData('user',{nickname, idUser, refresh_token, access_token, expires_in, refresh_token_expires_in});
             if(!accessToken) showAlert('카카오 로그인 오류');
-            console.log(accessToken);
+            // console.log(accessToken);
             localStorage.setItem('accessToken', accessToken);
             setUser({nickname, idUser, accessToken, refreshToken : refresh_token});
         } catch (error) {
@@ -35,7 +35,7 @@ const SocialKakao = () => {
 
     const kakaoLogout = async (data : any) => {
         try {
-            console.log(data,'가져온 데이터정보');
+            // console.log(data,'가져온 데이터정보');
             // const accessToken = data.response.access_token; // 엑세스 토큰 백엔드로 전달
             // const idUser = data.profile.id; // 엑세스 토큰 백엔드로 전달
             // const nickname = data.profile.properties.nickname; //kakao 유저 닉네임

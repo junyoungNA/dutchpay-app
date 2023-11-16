@@ -20,7 +20,6 @@ interface RouterElement {
 
 const routerData: RouterElement[] = [
     // TODO 3-1: 로그인 페이지 라우터 등록하기 ('login', withAuth: false)
-    // TODO 3-2: page a, b, c 등록하기
     {
         id: 0,
         path: '/',
@@ -88,22 +87,3 @@ export const routers: RemixRouter = createBrowserRouter(
         }
     })
 )
-
-// const Router:React.FC<{}> = () => {
-//     return (
-//         <BrowserRouter>
-//             <RecoilRoot>
-//                 <Routes>
-//                     <Route path='/' element={<Login/>}/>
-//                     <Route path={ROUTES.CREATE_GROUP} element={<CreateGroup/>}/>
-//                     <Route path={ROUTES.ADD_MEMBERS} element={<AddMembers/>}/>
-//                     <Route path={ROUTES.EXPENSE_MAIN} element={<ExpenseMain/>}/>
-//                     <Route path={ROUTES.CALENDAR} element={<Calendar/>}/>
-//                     <Route path={ROUTES.PLAN} element={<PlanMap/>}/>
-//                 </Routes>
-//             </RecoilRoot>
-//         </BrowserRouter>
-//     )
-// }
-
-// export default Router
