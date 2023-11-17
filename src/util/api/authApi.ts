@@ -28,7 +28,7 @@ export const getKakaoUserInfo = async (userInfo : TKakaoUser) => {
 
     const config: AxiosRequestConfig = {
         headers: headers,
-        // withCredentials : true, //쿠키에 설정된 token 데이터들을 보내기위한 설정
+        withCredentials : true, //쿠키에 설정된 token 데이터들을 보내기위한 설정
     };
 
     try {

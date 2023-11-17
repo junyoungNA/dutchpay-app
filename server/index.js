@@ -13,7 +13,7 @@ const Plan = require('./schema/plan');
 
 const cors = require('cors'); // cors 모듈 추가
 const { default: axios } = require('axios');
-app.use(cors({origin: true, credentials:'true'})); // 모든 출처에서의 요청을 허용
+app.use(cors({origin: true, credentials:true})); // 모든 출처에서의 요청을 허용
 app.use(express.json()); // JSON 요청 본문 파싱 설정
 
 app.options('*', cors());
@@ -36,7 +36,8 @@ app.get('/user', async (req, res) => {
         //     prev[name] = value;
         //     return prev;
         // }, {});
-        console.log(req.headers.cookie,'쿠키?');
+        const cookies = req.headers.cookie;
+        console.log(cookies, '쿠키?');        
         const authorizationHeader = req.headers.authorization;
         // console.log(authorizationHeader,'정보왔습니다.');
 
