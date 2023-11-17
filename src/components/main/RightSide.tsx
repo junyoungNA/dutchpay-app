@@ -1,14 +1,14 @@
 import ServiceLogo from '../shared/ServiceLogo';
 import styled from 'styled-components';
 import { Col } from 'react-bootstrap';
-import RouteBtns from './RouteBtns';
+import RouteBtnsGroups from './RouteBtnGroups';
 
 
 const RightSide = () => {
     return (
         <StyleRouteCol lg={4} md={5} >
             <ServiceLogo/>
-            <RouteBtns/>
+            <RouteBtnsGroups/>
         </StyleRouteCol>
     )
 }

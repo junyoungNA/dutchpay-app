@@ -18,7 +18,7 @@ const SocialKakao = () => {
 
     const kakaoOnSuccess = async (data : any)=> {
         try {
-            console.log(data)
+            // console.log(data);
             const {access_token, refresh_token, expires_in, refresh_token_expires_in, id:idUser } = data.response;
             const nickname = data.profile.properties.nickname;
 
@@ -26,7 +26,7 @@ const SocialKakao = () => {
             if(!accessToken) showAlert('카카오 로그인 오류');
             // console.log(accessToken);
             localStorage.setItem(process.env.REACT_APP_ACCESS_TOKEN as string, accessToken);
-            setUser({nickname, idUser, accessToken, refreshToken : refresh_token});
+            setUser({nickname, idUser, accessToken, refreshToken : refresh_token, expiresIn:expires_in,refreshTokenExpiresIn:refresh_token_expires_in});
         } catch (error) {
             showAlert('로그인 오류');
             console.log(error);

@@ -1,6 +1,6 @@
 import { render, screen} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import Login from "./Login";
+import Login from "./MainContainer";
 
 const renderComponent = () => {
     //render 함수('렌더링할컴포넌트')

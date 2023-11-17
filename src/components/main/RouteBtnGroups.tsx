@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
 import SocialKakao from '../SocialKakao';
 import { StyledButtonWrapper } from '../../aseets/styled/ButtonWrapper';
@@ -54,6 +53,11 @@ const StlyedNavBtn  = styled.button<{background? : string}>`
     background-color: ${({background}) => (background ? background : 'gray')};
 `
 
+// 똑같은 스타일의 route 용 버튼들을 
+// 반복문을 돌려 버튼들을 보여주기 위해 생성하였다
+// 하지만 jsx부분에서 해당 lottie부분의 컴포넌트를 함수형태로 생성하여 
+// lottie컴포넌트를 return하는  함수를 실행해서 보여줘야한다는 문제가있다
+// 이부분을 컴포넌트를 다시 빼봐서 함성컴포넌트로 작성했을때와 차이점을 한번 알아봐야겠다.
 const routeBtnData = [
     {
         path:ROUTES.PLAN,
@@ -61,7 +65,6 @@ const routeBtnData = [
         color:'#e97522',
         text : '계획 짜러가기',
         withAuth : true
-
     },
     {
         path:ROUTES.DUTCHPAY,
@@ -80,19 +83,16 @@ const routeBtnData = [
 ]
 
 
-const RouteBtns = () => {
+const RouteBtnGroups = () => {
     const {routeTo} = useRouter();
     const {nickname} = useRecoilValue(kakaoUser);
 
-    // useEffect(() => {
-    //     // console.log('유저 정보', nickname);
-    // }, [nickname]);
     return (
         <>
             <SocialKakao/>
                 {routeBtnData.map((btn : IRouteBtnData ,idx:number) => (
                     btn.withAuth && !nickname  ? null : 
-                    <StyledButtonWrapper onClick={() => routeTo(btn.path)} background={btn.color} key={idx}>
+                <StyledButtonWrapper onClick={() => routeTo(btn.path)} background={btn.color} key={idx}>
                         {btn.lottie()}
                     <StlyedNavBtn background={btn.color}>{btn.text}</StlyedNavBtn>
                 </StyledButtonWrapper>
@@ -101,4 +101,4 @@ const RouteBtns = () => {
     )
 }
 
-export default RouteBtns
+export default RouteBtnGroups

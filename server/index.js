@@ -13,9 +13,10 @@ const Plan = require('./schema/plan');
 
 const cors = require('cors'); // cors 모듈 추가
 const { default: axios } = require('axios');
-app.use(cors()); // 모든 출처에서의 요청을 허용
+app.use(cors({origin: true, credentials:'true'})); // 모든 출처에서의 요청을 허용
 app.use(express.json()); // JSON 요청 본문 파싱 설정
 
+app.options('*', cors());
 
 mongoose.connect(`mongodb+srv://${process.env.MONGO_ID}:${process.env.MONGO_PASSWORD}@cluster0.9lscnbf.mongodb.net/?retryWrites=true&w=majority`,{
     useNewUrlParser: true,
@@ -25,39 +26,20 @@ mongoose.connect(`mongodb+srv://${process.env.MONGO_ID}:${process.env.MONGO_PASS
 
 app.get('/',(req, res) => {
     res.send('hello word');
-})
+});
 
-
-
-// function verifyToken(clientToken, kakaoAccessToken) {
-//     try {
-//         const decoded = jwt.verify(clientToken, process.env.JWT_SECRET);
-//         if (decoded.originToken === kakaoAccessToken) {
-//         // 클라이언트로부터 받은 accessToken과 일치
-//         return true;
-//         } else {
-//         return false;
-//         }
-//     } catch (error) {
-//         console.log(error, '토큰 디코딩 실패 및 오류');
-//         return false;
-//     }
-// }
-
-// const clientToken = req.body.token; // 클라이언트에서 전송한 JWT 토큰
-// const kakaoAccessToken = existingUser.accessToken; // 서버에 저장된 카카오 로그인 accessToken
-
-// if (verifyToken(clientToken, kakaoAccessToken)) {
-//   // JWT 토큰이 유효하고 accessToken과 일치함
-//   res.status(200).json({ message: 'JWT 토큰 검증 성공' });
-// } else {
-//   // JWT 토큰이 유효하지 않거나 accessToken과 일치하지 않음
-//   res.status(401).json({ message: 'JWT 토큰 검증 실패' });
-// }
 
 app.get('/user', async (req, res) => {
     try {
+        // const cookies = req.headers.cookie.split(';').reduce((prev, current) => {
+        //     const [name, value] = current.trim().split('=');
+        //     prev[name] = value;
+        //     return prev;
+        // }, {});
+        console.log(req.headers.cookie,'쿠키?');
         const authorizationHeader = req.headers.authorization;
+        // console.log(authorizationHeader,'정보왔습니다.');
+
         // "Bearer " 다음의 부분이 토큰이 됩니다.
         const accessToken = authorizationHeader.split(' ')[1];
         // console.log(accessToken);
@@ -72,6 +54,7 @@ app.get('/user', async (req, res) => {
                 'Content-Type': 'application/json'
             }
         });
+        console.log(data,'kakako결과');
         const {id, properties} = data;
         if (!id) throw new Error('카카오 로그인 사용자 정보 오류');
 

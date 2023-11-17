@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import RightSide from './main/RightSide';
 import LeftSide from './main/LeftSide';
 
-const Login:React.FC = () => {
+const MainContainer:React.FC = () => {
     return (
         <StyledContainer style={{gap:'2'}}>
             <StyledRow >
@@ -31,4 +31,4 @@ const StyledContainer = styled(Container)`
     height: 100vh;
 `
 
-export default Login
+export default MainContainer
