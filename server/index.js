@@ -15,8 +15,8 @@ const cors = require('cors'); // cors 모듈 추가
 const { default: axios } = require('axios');
 const { refreshKakaoToken } = require('./refreshToken');
 app.use(express.json()); // JSON 요청 본문 파싱 설정
-app.use(cookieParser(process.env.COOKIE_SECRET));
-app.use(cors({origin: true, credentials:true})); // 모든 출처에서의 요청을 허용
+app.use(cookieParser());
+app.use(cors({origin: 'http://localhost:3000', credentials:true})); // 모든 출처에서의 요청을 허용
 app.options('*', cors());
 
 
@@ -33,7 +33,6 @@ app.get('/',(req, res) => {
 
 app.get('/user', async (req, res) => {
     try {
-        console.log(req.signedCookies,'쿠키서명값');
         console.log(req.cookies,'쿠키값들');
         const accessToken = req.cookies.access_token
         const expiresIn = req.cookies.expires_in;
@@ -58,14 +57,13 @@ app.get('/user', async (req, res) => {
                 return res.status(401).json({ error: '토큰이 만료되었습니다. 다시 로그인하세요.' });
             }
         }     
-        // const authorizationHeader = req.headers.authorization;
+        const authorizationHeader = req.headers.authorization;
 
-        // "Bearer " 다음의 부분이 토큰이 됩니다.
-        // const accessToken = authorizationHeader.split(' ')[1];
+        const token = authorizationHeader.split(' ')[1];
         // console.log(accessToken);
 
         // JWT 토큰 검증
-        const {orginToken} = jwt.verify(accessToken, process.env.JWT_SECRET);
+        const {orginToken} = jwt.verify(token, process.env.JWT_SECRET);
         // console.log(orginToken,'decodeToken')
         // 검증된 토큰 내의 orginToken을 이용하여 카카오로부터 받은 토큰 검증
         const {data} = await axios.get('https://kapi.kakao.com/v2/user/me', {
@@ -74,7 +72,7 @@ app.get('/user', async (req, res) => {
                 'Content-Type': 'application/json'
             }
         });
-        console.log(data,'kakako결과');
+        // console.log(data,'kakako결과');
         const {id, properties} = data;
         if (!id) throw new Error('카카오 로그인 사용자 정보 오류');
 
@@ -107,16 +105,16 @@ app.post('/user', async (req, res) => {
             await user.save(); // 사용자 데이터를 데이터베이스에 저장
         }
         //받은 인가로 해당 유저 정보가 맞는지 확인
-        const token = jwt.sign({  orginToken: access_token }, process.env.JWT_SECRET, {
+        const token = jwt.sign({orginToken: access_token }, process.env.JWT_SECRET, {
             expiresIn: '1h', // 토큰 유효 기간 설정 (예: 1시간)
         });
         // 쿠키에 설정
         // 쿠키를 설정하면 클라이언트에서 확인이 불가하다?
-        // 서버는 4000번이면 4000번 포트에서 저장되는걸끼?
-        res.cookie('expires_in', Date.now() + expires_in * 1000, { httpOnly: true, path: '/', signed:true });        
-        res.cookie('refresh_token', refresh_token, { httpOnly: true, path: '/', signed:true  });
-        res.cookie('refresh_token_expires_in', Date.now() + refresh_token_expires_in * 1000 , { httpOnly: true, path: '/', signed:true  });
-        res.cookie('access_token', token, { maxAge: 1000 * 60 * 60 * 24 * 7, httpOnly: true, path: '/' , signed:true  });
+        res.cookie('expires_in', Date.now() + expires_in * 1000, { httpOnly: true,});        
+        res.cookie('refresh_token', refresh_token, { httpOnly: true,});
+        res.cookie('refresh_token_expires_in', Date.now() + refresh_token_expires_in * 1000 , { httpOnly: true });
+        res.cookie('access_token', token, { maxAge: 1000 * 60 * 60 * 24 * 7, httpOnly: true});
+                
         res.status(200).json({idUser:data.id, nickname, token});
     } catch (error) {
         console.error('사용자 생성 오류:', error);
