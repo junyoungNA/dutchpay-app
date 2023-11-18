@@ -6,7 +6,7 @@ import Calendar from '../components/Calendar'
 import { Router as RemixRouter } from '@remix-run/router/dist/router'
 import { ROUTES } from './routes'
 import PlanMap from '../components/PlanMap'
-import GeneralLayout from '../layout/Generallayout'
+import AuthChecklayout from '../layout/AuthChecklayout'
 import Dutchpay from '../components/Dutchpay'
 import MainContainer from '../components/MainContainer'
 
@@ -77,7 +77,7 @@ export const routers: RemixRouter = createBrowserRouter(
         if(router.withAuth) {
             return {
                 path: router.path,
-                element :<GeneralLayout>{router.element}</GeneralLayout>
+                element :<AuthChecklayout>{router.element}</AuthChecklayout>
             }
         } else {
             return {

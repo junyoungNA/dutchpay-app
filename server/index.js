@@ -3,7 +3,7 @@ const app = express();
 const port = 4000;
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
-
+const cookieParser = require('cookie-parser');
 
 const mongoose = require ('mongoose');
 const User = require('./schema/user'); // User 모델 가져오기
@@ -13,8 +13,10 @@ const Plan = require('./schema/plan');
 
 const cors = require('cors'); // cors 모듈 추가
 const { default: axios } = require('axios');
+const { refreshKakaoToken } = require('./refreshToken');
 app.use(cors({origin: true, credentials:true})); // 모든 출처에서의 요청을 허용
 app.use(express.json()); // JSON 요청 본문 파싱 설정
+app.use(cookieParser());
 
 app.options('*', cors());
 
@@ -31,18 +33,34 @@ app.get('/',(req, res) => {
 
 app.get('/user', async (req, res) => {
     try {
-        // const cookies = req.headers.cookie.split(';').reduce((prev, current) => {
-        //     const [name, value] = current.trim().split('=');
-        //     prev[name] = value;
-        //     return prev;
-        // }, {});
-        const cookies = req.headers.cookie;
-        console.log(cookies, '쿠키?');        
-        const authorizationHeader = req.headers.authorization;
-        // console.log(authorizationHeader,'정보왔습니다.');
+        const accessToken = req.cookies.access_token
+        const expiresIn = req.cookies.expires_in;
+        const refreshToken = req.cookies.refresh_token;
+        const refreshTokenExpiresIn = req.cookies.refresh_token_expires_in;
+        console.log(accessToken, expiresIn,refreshToken, refreshTokenExpiresIn, '쿠키?'); 
+        console.log(Date.now() > + expiresIn,Date.now(), expiresIn, '토큰만료?');  
+        console.log(Date.now() < + refreshTokenExpiresIn, Date.now(), refreshTokenExpiresIn,'리프레시 토큰만료?');  
+        if (expiresIn && Date.now() > + expiresIn) {
+            // 토큰의 유효시간이 지났다면 들어옴
+            // 만약 리프레쉬 토큰이 만료되지 않았다면 토큰 갱신 요청
+            if (
+                refreshToken &&
+                refreshTokenExpiresIn &&
+                Date.now() < + refreshTokenExpiresIn
+            ) {
+                
+                const result = await refreshKakaoToken(req, refreshToken);
+                console.log('토큰갱신', result);
+            // 리프레쉬 토큰도 만료된 경우 모든 토큰 삭제
+            } else {
+                //만료된 경우 클라이언트에게 다시로그인해달라고 해야함!
+                return res.status(401).json({ error: '토큰이 만료되었습니다. 다시 로그인하세요.' });
+            }
+        }     
+        // const authorizationHeader = req.headers.authorization;
 
         // "Bearer " 다음의 부분이 토큰이 됩니다.
-        const accessToken = authorizationHeader.split(' ')[1];
+        // const accessToken = authorizationHeader.split(' ')[1];
         // console.log(accessToken);
 
         // JWT 토큰 검증
@@ -81,8 +99,8 @@ app.post('/user', async (req, res) => {
             idUser 
             } = req.body;
 
-        const {id} = await axios.get('https://kapi.kakao.com/v2/user/me', {headers : {'Authorization' : `Bearer ${access_token}`, 'Content-Type' : 'application/json'}});
-        if(id !== idUser) throw new Error('카카오 로그인  사용자 정보 오류');
+        const {data} = await axios.get('https://kapi.kakao.com/v2/user/me', {headers : {'Authorization' : `Bearer ${access_token}`, 'Content-Type' : 'application/json'}});
+        if(data.id !== idUser) throw new Error('카카오 로그인  사용자 정보 오류');
         const existingUser = await User.findOne({ idUser });
         if (!existingUser) {
             const user = new User({ access_token, refresh_token, nickname, idUser });
@@ -92,14 +110,12 @@ app.post('/user', async (req, res) => {
         const token = jwt.sign({  orginToken: access_token }, process.env.JWT_SECRET, {
             expiresIn: '1h', // 토큰 유효 기간 설정 (예: 1시간)
         });
-            // 쿠키에 설정
-        res.cookie('kakao_access_token', access_token, { httpOnly: true });
-        res.cookie('kakao_expires_in', Date.now() + expires_in * 1000);
-        res.cookie('kakao_refresh_token', refresh_token, { httpOnly: true });
-        res.cookie('kakao_refresh_token_expires_in', Date.now() + refresh_token_expires_in * 1000);
-        res.cookie('access_token', token, { maxAge: 1000 * 60 * 60 * 24 * 7, httpOnly: true });
-
-        res.status(200).json({ accessToken: token });
+        // 쿠키에 설정
+        res.cookie('expires_in', Date.now() + expires_in * 1000 ,{ sameSite: 'none', secure: true, path:'/' });
+        res.cookie('refresh_token', refresh_token, { sameSite: 'none', secure: true });
+        res.cookie('refresh_token_expires_in', Date.now() + refresh_token_expires_in * 1000, {sameSite: 'none', secure: true, path:'/' });
+        res.cookie('access_token', token, { maxAge: 1000 * 60 * 60 * 24 * 7, httpOnly: true, sameSite: 'none', secure: true, path:'/'});
+        res.status(200).json({idUser:data.id, nickname });
     } catch (error) {
         console.error('사용자 생성 오류:', error);
         res.status(500).json({ error: '내부 서버 오류' });

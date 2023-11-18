@@ -3,10 +3,10 @@ import {atom} from 'recoil';
 export type TKakaoUser = {
     nickname : string,
     idUser : string,
-    accessToken : string,
-    refreshToken : string,
-    expiresIn : string,
-    refreshTokenExpiresIn : string
+    // accessToken : string,
+    // refreshToken : string,
+    // expiresIn : string,
+    // refreshTokenExpiresIn : string
     
 }
 

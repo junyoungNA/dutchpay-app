@@ -18,8 +18,8 @@ const AuthCheckLayout: React.FC<GeneralLayoutProps> = ({children}) => {
         // 로그인 성공시 userInfo 상태 업데이트
         // 로그인 실패시 로그인 페이지로 이동 ('/login')
         try {
-            const result = await getKakaoUserInfo(userInfo);
-            console.log(result,'layout 확인결과');
+            // const result = await getKakaoUserInfo(userInfo);
+            // console.log(result,'layout 확인결과');
             // if(!result) {
             //     showAlert('죄송합니다. 다시 로그인해주세요.');
             //     return routeTo('/');
