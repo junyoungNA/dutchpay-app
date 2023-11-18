@@ -6,7 +6,6 @@ import {  postData } from "../util/api/apiInstance";
 import { StyledButtonWrapper } from "../aseets/styled/ButtonWrapper";
 import { Image } from "react-bootstrap"; 
 import showAlert from "../util/shoAlert";
-import cookies from 'js-cookie';
 
 const SocialKakao = () => {
     const  [user,setUser] = useRecoilState(kakaoUser);
@@ -28,8 +27,8 @@ const SocialKakao = () => {
             console.log(response, '로그인 결과');
             if(!response.idUser) showAlert('카카오 로그인 오류');
         
-            // localStorage.setItem(process.env.REACT_APP_ACCESS_TOKEN as string, accessToken);
-            setUser({nickname: response.nickname, idUser : response.idUser, });
+            localStorage.setItem(process.env.REACT_APP_ACCESS_TOKEN as string, response.token);
+            setUser({nickname: response.nickname, idUser : response.idUser,  });
         } catch (error) {
             showAlert('로그인 오류');
             console.log(error);

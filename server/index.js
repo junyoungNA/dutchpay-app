@@ -14,11 +14,11 @@ const Plan = require('./schema/plan');
 const cors = require('cors'); // cors 모듈 추가
 const { default: axios } = require('axios');
 const { refreshKakaoToken } = require('./refreshToken');
-app.use(cors({origin: true, credentials:true})); // 모든 출처에서의 요청을 허용
 app.use(express.json()); // JSON 요청 본문 파싱 설정
-app.use(cookieParser());
-
+app.use(cookieParser(process.env.COOKIE_SECRET));
+app.use(cors({origin: true, credentials:true})); // 모든 출처에서의 요청을 허용
 app.options('*', cors());
+
 
 mongoose.connect(`mongodb+srv://${process.env.MONGO_ID}:${process.env.MONGO_PASSWORD}@cluster0.9lscnbf.mongodb.net/?retryWrites=true&w=majority`,{
     useNewUrlParser: true,
@@ -33,13 +33,15 @@ app.get('/',(req, res) => {
 
 app.get('/user', async (req, res) => {
     try {
+        console.log(req.signedCookies,'쿠키서명값');
+        console.log(req.cookies,'쿠키값들');
         const accessToken = req.cookies.access_token
         const expiresIn = req.cookies.expires_in;
         const refreshToken = req.cookies.refresh_token;
         const refreshTokenExpiresIn = req.cookies.refresh_token_expires_in;
         console.log(accessToken, expiresIn,refreshToken, refreshTokenExpiresIn, '쿠키?'); 
-        console.log(Date.now() > + expiresIn,Date.now(), expiresIn, '토큰만료?');  
-        console.log(Date.now() < + refreshTokenExpiresIn, Date.now(), refreshTokenExpiresIn,'리프레시 토큰만료?');  
+        // console.log(Date.now() > + expiresIn,Date.now(), expiresIn, '토큰만료?');  
+        // console.log(Date.now() < + refreshTokenExpiresIn, Date.now(), refreshTokenExpiresIn,'리프레시 토큰만료?');  
         if (expiresIn && Date.now() > + expiresIn) {
             // 토큰의 유효시간이 지났다면 들어옴
             // 만약 리프레쉬 토큰이 만료되지 않았다면 토큰 갱신 요청
@@ -48,7 +50,6 @@ app.get('/user', async (req, res) => {
                 refreshTokenExpiresIn &&
                 Date.now() < + refreshTokenExpiresIn
             ) {
-                
                 const result = await refreshKakaoToken(req, refreshToken);
                 console.log('토큰갱신', result);
             // 리프레쉬 토큰도 만료된 경우 모든 토큰 삭제
@@ -86,7 +87,6 @@ app.get('/user', async (req, res) => {
 });
 
 
-    
 // 사용자 데이터 삽입을 처리하는 라우트 생성
 app.post('/user', async (req, res) => {
     try {
@@ -111,11 +111,13 @@ app.post('/user', async (req, res) => {
             expiresIn: '1h', // 토큰 유효 기간 설정 (예: 1시간)
         });
         // 쿠키에 설정
-        res.cookie('expires_in', Date.now() + expires_in * 1000 ,{ sameSite: 'none', secure: true, path:'/' });
-        res.cookie('refresh_token', refresh_token, { sameSite: 'none', secure: true });
-        res.cookie('refresh_token_expires_in', Date.now() + refresh_token_expires_in * 1000, {sameSite: 'none', secure: true, path:'/' });
-        res.cookie('access_token', token, { maxAge: 1000 * 60 * 60 * 24 * 7, httpOnly: true, sameSite: 'none', secure: true, path:'/'});
-        res.status(200).json({idUser:data.id, nickname });
+        // 쿠키를 설정하면 클라이언트에서 확인이 불가하다?
+        // 서버는 4000번이면 4000번 포트에서 저장되는걸끼?
+        res.cookie('expires_in', Date.now() + expires_in * 1000, { httpOnly: true, path: '/', signed:true });        
+        res.cookie('refresh_token', refresh_token, { httpOnly: true, path: '/', signed:true  });
+        res.cookie('refresh_token_expires_in', Date.now() + refresh_token_expires_in * 1000 , { httpOnly: true, path: '/', signed:true  });
+        res.cookie('access_token', token, { maxAge: 1000 * 60 * 60 * 24 * 7, httpOnly: true, path: '/' , signed:true  });
+        res.status(200).json({idUser:data.id, nickname, token});
     } catch (error) {
         console.error('사용자 생성 오류:', error);
         res.status(500).json({ error: '내부 서버 오류' });
