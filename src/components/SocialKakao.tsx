@@ -6,7 +6,7 @@ import {  postData } from "../util/api/apiInstance";
 import { StyledButtonWrapper } from "../aseets/styled/ButtonWrapper";
 import { Image } from "react-bootstrap"; 
 import showAlert from "../util/shoAlert";
-import Cookies from 'js-cookie';
+// import Cookies from 'js-cookie';
 
 
 const SocialKakao = () => {
@@ -20,22 +20,15 @@ const SocialKakao = () => {
 
     const kakaoOnSuccess = async (data : any)=> {
         try {
-            console.log(data);
             const {access_token, refresh_token, expires_in, refresh_token_expires_in } = data.response;
             const idUser= data.profile.id
             const nickname = data.profile.properties.nickname;
 
             const response: any = await postData('user',{nickname, idUser, refresh_token, access_token, expires_in, refresh_token_expires_in});
-            console.log(response, '로그인 결과');
+            // console.log(response, '로그인 결과');
             if(!response.idUser) showAlert('카카오 로그인 오류');
         
             localStorage.setItem(process.env.REACT_APP_ACCESS_TOKEN as string, response.token);
-            
-            const accessToken = Cookies.get('access_token');
-            const refreshToken = Cookies.get('refresh_token');
-            const expiresIn = Cookies.get('expires_in');
-            const refreshTokenExpiresIn = Cookies.get('refresh_token_expires_in');
-            console.log(accessToken, expiresIn,refreshToken, refreshTokenExpiresIn, '쿠키?'); 
             setUser({nickname: response.nickname, idUser : response.idUser,  });
         } catch (error) {
             showAlert('로그인 오류');

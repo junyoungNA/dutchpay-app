@@ -18,10 +18,6 @@ export const getKakaoUserInfo = async (userInfo : TKakaoUser) => {
         throw new Error('Kakao access token not found');
     }
 
-    // cookies.set('expiresIn', expiresIn, { path: '/', sameSite: 'none', secure: true });
-    // cookies.set('refreshToken', refreshToken, { path: '/', sameSite: 'none', secure: true });
-    // cookies.set('refreshTokenExpiresIn', refreshTokenExpiresIn, { path: '/', sameSite: 'none', secure: true })
-
     const headers = {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',

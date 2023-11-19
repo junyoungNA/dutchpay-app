@@ -13,7 +13,7 @@ const Plan = require('./schema/plan');
 
 const cors = require('cors'); // cors 모듈 추가
 const { default: axios } = require('axios');
-const { refreshKakaoToken } = require('./refreshToken');
+const { getKakaoToken } = require('./getKakaoToken');
 app.use(express.json()); // JSON 요청 본문 파싱 설정
 app.use(cookieParser());
 app.use(cors({origin: 'http://localhost:3000', credentials:true})); // 모든 출처에서의 요청을 허용
@@ -33,7 +33,6 @@ app.get('/',(req, res) => {
 
 app.get('/user', async (req, res) => {
     try {
-        console.log(req.cookies,'쿠키값들');
         const accessToken = req.cookies.access_token
         const expiresIn = req.cookies.expires_in;
         const refreshToken = req.cookies.refresh_token;
@@ -41,19 +40,28 @@ app.get('/user', async (req, res) => {
         console.log(accessToken, expiresIn,refreshToken, refreshTokenExpiresIn, '쿠키?'); 
         // console.log(Date.now() > + expiresIn,Date.now(), expiresIn, '토큰만료?');  
         // console.log(Date.now() < + refreshTokenExpiresIn, Date.now(), refreshTokenExpiresIn,'리프레시 토큰만료?');  
-        if (expiresIn && Date.now() > + expiresIn) {
-            // 토큰의 유효시간이 지났다면 들어옴
+        if (expiresIn && Date.now() > +expiresIn) {
+            // 토큰의 유효시간이 지났다면 리프레시토큰을 확인한다
             // 만약 리프레쉬 토큰이 만료되지 않았다면 토큰 갱신 요청
+            console.log('토큰유효시간지남')
             if (
                 refreshToken &&
                 refreshTokenExpiresIn &&
                 Date.now() < + refreshTokenExpiresIn
             ) {
-                const result = await refreshKakaoToken(req, refreshToken);
-                console.log('토큰갱신', result);
+                const {token, expires_in, refresh_token, refresh_token_expires_in} = await getKakaoToken(req, refreshToken);
+                if(token &&  expiresIn &&  refresh_token && refresh_token_expires_in) {
+                    res.cookie('access_token', token, { maxAge: 1000 * 60 * 60 * 24 * 7, httpOnly: true});
+                    res.cookie('expires_in', Date.now() + expires_in * 1000, { httpOnly: true,});        
+                    res.cookie('refresh_token_expires_in', Date.now() + refresh_token_expires_in * 1000 , { httpOnly: true });
+                    res.cookie('refresh_token', refresh_token, { httpOnly: true,});
+                }
             // 리프레쉬 토큰도 만료된 경우 모든 토큰 삭제
             } else {
-                //만료된 경우 클라이언트에게 다시로그인해달라고 해야함!
+                res.cookie('access_token', '', { expires: new Date(0) });
+                res.cookie('expires_in', '', { expires: new Date(0) });
+                res.cookie('refresh_token', '', { expires: new Date(0) });
+                res.cookie('refresh_token_expires_in', '', { expires: new Date(0) });
                 return res.status(401).json({ error: '토큰이 만료되었습니다. 다시 로그인하세요.' });
             }
         }     
@@ -77,7 +85,7 @@ app.get('/user', async (req, res) => {
         if (!id) throw new Error('카카오 로그인 사용자 정보 오류');
 
         // 토큰 검증이 성공하면 프론트엔드에 응답
-        res.status(200).json({id, nickname: properties.nickname});
+        res.status(200).json({idUser : id, nickname: properties.nickname});
     } catch (error) {
         console.error('사용자 검증 오류:', error);
         res.status(500).json({ error: '내부 서버 오류' });
@@ -85,7 +93,7 @@ app.get('/user', async (req, res) => {
 });
 
 
-// 사용자 데이터 삽입을 처리하는 라우트 생성
+// 카카오 로그인
 app.post('/user', async (req, res) => {
     try {
         const { 
@@ -109,8 +117,8 @@ app.post('/user', async (req, res) => {
             expiresIn: '1h', // 토큰 유효 기간 설정 (예: 1시간)
         });
         // 쿠키에 설정
-        // 쿠키를 설정하면 클라이언트에서 확인이 불가하다?
-        res.cookie('expires_in', Date.now() + expires_in * 1000, { httpOnly: true,});        
+        // res.cookie('expires_in', Date.now() + expires_in * 1000, { httpOnly: true,});        
+        res.cookie('expires_in', Date.now() , { httpOnly: true,});        
         res.cookie('refresh_token', refresh_token, { httpOnly: true,});
         res.cookie('refresh_token_expires_in', Date.now() + refresh_token_expires_in * 1000 , { httpOnly: true });
         res.cookie('access_token', token, { maxAge: 1000 * 60 * 60 * 24 * 7, httpOnly: true});

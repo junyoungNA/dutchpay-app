@@ -18,16 +18,15 @@ const AuthCheckLayout: React.FC<GeneralLayoutProps> = ({children}) => {
         // 로그인 성공시 userInfo 상태 업데이트
         // 로그인 실패시 로그인 페이지로 이동 ('/login')
         try {
-            const result = await getKakaoUserInfo(userInfo);
-            console.log(result,'layout 확인결과');
-            // if(!result) {
-            //     showAlert('죄송합니다. 다시 로그인해주세요.');
-            //     return routeTo('/');
-            // }
+            const {idUser, nickname} = await getKakaoUserInfo(userInfo);
+            console.log(idUser, nickname,'layout 확인결과');
+            if(!idUser) {
+                showAlert('죄송합니다. 다시 로그인해주세요.');
+                return routeTo('/');
+            }
 
         } catch (error) {
-            console.log(error,'로그인 오류');
-            showAlert('죄송합니다. 다시 로그인해주세요.')
+            showAlert('죄송합니다. 다시 로그인해주세요.');
             // 의문점 
             //callback 의존성 배열에 children을 빼도 될까?
             //내생각은 빼야할 것 같다 callback 함수의 재생성을 막기위한 것
