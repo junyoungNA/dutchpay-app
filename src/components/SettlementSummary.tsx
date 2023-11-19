@@ -1,6 +1,6 @@
 import { useRecoilValue } from 'recoil';
-import { expensesState } from '../state/expenses';
-import { groupMemberState } from '../state/groupMembers';
+import { expensesState } from '../atom/expenses';
+import { groupMemberState } from '../atom/groupMembers';
 import { calculatteMinimumTransaction } from '../util/calculatMinimumTransaction'; 
 import styled from 'styled-components';
 import { StyledTitle } from './AddExpenseForm';

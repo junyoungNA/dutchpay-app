@@ -1,7 +1,7 @@
 import { AxiosRequestConfig } from "axios";
 // import Cookies from "universal-cookie";
 import { getData } from "./apiInstance";
-import { TKakaoUser } from "../../state/kakaoUser";
+import { TKakaoUser } from "../../atom/kakaoUser";
 
 // export const cookies = new Cookies();
 
@@ -30,8 +30,6 @@ export const getKakaoUserInfo = async (userInfo : TKakaoUser) => {
 
     try {
         const result: any = await getData(`user`, config);
-        console.log(result.cookie);
-
         return result;
     }catch (error) {
         console.error('Error fetching Kakao user info:', error);

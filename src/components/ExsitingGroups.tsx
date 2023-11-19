@@ -1,12 +1,12 @@
 import { ButtonGroup, Container } from 'react-bootstrap'
 import styled from 'styled-components'
-import {groupMemberState} from '../state/groupMembers';
+import {groupMemberState} from '../atom/groupMembers';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { groupNameState } from '../state/groupName';
+import { groupNameState } from '../atom/groupName';
 import { useRouter } from '../hooks/useRouter';
 import { ROUTES } from '../route/routes';
 import { IUserGroups } from './Dutchpay';
-import { kakaoUser } from '../state/kakaoUser';
+import { kakaoUser } from '../atom/kakaoUser';
 import { deleteGroups } from '../util/api/api';
 import { useEffect, useState } from 'react';
 

@@ -117,8 +117,7 @@ app.post('/user', async (req, res) => {
             expiresIn: '1h', // 토큰 유효 기간 설정 (예: 1시간)
         });
         // 쿠키에 설정
-        // res.cookie('expires_in', Date.now() + expires_in * 1000, { httpOnly: true,});        
-        res.cookie('expires_in', Date.now() , { httpOnly: true,});        
+        res.cookie('expires_in', Date.now() + expires_in * 1000, { httpOnly: true,});        
         res.cookie('refresh_token', refresh_token, { httpOnly: true,});
         res.cookie('refresh_token_expires_in', Date.now() + refresh_token_expires_in * 1000 , { httpOnly: true });
         res.cookie('access_token', token, { maxAge: 1000 * 60 * 60 * 24 * 7, httpOnly: true});

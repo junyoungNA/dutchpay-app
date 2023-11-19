@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import CenteredOverlayForm from './CenteredOverlayForm';
 import { getUserGroups } from '../util/api/api';
 import { useRecoilValue } from 'recoil';
-import { kakaoUser } from '../state/kakaoUser';
+import { kakaoUser } from '../atom/kakaoUser';
 import ExsitingGroups from './ExsitingGroups';
 import { useRouter } from '../hooks/useRouter';
 import { ROUTES } from '../route/routes';

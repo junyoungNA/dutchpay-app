@@ -1,14 +1,14 @@
 import CenteredOverlayForm from './CenteredOverlayForm'
 import {useRecoilState, useRecoilValue, useResetRecoilState, useSetRecoilState} from 'recoil';
-import { groupMemberState } from '../state/groupMembers';
+import { groupMemberState } from '../atom/groupMembers';
 import { InputTags } from 'react-bootstrap-tagsinput';
 import React, { useEffect, useState } from 'react';
-import { groupNameState } from '../state/groupName';
+import { groupNameState } from '../atom/groupName';
 import styled from 'styled-components';
 import { ROUTES } from '../route/routes';
-import { kakaoUser } from '../state/kakaoUser';
+import { kakaoUser } from '../atom/kakaoUser';
 import { postData } from '../util/api/apiInstance';
-import { memberIdState } from '../state/memberId';
+import { memberIdState } from '../atom/memberId';
 import getCalenderDate from '../util/getCurrentDate';
 import { useRouter } from '../hooks/useRouter';
 import { getExsitingGroup } from '../util/api/api';

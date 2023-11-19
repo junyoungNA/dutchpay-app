@@ -4,7 +4,7 @@ import OverlayWrapper from './shared/OverlayWrapper';
 import DaumPostcode from "react-daum-postcode";
 import axios from 'axios';
 import { useRecoilState } from 'recoil';
-import { IKakaoAddressInfo, kakaoAddressInfoState } from '../state/kakaoAddressInfo';
+import { IKakaoAddressInfo, kakaoAddressInfoState } from '../atom/kakaoAddressInfo';
 import { Col, Row, Button, Tabs, Tab,ListGroup, Card, CloseButton } from 'react-bootstrap';
 import styled from 'styled-components';
 import CategoryTab, { ICategoryTabProps } from './plan/Tabs/CategoryTab';

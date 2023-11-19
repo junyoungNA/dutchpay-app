@@ -2,7 +2,7 @@ import { render, screen, within} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import  ExpenseMain  from "./ExpenseMain";
 import { RecoilRoot } from "recoil";
-import { groupMemberState } from "../state/groupMembers";
+import { groupMemberState } from "../atom/groupMembers";
 
 const renderComponent = () => {
     //render 함수('렌더링할컴포넌트')

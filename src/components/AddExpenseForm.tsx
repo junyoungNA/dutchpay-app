@@ -2,14 +2,14 @@ import { FormEvent, useState, useEffect } from 'react'
 import { Col, Form, Row } from 'react-bootstrap'
 import { Button } from 'react-bootstrap'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
-import { groupMemberState } from '../state/groupMembers'
+import { groupMemberState } from '../atom/groupMembers'
 import getCalenderDate from '../util/getCurrentDate'
-import {  expensesState } from '../state/expenses'
+import {  expensesState } from '../atom/expenses'
 import styled from 'styled-components'
 import { postData } from '../util/api/apiInstance'
-import { groupNameState } from '../state/groupName'
+import { groupNameState } from '../atom/groupName'
 import {getExpenses} from '../util/api/api'
-import { kakaoUser } from '../state/kakaoUser'
+import { kakaoUser } from '../atom/kakaoUser'
 
 const AddExpenseForm = () => {
     const groupMembers = useRecoilValue(groupMemberState);

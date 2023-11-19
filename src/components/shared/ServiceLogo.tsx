@@ -1,6 +1,6 @@
 import { useRecoilValue } from 'recoil'
 import styled from 'styled-components'
-import { kakaoUser } from '../../state/kakaoUser'
+import { kakaoUser } from '../../atom/kakaoUser'
 
 const ServiceLogo = () => {
     const {nickname} = useRecoilValue(kakaoUser);

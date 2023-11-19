@@ -1,9 +1,9 @@
 import {  Form, } from 'react-bootstrap'
 import CenteredOverlayForm from './CenteredOverlayForm'
-import {groupNameState} from '../state/groupName';
+import {groupNameState} from '../atom/groupName';
 import {useRecoilValue, useRecoilState} from 'recoil';
 import { useState } from 'react';
-import { kakaoUser } from '../state/kakaoUser';
+import { kakaoUser } from '../atom/kakaoUser';
 import  {getExsitingGroup} from '../util/api/api'
 import { StyledErrorMessage } from './AddMembers';
 import { useRouter } from '../hooks/useRouter';

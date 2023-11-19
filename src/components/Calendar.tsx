@@ -4,15 +4,15 @@ import OverlayWrapper from './shared/OverlayWrapper';
 import { Button, Col, Dropdown, Row } from 'react-bootstrap';
 import styled from 'styled-components';
 import { useRecoilState, useRecoilValue, useResetRecoilState, useSetRecoilState } from 'recoil';
-import { calendarDateState } from '../state/calendarDate';
+import { calendarDateState } from '../atom/calendarDate';
 import { ArrowRight, ArrowLeft } from 'react-bootstrap-icons';
-import { kakaoUser } from '../state/kakaoUser';
+import { kakaoUser } from '../atom/kakaoUser';
 import {  getCalendarGroups } from '../util/api/api';
-import { groupNameState } from '../state/groupName';
+import { groupNameState } from '../atom/groupName';
 import { ROUTES } from '../route/routes';
-import { groupMemberState } from '../state/groupMembers';
+import { groupMemberState } from '../atom/groupMembers';
 import { deleteData } from '../util/api/apiInstance';
-import { currentDateState } from '../state/currentDate.state';
+import { currentDateState } from '../atom/currentDate.state';
 import { useRouter } from '../hooks/useRouter';
 
 const Calendar = () => {

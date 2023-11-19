@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { calendar, dutchpay, plan } from '../../aseets';
 import Lottie from 'lottie-react';
 import {ROUTES} from '../../route/routes'
-import { kakaoUser } from '../../state/kakaoUser';
+import { kakaoUser } from '../../atom/kakaoUser';
 import { useRouter } from '../../hooks/useRouter';
 
 // Lottie 애니메이션 데이터를 나타내는 타입 정의

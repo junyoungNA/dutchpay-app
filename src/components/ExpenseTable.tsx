@@ -1,12 +1,12 @@
 import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil'
-import { expensesState } from '../state/expenses'
+import { expensesState } from '../atom/expenses'
 import { Table } from 'react-bootstrap'
 import OverlayWrapper from './shared/OverlayWrapper'
 import styled from 'styled-components'
-import { kakaoUser } from '../state/kakaoUser'
+import { kakaoUser } from '../atom/kakaoUser'
 import { useEffect } from 'react'
 import { deleteExpense, getExpenses } from '../util/api/api'
-import { groupNameState } from '../state/groupName'
+import { groupNameState } from '../atom/groupName'
 import { Button } from 'react-bootstrap' 
 
 const ExpenseTable = () => {

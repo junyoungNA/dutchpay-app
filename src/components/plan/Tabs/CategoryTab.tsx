@@ -1,6 +1,6 @@
 import React from 'react'
-import { IKakaoAddressInfo } from '../../../state/kakaoAddressInfo';
-import { Tab, Form , ListGroup } from 'react-bootstrap';
+import { IKakaoAddressInfo } from '../../../atom/kakaoAddressInfo';
+import { Form , ListGroup } from 'react-bootstrap';
 import { StyledCurrentPlaceDiv, StyledDirectionBtn, StyledSearchListItem, StyledeBtnWrapper } from '../../PlanMap';
 
 export interface ICategoryTabProps {

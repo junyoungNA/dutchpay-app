@@ -1,12 +1,11 @@
 import KakaoLogin from "react-kakao-login";
 import { useRecoilState, useResetRecoilState } from "recoil";
-import { kakaoUser } from "../state/kakaoUser";
+import { kakaoUser } from "../atom/kakaoUser";
 import styled from "styled-components";
 import {  postData } from "../util/api/apiInstance";
 import { StyledButtonWrapper } from "../aseets/styled/ButtonWrapper";
 import { Image } from "react-bootstrap"; 
 import showAlert from "../util/shoAlert";
-// import Cookies from 'js-cookie';
 
 
 const SocialKakao = () => {
@@ -23,7 +22,7 @@ const SocialKakao = () => {
             const {access_token, refresh_token, expires_in, refresh_token_expires_in } = data.response;
             const idUser= data.profile.id
             const nickname = data.profile.properties.nickname;
-
+            if(user.idUser && user.nickname) return await kakaoLogout(data);
             const response: any = await postData('user',{nickname, idUser, refresh_token, access_token, expires_in, refresh_token_expires_in});
             // console.log(response, '로그인 결과');
             if(!response.idUser) showAlert('카카오 로그인 오류');

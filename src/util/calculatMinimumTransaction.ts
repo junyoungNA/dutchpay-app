@@ -1,4 +1,4 @@
-import { IExpenseState } from "../state/expenses";
+import { IExpenseState } from "../atom/expenses";
 
 
 // expenses  recoilState에 있는 멤버가 낸 금액 정보
