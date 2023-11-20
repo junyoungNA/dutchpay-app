@@ -63,17 +63,15 @@ app.get('/user', async (req, res) => {
                 }
             // 리프레쉬 토큰도 만료된 경우 모든 토큰 삭제
             } else {
-                res.cookie('access_token', '', { expires: new Date(0) });
-                res.cookie('expires_in', '', { expires: new Date(0) });
-                res.cookie('refresh_token', '', { expires: new Date(0) });
-                res.cookie('refresh_token_expires_in', '', { expires: new Date(0) });
-                // clearTokenCookie(res);
+                // res.cookie('access_token', '', { expires: new Date(0) });
+                // res.cookie('expires_in', '', { expires: new Date(0) });
+                // res.cookie('refresh_token', '', { expires: new Date(0) });
+                // res.cookie('refresh_token_expires_in', '', { expires: new Date(0) });
+                clearTokenCookie(res);
                 return res.status(401).json({ error: '토큰이 만료되었습니다. 다시 로그인하세요.' });
             }
         }     
-
-            const {orginToken} = jwt.verify(accessToken, process.env.JWT_SECRET);
-            // console.log(accessToken,'토큰검사');
+        const {orginToken} = jwt.verify(accessToken, process.env.JWT_SECRET);
         // JWT 토큰 검증
         // 검증된 토큰 내의 orginToken을 이용하여 카카오로부터 받은 토큰 검증
         const {data} = await axios.get('https://kapi.kakao.com/v2/user/me', {
@@ -133,15 +131,16 @@ app.post('/user', async (req, res) => {
 app.post('/kakaoLogout', async (req, res) => {
     try {
         const access_token = req.cookies.access_token;
+        
         const {orginToken : ACCESS_TOKEN} = jwt.verify(access_token, process.env.JWT_SECRET);
-        console.log(ACCESS_TOKEN, '로그아웃매개변수', access_token === ACCESS_TOKEN );
-        const result = await axios.post(`https://kapi.kakao.com/v1/user/logout`,{} ,{headers : {'Authorization': `Bearer ${ACCESS_TOKEN}`}});
+        // console.log(ACCESS_TOKEN, '로그아웃매개변수', access_token );
+        const result = await axios.post(`https://kapi.kakao.com/v1/user/unlink`,{} ,{headers : {'Authorization': `Bearer ${ACCESS_TOKEN}`, 'Content-Type':'application/json'}});
         console.log(result, '백엔드 로그아웃 결과');
-        res.cookie('access_token', '', { expires: new Date(0) });
-        res.cookie('expires_in', '', { expires: new Date(0) });
-        res.cookie('refresh_token', '', { expires: new Date(0) });
-        res.cookie('refresh_token_expires_in', '', { expires: new Date(0) });
-        // clearTokenCookie(res);
+        // res.cookie('access_token', '', { expires: new Date(0) });
+        // res.cookie('expires_in', '', { expires: new Date(0) });
+        // res.cookie('refresh_token', '', { expires: new Date(0) });
+        // res.cookie('refresh_token_expires_in', '', { expires: new Date(0) });
+        clearTokenCookie(res);
         res.status(200).json({msg : '카카오 로그아웃 성공'});
     } catch (error) {
         console.error('사용자 로그아웃 오류:', error);
