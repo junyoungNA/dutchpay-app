@@ -1,16 +1,16 @@
 import React, { useCallback, useEffect } from 'react';
 import { getKakaoUserInfo } from '../util/api/authApi';
-import { useRecoilValue } from 'recoil';
-import { kakaoUser } from '../atom/kakaoUser';
 import { useRouter } from '../hooks/useRouter'
 import showAlert from '../util/shoAlert';
+import { useResetRecoilState } from 'recoil';
+import { kakaoUser } from '../atom/kakaoUser';
 
 interface GeneralLayoutProps {
 children: React.ReactNode
 }
 
 const AuthCheckLayout: React.FC<GeneralLayoutProps> = ({children}) => {
-    const userInfo = useRecoilValue(kakaoUser);
+    const resetKakakoUser = useResetRecoilState(kakaoUser);
     const {routeTo} = useRouter();
 
     const fetchUserInfo = useCallback(async () => {
@@ -18,10 +18,11 @@ const AuthCheckLayout: React.FC<GeneralLayoutProps> = ({children}) => {
         // 로그인 성공시 userInfo 상태 업데이트
         // 로그인 실패시 로그인 페이지로 이동 ('/login')
         try {
-            const {idUser, nickname} = await getKakaoUserInfo(userInfo);
+            const {idUser, nickname} = await getKakaoUserInfo();
             console.log(idUser, nickname,'layout 확인결과');
             if(!idUser) {
                 showAlert('죄송합니다. 다시 로그인해주세요.');
+                resetKakakoUser();
                 return routeTo('/');
             }
 
@@ -43,10 +44,10 @@ const AuthCheckLayout: React.FC<GeneralLayoutProps> = ({children}) => {
         // 내 생각은 넣어야 할 것 같다. 페이지가 바뀔때 마다 body 즉 children 도 
         // 바뀔 것이니 계속해서 fetchUserInfo로 유저의 정보를 확인해야할 것 같다.
         // 생각해보니 페이지를 바꿀때마다 유저의 유효성 검증을 하는 것이 맞을까?
-    }, [children, fetchUserInfo, userInfo])
+    }, [children, fetchUserInfo])
 
     // loading중 상태를 고려해서 컴포넌트를 만들어야 할듯!
-    if(!userInfo) return (<div>loading...</div>)
+    // if(!userInfo) return (<div>loading...</div>)
 
     return (
         <div className="general-layout">

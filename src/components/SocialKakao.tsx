@@ -2,7 +2,7 @@ import KakaoLogin from "react-kakao-login";
 import { useRecoilState, useResetRecoilState } from "recoil";
 import { kakaoUser } from "../atom/kakaoUser";
 import styled from "styled-components";
-import {  postData } from "../util/api/apiInstance";
+import { postData } from "../util/api/apiInstance";
 import { StyledButtonWrapper } from "../aseets/styled/ButtonWrapper";
 import { Image } from "react-bootstrap"; 
 import showAlert from "../util/shoAlert";
@@ -27,8 +27,9 @@ const SocialKakao = () => {
             // console.log(response, '로그인 결과');
             if(!response.idUser) showAlert('카카오 로그인 오류');
         
-            localStorage.setItem(process.env.REACT_APP_ACCESS_TOKEN as string, response.token);
-            setUser({nickname: response.nickname, idUser : response.idUser,  });
+            // localStorage는 사용하지않고 쿠키만 사용해보기로!
+            // localStorage.setItem(process.env.REACT_APP_ACCESS_TOKEN as string, response.token);
+            setUser({nickname: response.nickname, idUser : response.idUser,});
         } catch (error) {
             showAlert('로그인 오류');
             console.log(error);
@@ -37,12 +38,11 @@ const SocialKakao = () => {
 
     const kakaoLogout = async (data : any) => {
         try {
-            // console.log(data,'가져온 데이터정보');
-            // const accessToken = data.response.access_token; // 엑세스 토큰 백엔드로 전달
-            // const idUser = data.profile.id; // 엑세스 토큰 백엔드로 전달
-            // const nickname = data.profile.properties.nickname; //kakao 유저 닉네임
-            // const result: any = await postData('user',{accessToken, nickname , idUser});
-            localStorage.removeItem('accessToken');
+            // 로그아웃할때는 프론트에서 로컬스토리지에 있는 token만 지워주면 될까?
+            //아니면 백엔드에서 쿠키 삭제나 카카오에 로그아웃요청?
+            const response: any = await postData('kakaoLogout',);
+            console.log(response, '로그아웃 결과');
+            // localStorage.removeItem('accessToken');
             resetKakaoUSer();
         } catch (error) {
             console.log(error);

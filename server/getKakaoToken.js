@@ -2,7 +2,7 @@ const axios = require('axios');
 const jwt = require('jsonwebtoken');
 
 const getKakaoToken = async (req, token) => {
-    console.log(req.cookies, token, '토큰정보보여줘');
+    // console.log(req.cookies, token, '토큰정보보여줘');
     const { KAKAO_API_KEY } = process.env;
     const url = 'https://kauth.kakao.com/oauth/token';
     const params = {
@@ -23,11 +23,12 @@ const getKakaoToken = async (req, token) => {
             refresh_token,
             refresh_token_expires_in,
         } = response.data;
-        const token = jwt.sign({orginToken: access_token }, process.env.JWT_SECRET, {
+
+        const newToken = jwt.sign({orginToken: access_token }, process.env.JWT_SECRET, {
             expiresIn: '1h', // 토큰 유효 기간 설정 (예: 1시간)
         });
         
-        return  {token, expires_in, refresh_token, refresh_token_expires_in}
+        return  {newToken, expires_in, refresh_token, refresh_token_expires_in}
     } catch (e) {
     console.error(e);
     }
