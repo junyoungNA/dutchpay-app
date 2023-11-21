@@ -142,9 +142,9 @@ app.post('/kakaoLogout', async (req, res) => {
         const access_token = req.cookies.access_token;
         
         const {orginToken} = jwt.verify(access_token, process.env.JWT_SECRET);
-        console.log(orginToken, '로그아웃매개변수', access_token );
-        const result = await axios.post(`https://kapi.kakao.com/v1/user/logout`,{} ,{headers : {'Authorization': `Bearer ${orginToken}`,  'Content-Type': 'application/x-www-form-urlencoded',}});
-        console.log(result, '백엔드 로그아웃 결과');
+        // console.log(orginToken, '로그아웃매개변수', access_token );
+        // const result = await axios.post(`https://kapi.kakao.com/v1/user/logout`,{} ,{headers : {'Authorization': `Bearer ${orginToken}`,  'Content-Type': 'application/x-www-form-urlencoded',}});
+        // console.log(result, '백엔드 로그아웃 결과');
         res.cookie('access_token', '', { expires: new Date(0) });
         res.cookie('expires_in', '', { expires: new Date(0) });
         res.cookie('refresh_token', '', { expires: new Date(0) });
