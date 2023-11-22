@@ -79,7 +79,7 @@ app.get('/user', async (req, res) => {
                 'Content-Type': 'application/json'
             }
         });
-        console.log(data,'kakako결과');
+        // console.log(data,'kakako결과');
         const {id, properties} = data;
         if (!id) throw new Error('카카오 로그인 사용자 정보 오류');
         // 토큰 검증이 성공하면 프론트엔드에 응답
@@ -102,14 +102,7 @@ app.post('/user', async (req, res) => {
             nickname, 
             idUser 
             } = req.body;
-        console.log('처음 토큰',access_token);
-        // 사용자 정보 저장하기
-        // const response = await axios.post(`https://kapi.kakao.com/v1/user/update_profile`,
-        //     {properties: {
-        //     id: access_token
-        //     }} ,
-        //     {headers : {'Authorization': `Bearer ${access_token}`,  'Content-Type': 'application/x-www-form-urlencoded',}
-        // });
+        // console.log('처음 토큰',access_token);
         const {data} = await axios.get('https://kapi.kakao.com/v2/user/me', {headers : {'Authorization' : `Bearer ${access_token}`, 'Content-Type' : 'application/x-www-form-urlencoded'}});
         console.log('사용자 정보 response', data);
         if(data.id !== idUser) throw new Error('카카오 로그인  사용자 정보 오류');
@@ -139,12 +132,9 @@ app.post('/user', async (req, res) => {
 //카카오 로그아웃
 app.post('/kakaoLogout', async (req, res) => {
     try {
-        const access_token = req.cookies.access_token;
-        
-        const {orginToken} = jwt.verify(access_token, process.env.JWT_SECRET);
-        // console.log(orginToken, '로그아웃매개변수', access_token );
+        // const access_token = req.cookies.access_token;
+        // const {orginToken} = jwt.verify(access_token, process.env.JWT_SECRET);
         // const result = await axios.post(`https://kapi.kakao.com/v1/user/logout`,{} ,{headers : {'Authorization': `Bearer ${orginToken}`,  'Content-Type': 'application/x-www-form-urlencoded',}});
-        // console.log(result, '백엔드 로그아웃 결과');
         res.cookie('access_token', '', { expires: new Date(0) });
         res.cookie('expires_in', '', { expires: new Date(0) });
         res.cookie('refresh_token', '', { expires: new Date(0) });

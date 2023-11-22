@@ -37,9 +37,8 @@ const SocialKakao = () => {
     }
 
     const kakaoLogout = async (data : any) => {
+        // 백엔드에 요청보내서 쿠키 정보들만 삭제
         try {
-            // 로그아웃할때는 프론트에서 로컬스토리지에 있는 token만 지워주면 될까?
-            //아니면 백엔드에서 쿠키 삭제나 카카오에 로그아웃요청?
             const response: any = await postData('kakaoLogout',);
             console.log(response, '로그아웃 결과');
             // localStorage.removeItem('accessToken');

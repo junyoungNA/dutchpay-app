@@ -4,36 +4,17 @@ import { useRouter } from '../hooks/useRouter'
 import showAlert from '../util/shoAlert';
 import { useResetRecoilState } from 'recoil';
 import { kakaoUser } from '../atom/kakaoUser';
+import useFetchUserInfo from '../hooks/useFetchUserInfo ';
 
 interface GeneralLayoutProps {
 children: React.ReactNode
 }
 
 const AuthCheckLayout: React.FC<GeneralLayoutProps> = ({children}) => {
-    const resetKakakoUser = useResetRecoilState(kakaoUser);
+    const resetKakaoUser = useResetRecoilState(kakaoUser);
     const {routeTo} = useRouter();
-
-    const fetchUserInfo = useCallback(async () => {
-        // 페이지 이동시 마다 로그인 여부를 확인하는 함수 구현
-        // 로그인 성공시 userInfo 상태 업데이트
-        // 로그인 실패시 로그인 페이지로 이동 ('/login')
-        try {
-            const {idUser, nickname} = await getKakaoUserInfo();
-            console.log(idUser, nickname,'layout 확인결과');
-            if(!idUser) {
-                showAlert('죄송합니다. 다시 로그인해주세요.');
-                resetKakakoUser();
-                return routeTo('/');
-            }
-
-        } catch (error) {
-            showAlert('죄송합니다. 다시 로그인해주세요.');
-            // 의문점 
-            //callback 의존성 배열에 children을 빼도 될까?
-            //내생각은 빼야할 것 같다 callback 함수의 재생성을 막기위한 것
-            // compoenet가 바뀔때마다 재생성하는 것은 좋지 않은 것 같다
-        }
-    }, [routeTo]);
+    // 커스텀 훅
+    const fetchUserInfo = useFetchUserInfo({ resetKakaoUser, routeTo });
 
     useEffect(() => {
     //페이지 이동시 마다 로그인 여부를 확인하는 함수 실행
@@ -48,7 +29,6 @@ const AuthCheckLayout: React.FC<GeneralLayoutProps> = ({children}) => {
 
     // loading중 상태를 고려해서 컴포넌트를 만들어야 할듯!
     // if(!userInfo) return (<div>loading...</div>)
-
     return (
         <div className="general-layout">
                 <div className="general-layout__body">
