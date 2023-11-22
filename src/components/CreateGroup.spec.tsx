@@ -1,6 +1,6 @@
 import { render, screen} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import  CreateGroup  from "./CreateGroup";
+import  CreateGroup  from "./dutchpay/CreateGroup";
 import { RecoilRoot } from "recoil";
 
 const renderComponent = () => {

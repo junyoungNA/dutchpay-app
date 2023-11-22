@@ -1,7 +1,5 @@
-import React, { useCallback, useEffect } from 'react';
-import { getKakaoUserInfo } from '../util/api/authApi';
+import React, {useEffect } from 'react';
 import { useRouter } from '../hooks/useRouter'
-import showAlert from '../util/shoAlert';
 import { useResetRecoilState } from 'recoil';
 import { kakaoUser } from '../atom/kakaoUser';
 import useFetchUserInfo from '../hooks/useFetchUserInfo ';

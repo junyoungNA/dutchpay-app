@@ -1,15 +1,15 @@
-import { FormEvent, useState, useEffect } from 'react'
+import { FormEvent, useState, useEffect, useCallback } from 'react'
 import { Col, Form, Row } from 'react-bootstrap'
 import { Button } from 'react-bootstrap'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
-import { groupMemberState } from '../atom/groupMembers'
-import getCalenderDate from '../util/getCurrentDate'
-import {  expensesState } from '../atom/expenses'
+import { groupMemberState } from '../../atom/groupMembers'
+import getCalenderDate from '../../util/getCurrentDate'
+import {  IExpenseState, expensesState } from '../../atom/expenses'
 import styled from 'styled-components'
-import { postData } from '../util/api/apiInstance'
-import { groupNameState } from '../atom/groupName'
-import {getExpenses} from '../util/api/api'
-import { kakaoUser } from '../atom/kakaoUser'
+import { postData } from '../../util/api/apiInstance'
+import { groupNameState } from '../../atom/groupName'
+import {getExpenses} from '../../util/api/api'
+import { kakaoUser } from '../../atom/kakaoUser'
 
 const AddExpenseForm = () => {
     const groupMembers = useRecoilValue(groupMemberState);
@@ -28,6 +28,12 @@ const AddExpenseForm = () => {
     const [isAmountValid, setAmountValid] = useState(false);
     const [isPayerValid, setPayerValid] = useState(false);
 
+    useEffect(() => {
+        //useEffect내에서 바로 async 호출 불가능!
+        //fetchData감싸주어 호출
+        fetchData(idUser, groupName);
+    }, [idUser, groupName]);
+
     const fetchData = async (idUser : string, groupName : string) => {
         try {
             const expenses: any = await getExpenses(idUser, groupName);
@@ -37,13 +43,7 @@ const AddExpenseForm = () => {
         } catch (error) {
             console.error('데이터를 가져오는 중 오류 발생:', error);
         }
-    };
-
-    useEffect(() => {
-        //useEffect내에서 바로 async 호출 불가능!
-        //fetchData감싸주어 호출
-        fetchData(idUser, groupName);
-    }, [idUser]);
+    }
 
     const checkFormValidated = () => {
         const desceValid = desc.length > 0;
@@ -57,24 +57,28 @@ const AddExpenseForm = () => {
     }
     
     const handleSubmit = async(event:FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        if(checkFormValidated()) {
-            const newExpense = {
-                date,
-                desc,
-                amount,
-                payer,
-                idUser,
-                groupName,
+        try {
+            event.preventDefault();
+            if(checkFormValidated()) {
+                const newExpense = {
+                    date,
+                    desc,
+                    amount,
+                    payer,
+                    idUser,
+                    groupName,
+                }
+                const result = await postData('expense', newExpense);
+                // console.log(result, '클라이언트 reuslt');
+                setExpense((prevExpenses : IExpenseState[] ) =>[
+                    ...prevExpenses,
+                    newExpense
+                ])
             }
-            const result = await postData('expense', newExpense);
-            // console.log(result, '클라이언트 reuslt');
-            setExpense((prevExpenses) =>[
-                ...prevExpenses,
-                newExpense
-            ])
+            setValidated(true);
+        } catch(error) {
+            console.log('더치페이 추가 에러', error);
         }
-        setValidated(true);
     }
 
     return (

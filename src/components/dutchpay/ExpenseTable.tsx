@@ -1,18 +1,18 @@
 import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil'
-import { expensesState } from '../atom/expenses'
+import { expensesState } from '../../atom/expenses'
 import { Table } from 'react-bootstrap'
-import OverlayWrapper from './shared/OverlayWrapper'
+import OverlayWrapper from '../shared/OverlayWrapper'
 import styled from 'styled-components'
-import { kakaoUser } from '../atom/kakaoUser'
+import { kakaoUser } from '../../atom/kakaoUser'
 import { useEffect } from 'react'
-import { deleteExpense, getExpenses } from '../util/api/api'
-import { groupNameState } from '../atom/groupName'
+import { deleteExpense, getExpenses } from '../../util/api/api'
+import { groupNameState } from '../../atom/groupName'
 import { Button } from 'react-bootstrap' 
 
 const ExpenseTable = () => {
     const {idUser} = useRecoilValue(kakaoUser);
     const groupName =  useRecoilValue(groupNameState);
-    const [expense,setExpense] = useRecoilState(expensesState);
+    const [expense,setExpense] = useRecoilState<any>(expensesState);
     const resetExpense = useResetRecoilState(expensesState);
 
     const fetchData = async (idUser : string, groupName : string) => {
@@ -27,9 +27,9 @@ const ExpenseTable = () => {
     };
 
     useEffect(() => {
-        resetExpense();       
+        // resetExpense();       
         fetchData(idUser, groupName);
-    }, [groupName]);
+    }, [idUser, resetExpense, groupName]);
 
     const deleteExpenseHandler = async (groupName : string, expenseName: string) => {
         try {
@@ -45,8 +45,8 @@ const ExpenseTable = () => {
     }
 
     return (
-        <OverlayWrapper minheight={'73vh'} padding='50px'>
-            <Table responsive data-testid='expenseList' borderless hover>
+        <OverlayWrapper minheight={'73vh'} padding={'50px'} overflowY={'auto'} maxheight={'73vh'}>
+            <StyledTable responsive data-testid='expenseList' borderless hover>
                 <StyledThead>
                     <tr>
                         <th>날짜</th>
@@ -56,7 +56,7 @@ const ExpenseTable = () => {
                     </tr>
                 </StyledThead>
                 <StyledTbody>
-                    {expense?.map(({date, desc:expenseName, amount, payer, groupName}, idx) => 
+                    {expense?.map(({date, desc:expenseName, amount, payer, groupName} : any, idx : any) => 
                         <tr key={idx}>
                             <td>{date}</td>
                             <td>{expenseName}</td>
@@ -66,10 +66,15 @@ const ExpenseTable = () => {
                         </tr>
                     )}
                 </StyledTbody>
-            </Table>
+            </StyledTable>
         </OverlayWrapper>
     )
 }
+
+const StyledTable = styled(Table)`
+    height: 1px;
+    overflow-y:auto ;
+`
 
 const StyledThead = styled.thead`
     color: #683DA6 ;
@@ -84,7 +89,9 @@ const StyledThead = styled.thead`
     }
 `
 
-const StyledTbody = styled.tbody`
+const StyledTbody = styled.tbody`   
+    height: 1px;
+    overflow-y:auto ;
     td {
         font-weight: 400;
         font-size: 22px;

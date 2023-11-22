@@ -1,13 +1,13 @@
 import {createBrowserRouter } from 'react-router-dom'
-import CreateGroup from '../components/CreateGroup'
-import AddMembers from '../components/AddMembers'
-import ExpenseMain from '../components/ExpenseMain'
-import Calendar from '../components/Calendar'
+import CreateGroup from '../components/dutchpay/CreateGroup'
+import AddMembers from '../components/dutchpay/AddMembers'
+import ExpenseMain from '../components/dutchpay/ExpenseMain'
+import Calendar from '../components/calendar/Calendar'
 import { Router as RemixRouter } from '@remix-run/router/dist/router'
 import { ROUTES } from './routes'
 import PlanMap from '../components/PlanMap'
 import AuthChecklayout from '../layout/AuthChecklayout'
-import Dutchpay from '../components/Dutchpay'
+import Dutchpay from '../components/dutchpay/Dutchpay'
 import MainContainer from '../components/MainContainer'
 
 interface RouterElement {

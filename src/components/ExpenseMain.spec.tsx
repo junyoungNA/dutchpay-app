@@ -1,6 +1,6 @@
 import { render, screen, within} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import  ExpenseMain  from "./ExpenseMain";
+import  ExpenseMain  from "./dutchpay/ExpenseMain";
 import { RecoilRoot } from "recoil";
 import { groupMemberState } from "../atom/groupMembers";
 

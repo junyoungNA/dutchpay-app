@@ -4,7 +4,7 @@ import ExpenseTable from './ExpenseTable'
 import { Col, Container, Row, Stack } from 'react-bootstrap'
 import styled from 'styled-components'
 import { useRecoilValue } from 'recoil'
-import { groupNameState } from '../atom/groupName'
+import { groupNameState } from '../../atom/groupName'
 import SettlementSummary from './SettlementSummary'
 //비용 정산하는 페이지
 const Expense = () => {

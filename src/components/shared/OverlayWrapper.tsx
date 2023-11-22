@@ -5,11 +5,14 @@ interface OverlayWrapperProps {
     children: ReactNode;
     padding? : string;
     minheight? : string;
+    maxheight? : string;
+    overflowY?: string;
+    height?:string;
 }
 
-const OverlayWrapper = ({children, padding, minheight} : OverlayWrapperProps) => {
+const OverlayWrapper = ({children, padding, minheight,maxheight, overflowY} : OverlayWrapperProps) => {
     return (
-        <StyledContainer minheight={minheight} padding={padding} >
+        <StyledContainer maxheight={maxheight} overflowY={overflowY} minheight={minheight} padding={padding} >
             {children}
         </StyledContainer>
     )
@@ -18,7 +21,9 @@ const OverlayWrapper = ({children, padding, minheight} : OverlayWrapperProps) =>
 interface StyledContainerProps {
     minheight? :  string
     padding? : string
-    // margin? : string
+    maxheight? : string;
+    overflowY?: string;
+    height?:string;
 }
 
 const StyledContainer = styled.div<StyledContainerProps>`
@@ -27,6 +32,9 @@ const StyledContainer = styled.div<StyledContainerProps>`
     background-color: white; 
     filter : drop-shadow(0px 4px 4px rgba(0,0,0,0.25));
     min-height:${(props) => props.minheight || '0'} ;
+    max-height: ${(props) => props.maxheight || 'none'};
+    /* height: ${(props) => props.height || '73vh'}; */
+    overflow: ${(props) => props.overflowY || 'none'};;
 `
 
 export default OverlayWrapper

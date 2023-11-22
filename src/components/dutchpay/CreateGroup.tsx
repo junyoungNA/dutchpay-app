@@ -1,12 +1,12 @@
 import {  Form, } from 'react-bootstrap'
-import CenteredOverlayForm from './CenteredOverlayForm'
-import {groupNameState} from '../atom/groupName';
+import CenteredOverlayForm from '../CenteredOverlayForm'
+import {groupNameState} from '../../atom/groupName';
 import {useRecoilValue, useRecoilState} from 'recoil';
 import { useState } from 'react';
-import { kakaoUser } from '../atom/kakaoUser';
-import  {getExsitingGroup} from '../util/api/api'
+import { kakaoUser } from '../../atom/kakaoUser';
+import  {getExsitingGroup} from '../../util/api/api'
 import { StyledErrorMessage } from './AddMembers';
-import { useRouter } from '../hooks/useRouter';
+import { useRouter } from '../../hooks/useRouter';
 
 
 //그룹의 이름 정하는 컴포넌트

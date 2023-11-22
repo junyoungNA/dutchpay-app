@@ -1,14 +1,14 @@
 import { useRecoilValue } from 'recoil';
-import { expensesState } from '../atom/expenses';
-import { groupMemberState } from '../atom/groupMembers';
-import { calculatteMinimumTransaction } from '../util/calculatMinimumTransaction'; 
+import { expensesState } from '../../atom/expenses';
+import { groupMemberState } from '../../atom/groupMembers';
+import { calculatteMinimumTransaction } from '../../util/calculatMinimumTransaction'; 
 import styled from 'styled-components';
 import { StyledTitle } from './AddExpenseForm';
 
 const SettlementSummary = () => {
     const expense = useRecoilValue(expensesState);
     const members = useRecoilValue(groupMemberState);
-    const totalExpenseAmount = expense.reduce((prevAmount, curExpense) => prevAmount +(Number(curExpense.amount)), 0);
+    const totalExpenseAmount = expense.reduce((prevAmount: any, curExpense : any) => prevAmount +(Number(curExpense.amount)), 0);
     const groupMemberCount = members.length;
     const splitAmount = Math.floor(totalExpenseAmount / groupMemberCount);
 

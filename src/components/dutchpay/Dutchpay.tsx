@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import CenteredOverlayForm from './CenteredOverlayForm';
-import { getUserGroups } from '../util/api/api';
+import CenteredOverlayForm from '../CenteredOverlayForm';
+import { getUserGroups } from '../../util/api/api';
 import { useRecoilValue } from 'recoil';
-import { kakaoUser } from '../atom/kakaoUser';
+import { kakaoUser } from '../../atom/kakaoUser';
 import ExsitingGroups from './ExsitingGroups';
-import { useRouter } from '../hooks/useRouter';
-import { ROUTES } from '../route/routes';
+import { useRouter } from '../../hooks/useRouter';
+import { ROUTES } from '../../route/routes';
 
 export interface IUserGroups {
     _id : string,
