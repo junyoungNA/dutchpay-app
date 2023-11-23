@@ -1,14 +1,9 @@
-import { useRecoilValue } from 'recoil';
-import { IExpenseState, expensesState } from '../../atom/expenses';
-import { groupMemberState } from '../../atom/groupMembers';
 import styled from 'styled-components';
 import { StyledTitle } from './AddExpenseForm';
 import { ISettlementSummary, useSettlemnetSummary } from '../../hooks/useSettlementSummary';
 
 const SettlementSummary = () => {
-    const expense:IExpenseState[]= useRecoilValue(expensesState);
-    const members:string[] = useRecoilValue(groupMemberState);
-    const {totalExpenseAmount, groupMemberCount, splitAmount, minimumTransaction} : ISettlementSummary = useSettlemnetSummary({expense, members});
+    const {totalExpenseAmount, groupMemberCount, splitAmount, minimumTransaction} : ISettlementSummary = useSettlemnetSummary();
 
     return (
         <StyledWrapper>

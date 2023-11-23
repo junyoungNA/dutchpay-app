@@ -9,11 +9,11 @@ import styled from 'styled-components'
 import { postData } from '../../util/api/apiInstance'
 import { groupNameState } from '../../atom/groupName'
 import {getExpenses} from '../../util/api/api'
-import { kakaoUser } from '../../atom/kakaoUser'
+import { TKakaoUser, kakaoUser } from '../../atom/kakaoUser'
 
 const AddExpenseForm = () => {
-    const groupMembers = useRecoilValue(groupMemberState);
-    const {idUser} = useRecoilValue(kakaoUser);
+    const groupMembers:string[] = useRecoilValue(groupMemberState);
+    const {idUser} = useRecoilValue<TKakaoUser>(kakaoUser);
     const groupName = useRecoilValue(groupNameState);
     const setExpense = useSetRecoilState(expensesState);
 
@@ -145,7 +145,7 @@ const AddExpenseForm = () => {
                                         // className='form-control'
                                     >
                                         <option value="" defaultValue='' disabled style={{display:'none'}}>누가 결제 했나요?</option>
-                                        {groupMembers.map((member) => 
+                                        {groupMembers.map((member : string) => 
                                             <option value={member} key={member}>{member}</option>
                                         )}
                                     </Form.Select>
