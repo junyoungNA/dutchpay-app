@@ -1,18 +1,15 @@
 import { useRecoilValue } from 'recoil';
-import { expensesState } from '../../atom/expenses';
+import { IExpenseState, expensesState } from '../../atom/expenses';
 import { groupMemberState } from '../../atom/groupMembers';
-import { calculatteMinimumTransaction } from '../../util/calculatMinimumTransaction'; 
 import styled from 'styled-components';
 import { StyledTitle } from './AddExpenseForm';
+import { ISettlementSummary, useSettlemnetSummary } from '../../hooks/useSettlementSummary';
 
 const SettlementSummary = () => {
-    const expense = useRecoilValue(expensesState);
-    const members = useRecoilValue(groupMemberState);
-    const totalExpenseAmount = expense.reduce((prevAmount: any, curExpense : any) => prevAmount +(Number(curExpense.amount)), 0);
-    const groupMemberCount = members.length;
-    const splitAmount = Math.floor(totalExpenseAmount / groupMemberCount);
+    const expense:IExpenseState[]= useRecoilValue(expensesState);
+    const members:string[] = useRecoilValue(groupMemberState);
+    const {totalExpenseAmount, groupMemberCount, splitAmount, minimumTransaction} : ISettlementSummary = useSettlemnetSummary({expense, members});
 
-    const minimumTransaction = calculatteMinimumTransaction(expense, members, splitAmount);
     return (
         <StyledWrapper>
             <StyledTitle>2.정산은 이렇게!</StyledTitle>

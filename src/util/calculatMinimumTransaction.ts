@@ -4,7 +4,7 @@ import { IExpenseState } from "../atom/expenses";
 // expenses  recoilState에 있는 멤버가 낸 금액 정보
 // amountPerPerson  총 낸 금액/ 멤버 수 
 // member 총 멤버수
-interface IMinTransaction {
+export interface IMinTransaction {
     receiver: string;
     sender : string
     amount : number;    

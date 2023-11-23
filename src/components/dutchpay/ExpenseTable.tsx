@@ -13,7 +13,7 @@ const ExpenseTable = () => {
     const {idUser} = useRecoilValue(kakaoUser);
     const groupName =  useRecoilValue(groupNameState);
     const [expense,setExpense] = useRecoilState<any>(expensesState);
-    const resetExpense = useResetRecoilState(expensesState);
+    // const resetExpense = useResetRecoilState(expensesState);
 
     const fetchData = async (idUser : string, groupName : string) => {
         try {
@@ -27,9 +27,8 @@ const ExpenseTable = () => {
     };
 
     useEffect(() => {
-        // resetExpense();       
         fetchData(idUser, groupName);
-    }, [idUser, resetExpense, groupName]);
+    }, [idUser, groupName]);
 
     const deleteExpenseHandler = async (groupName : string, expenseName: string) => {
         try {
