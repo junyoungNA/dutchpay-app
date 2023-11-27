@@ -1,5 +1,5 @@
 import React from 'react'
-import { IDirectionRecord, StyledDirectionBtn, StyledSearchListItem } from '../../PlanMap'
+import { IDirectionRecord, StyledDirectionBtn, StyledSearchListItem } from '../PlanMap'
 import { ButtonGroup, ListGroup } from 'react-bootstrap'
 import { ArrowRight } from 'react-bootstrap-icons'
 import styled from 'styled-components';
@@ -15,7 +15,7 @@ export interface IRecordTabProps {
 const RecordTab: React.FC<IRecordTabProps> = ({directionRecord, onClickRecordPlan}) => {
     return (
         <>
-            {directionRecord.length === 0 && <><StyledErrorMsg>검색기록이 없어요ㅠ</StyledErrorMsg><Lottie animationData={error_animation}  loop={false}/></>}
+            {directionRecord.length === 0 && <><StyledErrorMsg>길찾기 기록이 없어요ㅠ</StyledErrorMsg><Lottie animationData={error_animation}  loop={false}/></>}
             <ListGroup as='ol' numbered>
                 {directionRecord?.map((record : IDirectionRecord, idx: number) => 
                     <StyledSearchListItem action key={idx} onClick={() => window.open(`https://map.kakao.com/?sName=${record.departure}&eName=${record.arrive}`)}>

@@ -1,7 +1,7 @@
 import React, { ChangeEvent } from 'react'
 import { FormGroup, Form, Button } from 'react-bootstrap'
 import styled from 'styled-components'
-import { StyledDirectionBtn } from '../../PlanMap'
+import { StyledDirectionBtn } from '../PlanMap'
 import { TbTilde } from 'react-icons/tb'
 import { ArrowRight } from 'react-bootstrap-icons'
 import { postData } from '../../../util/api/apiInstance'

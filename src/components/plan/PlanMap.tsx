@@ -1,15 +1,17 @@
 import  {useEffect, useState} from 'react'
 import { Map, MapMarker,CustomOverlayMap } from 'react-kakao-maps-sdk';
-import OverlayWrapper from './shared/OverlayWrapper';
+import OverlayWrapper from '../shared/OverlayWrapper';
 import DaumPostcode from "react-daum-postcode";
-import axios from 'axios';
 import { useRecoilState } from 'recoil';
-import { IKakaoAddressInfo, kakaoAddressInfoState } from '../atom/kakaoAddressInfo';
+import { IKakaoAddressInfo, kakaoAddressInfoState } from '../../atom/kakaoAddressInfo';
 import { Col, Row, Button, Tabs, Tab,ListGroup, Card, CloseButton } from 'react-bootstrap';
 import styled from 'styled-components';
-import CategoryTab, { ICategoryTabProps } from './plan/Tabs/CategoryTab';
-import RecordTab, { IRecordTabProps } from './plan/Tabs/RecordTab';
-import MakePlanTab, { IMakePlanTabProps } from './plan/Tabs/MakePlanTab';
+import CategoryTab, { ICategoryTabProps } from './Tabs/CategoryTab';
+import RecordTab, { IRecordTabProps } from './Tabs/RecordTab';
+import MakePlanTab, { IMakePlanTabProps } from './Tabs/MakePlanTab';
+// import useKakaoSearch from '../../hooks/useSearchKakaoMap';
+// import { currentKakaoMap } from '../../atom/currentKakaoMap';
+import axios from 'axios';
 
 type TMarkers  = {
     lat: string,
@@ -32,15 +34,16 @@ const TabCategoryList = [
         component: ({
             searchList, 
             setKeyword, 
-            kakaoKewordSerach, 
+            kakaoKeywordSearch, 
             onClickChangePoint,
             onClickSerachRecord,
             departure,
-            arrive} : ICategoryTabProps)   => (
+            arrive,
+            } : ICategoryTabProps) => (
             <CategoryTab
                 searchList={searchList}
                 setKeyword={setKeyword}
-                kakaoKewordSerach={kakaoKewordSerach}
+                kakaoKeywordSearch={kakaoKeywordSearch}
                 onClickChangePoint={onClickChangePoint}
                 onClickSerachRecord={onClickSerachRecord}
                 departure={departure}
@@ -53,7 +56,7 @@ const TabCategoryList = [
         title : '장소 검색',
         component : ({handleComplete} :{ handleComplete: (data: any) => void }) => (
             <DaumPostcode 
-                onComplete={handleComplete} 
+                onComplete ={handleComplete} 
                 autoClose={false}  
                 style={{height:'500px'}}/>
         )
@@ -94,25 +97,28 @@ const TabCategoryList = [
 
 const PlanMap = () => {
     const [{x, y}, setAddressInfo] = useRecoilState(kakaoAddressInfoState);
-    const [searchList, setSearchList] = useState<IKakaoAddressInfo[] >([]); //키워드 검색기록
-    const [markers, setMarkers] = useState<IMarkers[]>([]); //키워드 검색들 마커들
+    const [map, setMap] = useState<any>();
+    const [searchList, setSearchList] = useState<IKakaoAddressInfo[] >([]); //검색기록
+    const [markers, setMarkers] = useState<IMarkers[]>([]); //키워드 검색들 마커
+    // const [currentMap, setCurrentMap] = useRecoilState(currentKakaoMap);
 
     const [activeTab, setActiveTab] = useState('category');
     const [directionRecord, setDirectionRecord] = useState<IDirectionRecord[]>([]); //길찾기한 기록들
     const [zoomable, setZoomable] = useState(true) //zoom 막기
-    const [map, setMap] = useState<any>();
-    const [markerInfo, setMarkerInfo] = useState<any>(null); //현재 마커 정보
     const [departure, setDeparture] = useState(''); // 출발지
     const [arrive, setArrive] = useState(''); //도착지
     const [keyword, setKeyword] = useState('서울역');
+    const [markerInfo, setMarkerInfo] = useState<any>(null); //현재 마커 정보
+
+    // const {searchList, markers, setMarkers, kakaoKeywordSearch, kakaoAddressSearch} = useKakaoSearch();
+
 
     useEffect(() => {
         if (!map) return
-        if(!markerInfo) kakaoKewordSerach();
-    }, [map, markerInfo])
-    
+        if(!markerInfo) kakaoKeywordSearch();
+    }, [map, markerInfo]);
 
-    const kakaoKewordSerach = () => {
+    const kakaoKeywordSearch = () => {
         const ps = new kakao.maps.services.Places();
         ps.keywordSearch(keyword, (data:any, status, _pagination) => {
             if (status === kakao.maps.services.Status.OK) {
@@ -172,6 +178,7 @@ const PlanMap = () => {
         });
     };
 
+
     const onClickSerachRecord = (addressInfo : IKakaoAddressInfo)  => () => {
         setAddressInfo(addressInfo);
         setMarkerInfo(addressInfo);
@@ -198,7 +205,6 @@ const PlanMap = () => {
                 setArrive('');
             }
         } 
-
         if (type === "arrive") {
             setArrive(placeName);
             if (departure === placeName) {
@@ -248,7 +254,6 @@ const PlanMap = () => {
                         onCreate={setMap}
                         >
                         {markers.map((marker : any) => (
-                            // `https://map.kakao.com/?sName=&eName=고속터미널 길찾기 url`
                             <>
                                 <MapMarker
                                     key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
@@ -265,7 +270,7 @@ const PlanMap = () => {
                                                     <Card.Text>{markerInfo.address_name}</Card.Text>
                                                     {departure !== markerInfo.place_name && <StyledDirectionBtn variant="secondary" onClick={onClickChangePoint(markerInfo.place_name,'departure')}>출발지로 설정</StyledDirectionBtn>}
                                                     {arrive !== markerInfo.place_name && <StyledDirectionBtn variant="secondary" onClick={onClickChangePoint(markerInfo.place_name, 'arrive')}>도착지로 설정</StyledDirectionBtn>}
-                                                    <Card.Link href={`https://map.kakao.com/?sName=${departure}&eName=${markerInfo.place_name}`} target={"_blank"} >
+                                                    <Card.Link href={`https://map.kakao.com/link/to/${markerInfo.place_name},${markerInfo.y},${markerInfo.x}`} target={"_blank"} >
                                                         <StyledDirectionBtn variant="success" onClick={() => onClickSearchDirection(markerInfo.place_name)} >
                                                             길찾기
                                                         </StyledDirectionBtn>
@@ -278,7 +283,7 @@ const PlanMap = () => {
                         ))}
                         <Button onClick={() => setZoomable(false)}>지도 확대/축소 끄기</Button>{" "}
                         <Button onClick={() => setZoomable(true)}>지도 확대/축소 켜기</Button>{" "}
-                        <Button onClick={() => {window.open(`https://map.kakao.com/?sName=${departure}&eName=${arrive}`); onClickSearchDirection(arrive)}}>길찾기</Button>
+                        <Button onClick={() => {window.open(`https://map.kakao.com/link/to/${arrive},${markerInfo.y},${markerInfo.x}`); onClickSearchDirection(arrive)}}>길찾기</Button>
                     </StyledPlanMap>
                     {departure && <div> 출발지 : {departure}</div>}
                     {arrive && <div> 도착지 : {arrive}</div>}
@@ -297,7 +302,7 @@ const PlanMap = () => {
                                 {component({
                                     searchList,
                                     setKeyword,
-                                    kakaoKewordSerach,
+                                    kakaoKeywordSearch,
                                     onClickChangePoint,
                                     onClickSerachRecord,
                                     departure,

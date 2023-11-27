@@ -1,12 +1,14 @@
 import React from 'react'
 import { IKakaoAddressInfo } from '../../../atom/kakaoAddressInfo';
 import { Form , ListGroup } from 'react-bootstrap';
-import { StyledCurrentPlaceDiv, StyledDirectionBtn, StyledSearchListItem, StyledeBtnWrapper } from '../../PlanMap';
+import { StyledCurrentPlaceDiv, StyledDirectionBtn, StyledSearchListItem, StyledeBtnWrapper } from '../PlanMap';
+import { useRecoilValue } from 'recoil';
+import { currentKakaoMap } from '../../../atom/currentKakaoMap';
 
 export interface ICategoryTabProps {
     searchList: IKakaoAddressInfo[];
     setKeyword: (value: string) => void; 
-    kakaoKewordSerach: () => void;
+    kakaoKeywordSearch: (keyword: string, map : any) => void;
     onClickChangePoint: (placeName: string, type: "departure" | "arrive") => ()=> void;
     onClickSerachRecord: (addressInfo: any) => () => void; 
     departure: string; 
@@ -16,12 +18,13 @@ export interface ICategoryTabProps {
 const CategoryTab:React.FC<ICategoryTabProps> = ({  
         searchList,
         setKeyword,
-        kakaoKewordSerach, 
+        kakaoKeywordSearch, 
         onClickChangePoint, 
         onClickSerachRecord,
         departure,
         arrive
     }) => {
+    const currentMap = useRecoilValue(currentKakaoMap);
     return (
         <>
             <Form.Control
@@ -31,7 +34,7 @@ const CategoryTab:React.FC<ICategoryTabProps> = ({
                 onChange={(e) => setKeyword(e.target.value)}
                 onKeyDown={(e) => {
                     if (e.key === 'Enter') {
-                        kakaoKewordSerach();
+                        kakaoKeywordSearch(e.currentTarget.value, currentMap);
                     }
                 }}
             />
