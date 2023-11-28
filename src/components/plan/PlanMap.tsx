@@ -1,18 +1,16 @@
-import  {useCallback, useEffect, useState} from 'react'
-import { Map, MapMarker,CustomOverlayMap } from 'react-kakao-maps-sdk';
+import  {useState} from 'react'
 import OverlayWrapper from '../shared/OverlayWrapper';
 import DaumPostcode from "react-daum-postcode";
-import { useRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import { IKakaoAddressInfo, kakaoAddressInfoState } from '../../atom/kakaoAddressInfo';
 import { Col, Row, Button, Tabs, Tab,ListGroup, Card, CloseButton } from 'react-bootstrap';
 import styled from 'styled-components';
 import CategoryTab, { ICategoryTabProps } from './Tabs/CategoryTab';
 import RecordTab, { IRecordTabProps } from './Tabs/RecordTab';
 import MakePlanTab, { IMakePlanTabProps } from './Tabs/MakePlanTab';
-// import useKakaoSearch from '../../hooks/useSearchKakaoMap';
-// import { currentKakaoMap } from '../../atom/currentKakaoMap';
 import axios from 'axios';
-import useKakaoSearch from '../../hooks/useSearchKakaoMap';
+import useKakaoKeywordSearch from '../../hooks/useKakaoKeywordSearch';
+import MapSide from './MapSide';
 
 export type TMarkers  = {
     lat: string,
@@ -45,6 +43,7 @@ const TabCategoryList = [
             onClickSerachRecord,
             departure,
             arrive,
+            map,
             } : ICategoryTabProps) => (
             <CategoryTab
                 searchList={searchList}
@@ -54,15 +53,16 @@ const TabCategoryList = [
                 onClickSerachRecord={onClickSerachRecord}
                 departure={departure}
                 arrive={arrive}
+                map={map}
             />
         ),
     },
     {
         eventKey :'location',
         title : '장소 검색',
-        component : ({handleComplete} :{ handleComplete: (data: any) => void }) => (
+        component : ({handleKakaoAddressSearch} :{ handleKakaoAddressSearch: (data: any) => void }) => (
             <DaumPostcode 
-                onComplete ={handleComplete} 
+                onComplete ={handleKakaoAddressSearch} 
                 autoClose={false}  
                 style={{height:'500px'}}/>
         )
@@ -102,22 +102,19 @@ const TabCategoryList = [
 ]
 
 const PlanMap = () => {
-    const [{x, y}, setAddressInfo] = useRecoilState(kakaoAddressInfoState);
-    // const [map, setMap] = useState<any>();
-    // const [searchList, setSearchList] = useState<IKakaoAddressInfo[] >([]); //검색기록
+    const setAddressInfo = useSetRecoilState(kakaoAddressInfoState);
     const [markers, setMarkers] = useState<IMarkers[]>([]); //키워드 검색들 마커
 
     const [activeTab, setActiveTab] = useState('category');
     const [directionRecord, setDirectionRecord] = useState<IDirectionRecord[]>([]); //길찾기한 기록들
-    const [zoomable, setZoomable] = useState(true) //zoom 막기
     const [departure, setDeparture] = useState(''); // 출발지
     const [arrive, setArrive] = useState(''); //도착지
     const [keyword, setKeyword] = useState('서울역');
     const [markerInfo, setMarkerInfo] = useState<any>(null); //현재 마커 정보
 
-    const {searchList, kakaoKeywordSearch, map, setMap} = useKakaoSearch({setMarkers, markerInfo});
+    const {searchList, kakaoKeywordSearch, map, setMap} = useKakaoKeywordSearch({setMarkers, markerInfo});
 
-    const handleComplete = async (data: any) => {
+    const handleKakaoAddressSearch = async (data: any) => {
         const searchTxt = data.address; // 검색한 주소
         const config = { headers: {Authorization : `KakaoAK ${process.env.REACT_APP_KAKAOREST_KEY}`}}; // 헤더 설정
         const url = 'https://dapi.kakao.com/v2/local/search/address.json?query='+searchTxt; // REST API url에 data.address값 전송
@@ -217,44 +214,16 @@ const PlanMap = () => {
             <StyledPlanRow padding={'auto'}>
                 {/* 맵부분 */}
                 <StyledPlanCol xs={12} lg={6}>
-                    <StyledPlanMap 
-                        center={{ lat: y, lng: x }}   // 지도의 중심 좌표
-                        level={3}// 지도 확대 레벨
-                        zoomable={zoomable}
-                        onCreate={setMap}
-                        >
-                        {markers.map((marker : any) => (
-                            <>
-                                <MapMarker
-                                    key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
-                                    position={marker.position}
-                                    onClick={() => setMarkerInfo(marker)}
-                                    />
-                                    {markerInfo && markerInfo.x === marker.x && markerInfo.y === marker.y && (
-                                        <CustomOverlayMap position={marker.position} >
-                                            <StyledMapCard>
-                                                <Card.Body >
-                                                    <StyledColseBtn onClick={() => setMarkerInfo(null)}/>
-                                                    <Card.Title>{markerInfo.place_name}</Card.Title>
-                                                    <Card.Text>{markerInfo.road_address_name}</Card.Text>
-                                                    <Card.Text>{markerInfo.address_name}</Card.Text>
-                                                    {departure !== markerInfo.place_name && <StyledDirectionBtn variant="secondary" onClick={onClickChangePoint(markerInfo.place_name,'departure')}>출발지로 설정</StyledDirectionBtn>}
-                                                    {arrive !== markerInfo.place_name && <StyledDirectionBtn variant="secondary" onClick={onClickChangePoint(markerInfo.place_name, 'arrive')}>도착지로 설정</StyledDirectionBtn>}
-                                                    <Card.Link href={`https://map.kakao.com/link/to/${markerInfo.place_name},${markerInfo.y},${markerInfo.x}`} target={"_blank"} >
-                                                        <StyledDirectionBtn variant="success" onClick={() => onClickSearchDirection({arrive : markerInfo.place_name, departure : departure}, {lat : markerInfo.y, lng : markerInfo.x})} >
-                                                            길찾기
-                                                        </StyledDirectionBtn>
-                                                    </Card.Link>
-                                                </Card.Body> 
-                                            </StyledMapCard>
-                                        </CustomOverlayMap>
-                                    )}
-                            </>
-                        ))}
-                        <Button onClick={() => setZoomable(false)}>지도 확대/축소 끄기</Button>{" "}
-                        <Button onClick={() => setZoomable(true)}>지도 확대/축소 켜기</Button>{" "}
-                        <Button onClick={() => {window.open(`https://map.kakao.com/link/to/${arrive},${markerInfo.y},${markerInfo.x}`); onClickSearchDirection({arrive, departure}, {lat : markerInfo.y, lng : markerInfo.x} )}}>길찾기</Button>
-                    </StyledPlanMap>
+                    <MapSide 
+                        setMap={setMap} 
+                        markers={markers} 
+                        markerInfo={markerInfo} 
+                        setMarkerInfo={setMarkerInfo}  
+                        onClickChangePoint={onClickChangePoint} 
+                        onClickSearchDirection={onClickSearchDirection} 
+                        departure={departure} 
+                        arrive={arrive}
+                        />
                     {departure && <div> 출발지 : {departure}</div>}
                     {arrive && <div> 도착지 : {arrive}</div>}
                 </StyledPlanCol>
@@ -277,10 +246,11 @@ const PlanMap = () => {
                                     onClickSerachRecord,
                                     departure,
                                     arrive,
-                                    handleComplete,
+                                    handleKakaoAddressSearch,
                                     directionRecord,
                                     onClickRecordPlan,
                                     handleTabSelect,
+                                    map
                                 })}
                             </Tab>
                         ))}
@@ -297,28 +267,9 @@ const StyledPlanRow = styled(Row)`
     padding: 0;
 `
 
-const StyledPlanMap = styled(Map)`
-    height: 500px;
-`
-
 const StyledPlanCol = styled(Col)`
     margin: 30px;
 `
-
-const StyledMapCard = styled(Card)`
-    position: relative;
-    padding: 10px 20px;
-    z-index: 1;
-    & > .card-body {
-        height: inherit;
-        & > .card-title {
-        }
-        & > .card-text {
-            margin: 0;
-        }
-    }
-`
-
 
 export const StyledSearchListItem = styled(ListGroup.Item)`
     display: flex;
@@ -330,13 +281,6 @@ export const StyledeBtnWrapper = styled.div`
     display: flex;
     gap: 10px; 
 `
-
-const StyledColseBtn = styled(CloseButton)`
-    position: absolute;
-    top: 5px;
-    right: 5px;
-`
-
 export const StyledDirectionBtn = styled(Button)<{width?:string}>`
     padding: 5px;
     font-size: 12px;

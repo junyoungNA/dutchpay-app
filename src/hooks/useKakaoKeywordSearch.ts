@@ -7,10 +7,9 @@ interface IUseKakaoSearchProps {
     setMarkers : Dispatch<SetStateAction<IMarkers[]>>;
 }
 
-export const useKakaoSearch = ({ setMarkers, markerInfo} : IUseKakaoSearchProps )  => {
+export const useKakaoKeywordSearch = ({ setMarkers, markerInfo} : IUseKakaoSearchProps )  => {
     const [searchList, setSearchList] = useState<IKakaoAddressInfo[]>([]);
     const [map, setMap] = useState<any>();
-
     const kakaoKeywordSearch = useCallback((keyword : string) => {
         const ps = new kakao.maps.services.Places();
         ps.keywordSearch(keyword, (data:any, status, _pagination) => {
@@ -47,4 +46,4 @@ export const useKakaoSearch = ({ setMarkers, markerInfo} : IUseKakaoSearchProps 
     return { searchList, kakaoKeywordSearch, map, setMap };
 };
 
-export default useKakaoSearch;
+export default useKakaoKeywordSearch;
