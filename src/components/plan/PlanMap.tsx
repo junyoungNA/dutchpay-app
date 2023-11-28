@@ -1,4 +1,4 @@
-import  {useEffect, useState} from 'react'
+import  {useCallback, useEffect, useState} from 'react'
 import { Map, MapMarker,CustomOverlayMap } from 'react-kakao-maps-sdk';
 import OverlayWrapper from '../shared/OverlayWrapper';
 import DaumPostcode from "react-daum-postcode";
@@ -25,6 +25,7 @@ interface IMarkers {
 export interface  IDirectionRecord {
     arrive : string,
     departure : string,
+    coordinate: TMarkers; 
 }
 
 const TabCategoryList = [
@@ -112,13 +113,7 @@ const PlanMap = () => {
 
     // const {searchList, markers, setMarkers, kakaoKeywordSearch, kakaoAddressSearch} = useKakaoSearch();
 
-
-    useEffect(() => {
-        if (!map) return
-        if(!markerInfo) kakaoKeywordSearch();
-    }, [map, markerInfo]);
-
-    const kakaoKeywordSearch = () => {
+    const kakaoKeywordSearch = useCallback( () => {
         const ps = new kakao.maps.services.Places();
         ps.keywordSearch(keyword, (data:any, status, _pagination) => {
             if (status === kakao.maps.services.Status.OK) {
@@ -144,8 +139,14 @@ const PlanMap = () => {
                     map.setBounds(bounds);
                 }
             })
-    }
+    }, [keyword, map])
     
+    useEffect(() => {
+        if (!map) return
+        if(!markerInfo) kakaoKeywordSearch();
+    }, [map, markerInfo, kakaoKeywordSearch]);
+
+
 
     const handleComplete = async (data: any) => {
         const searchTxt = data.address; // 검색한 주소
@@ -184,7 +185,7 @@ const PlanMap = () => {
         setMarkerInfo(addressInfo);
     }
 
-    const onClickSearchDirection = (arrive? : string)=> {
+    const onClickSearchDirection = (arrive : string, coordinate : TMarkers)=> {
         if(arrive === '' || !arrive) return;
         setDirectionRecord((prev : IDirectionRecord[]) => 
             [
@@ -192,6 +193,7 @@ const PlanMap = () => {
                 {
                     departure : departure,
                     arrive : arrive,
+                    coordinate,
                 }
             ]
         );
@@ -271,7 +273,7 @@ const PlanMap = () => {
                                                     {departure !== markerInfo.place_name && <StyledDirectionBtn variant="secondary" onClick={onClickChangePoint(markerInfo.place_name,'departure')}>출발지로 설정</StyledDirectionBtn>}
                                                     {arrive !== markerInfo.place_name && <StyledDirectionBtn variant="secondary" onClick={onClickChangePoint(markerInfo.place_name, 'arrive')}>도착지로 설정</StyledDirectionBtn>}
                                                     <Card.Link href={`https://map.kakao.com/link/to/${markerInfo.place_name},${markerInfo.y},${markerInfo.x}`} target={"_blank"} >
-                                                        <StyledDirectionBtn variant="success" onClick={() => onClickSearchDirection(markerInfo.place_name)} >
+                                                        <StyledDirectionBtn variant="success" onClick={() => onClickSearchDirection(markerInfo.place_name, {lat : markerInfo.y, lng : markerInfo.x})} >
                                                             길찾기
                                                         </StyledDirectionBtn>
                                                     </Card.Link>
@@ -283,7 +285,7 @@ const PlanMap = () => {
                         ))}
                         <Button onClick={() => setZoomable(false)}>지도 확대/축소 끄기</Button>{" "}
                         <Button onClick={() => setZoomable(true)}>지도 확대/축소 켜기</Button>{" "}
-                        <Button onClick={() => {window.open(`https://map.kakao.com/link/to/${arrive},${markerInfo.y},${markerInfo.x}`); onClickSearchDirection(arrive)}}>길찾기</Button>
+                        <Button onClick={() => {window.open(`https://map.kakao.com/link/to/${arrive},${markerInfo.y},${markerInfo.x}`); onClickSearchDirection(arrive, {lat : markerInfo.y, lng : markerInfo.x} )}}>길찾기</Button>
                     </StyledPlanMap>
                     {departure && <div> 출발지 : {departure}</div>}
                     {arrive && <div> 도착지 : {arrive}</div>}
@@ -310,7 +312,7 @@ const PlanMap = () => {
                                     handleComplete,
                                     directionRecord,
                                     onClickRecordPlan,
-                                    handleTabSelect
+                                    handleTabSelect,
                                 })}
                             </Tab>
                         ))}
