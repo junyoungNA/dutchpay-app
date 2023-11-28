@@ -22,9 +22,13 @@ interface IMarkers {
     position? : TMarkers;
 }
 
-export interface  IDirectionRecord {
+export type TArriveAndDeparture = {
     arrive : string,
     departure : string,
+}
+
+export interface  IDirectionRecord {
+    arriveAndDeparture : TArriveAndDeparture;
     coordinate: TMarkers; 
 }
 
@@ -185,14 +189,14 @@ const PlanMap = () => {
         setMarkerInfo(addressInfo);
     }
 
-    const onClickSearchDirection = (arrive : string, coordinate : TMarkers)=> {
+    const onClickSearchDirection = (arriveAndDeparture : TArriveAndDeparture, coordinate : TMarkers)=> {
         if(arrive === '' || !arrive) return;
+        console.log(arriveAndDeparture,'onClickSearchDri');
         setDirectionRecord((prev : IDirectionRecord[]) => 
             [
                 ...prev,
                 {
-                    departure : departure,
-                    arrive : arrive,
+                    arriveAndDeparture,
                     coordinate,
                 }
             ]
@@ -273,7 +277,7 @@ const PlanMap = () => {
                                                     {departure !== markerInfo.place_name && <StyledDirectionBtn variant="secondary" onClick={onClickChangePoint(markerInfo.place_name,'departure')}>출발지로 설정</StyledDirectionBtn>}
                                                     {arrive !== markerInfo.place_name && <StyledDirectionBtn variant="secondary" onClick={onClickChangePoint(markerInfo.place_name, 'arrive')}>도착지로 설정</StyledDirectionBtn>}
                                                     <Card.Link href={`https://map.kakao.com/link/to/${markerInfo.place_name},${markerInfo.y},${markerInfo.x}`} target={"_blank"} >
-                                                        <StyledDirectionBtn variant="success" onClick={() => onClickSearchDirection(markerInfo.place_name, {lat : markerInfo.y, lng : markerInfo.x})} >
+                                                        <StyledDirectionBtn variant="success" onClick={() => onClickSearchDirection({arrive : markerInfo.place_name, departure : departure}, {lat : markerInfo.y, lng : markerInfo.x})} >
                                                             길찾기
                                                         </StyledDirectionBtn>
                                                     </Card.Link>
@@ -285,7 +289,7 @@ const PlanMap = () => {
                         ))}
                         <Button onClick={() => setZoomable(false)}>지도 확대/축소 끄기</Button>{" "}
                         <Button onClick={() => setZoomable(true)}>지도 확대/축소 켜기</Button>{" "}
-                        <Button onClick={() => {window.open(`https://map.kakao.com/link/to/${arrive},${markerInfo.y},${markerInfo.x}`); onClickSearchDirection(arrive, {lat : markerInfo.y, lng : markerInfo.x} )}}>길찾기</Button>
+                        <Button onClick={() => {window.open(`https://map.kakao.com/link/to/${arrive},${markerInfo.y},${markerInfo.x}`); onClickSearchDirection({arrive, departure}, {lat : markerInfo.y, lng : markerInfo.x} )}}>길찾기</Button>
                     </StyledPlanMap>
                     {departure && <div> 출발지 : {departure}</div>}
                     {arrive && <div> 도착지 : {arrive}</div>}
@@ -299,8 +303,8 @@ const PlanMap = () => {
                         className="mb-3"
                         >
                         {/*  TabCategoryList map을 돌면 각각 탭 컴포넌트 return*/}
-                        {TabCategoryList.map(({eventKey, title, component}) => (
-                            <Tab eventKey={eventKey} title={title} >
+                        {TabCategoryList.map(({eventKey, title, component}, idx) => (
+                            <Tab key={idx} eventKey={eventKey} title={title} >
                                 {component({
                                     searchList,
                                     setKeyword,
@@ -341,8 +345,6 @@ const StyledMapCard = styled(Card)`
     position: relative;
     padding: 10px 20px;
     z-index: 1;
-
-    /* 다른 공통 스타일 속성 추가 가능 */
     & > .card-body {
         height: inherit;
         & > .card-title {
@@ -354,7 +356,7 @@ const StyledMapCard = styled(Card)`
 `
 
 
-export const StyledSearchListItem = styled(ListGroup.Item)<{justifyContent?:string}>`
+export const StyledSearchListItem = styled(ListGroup.Item)`
     display: flex;
     justify-content: space-between;
     align-items: center;
