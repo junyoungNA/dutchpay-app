@@ -12,13 +12,14 @@ import MakePlanTab, { IMakePlanTabProps } from './Tabs/MakePlanTab';
 // import useKakaoSearch from '../../hooks/useSearchKakaoMap';
 // import { currentKakaoMap } from '../../atom/currentKakaoMap';
 import axios from 'axios';
+import useKakaoSearch from '../../hooks/useSearchKakaoMap';
 
-type TMarkers  = {
+export type TMarkers  = {
     lat: string,
     lng : string,
 } 
 
-interface IMarkers {
+export interface IMarkers {
     position? : TMarkers;
 }
 
@@ -102,10 +103,9 @@ const TabCategoryList = [
 
 const PlanMap = () => {
     const [{x, y}, setAddressInfo] = useRecoilState(kakaoAddressInfoState);
-    const [map, setMap] = useState<any>();
-    const [searchList, setSearchList] = useState<IKakaoAddressInfo[] >([]); //검색기록
+    // const [map, setMap] = useState<any>();
+    // const [searchList, setSearchList] = useState<IKakaoAddressInfo[] >([]); //검색기록
     const [markers, setMarkers] = useState<IMarkers[]>([]); //키워드 검색들 마커
-    // const [currentMap, setCurrentMap] = useRecoilState(currentKakaoMap);
 
     const [activeTab, setActiveTab] = useState('category');
     const [directionRecord, setDirectionRecord] = useState<IDirectionRecord[]>([]); //길찾기한 기록들
@@ -115,42 +115,7 @@ const PlanMap = () => {
     const [keyword, setKeyword] = useState('서울역');
     const [markerInfo, setMarkerInfo] = useState<any>(null); //현재 마커 정보
 
-    // const {searchList, markers, setMarkers, kakaoKeywordSearch, kakaoAddressSearch} = useKakaoSearch();
-
-    const kakaoKeywordSearch = useCallback( () => {
-        const ps = new kakao.maps.services.Places();
-        ps.keywordSearch(keyword, (data:any, status, _pagination) => {
-            if (status === kakao.maps.services.Status.OK) {
-                // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
-                // LatLngBounds 객체에 좌표를 추가합니다
-                const bounds = new kakao.maps.LatLngBounds()
-                const markers : any= [];
-                // console.log(data, '가져온 데이터');
-                for (let i = 0; i < data.length; i++) {
-                    markers.push({
-                        ...data[i],
-                        position: {
-                            lat: data[i].y,
-                            lng: data[i].x,
-                        }
-                    })
-                // extend 메소드: 이 메소드는 bounds 객체의 경계를 확장(extend)하는 데 사용됩니다
-                    bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x))
-                }
-                    setMarkers(markers);
-                    setSearchList(data);
-                    // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
-                    map.setBounds(bounds);
-                }
-            })
-    }, [keyword, map])
-    
-    useEffect(() => {
-        if (!map) return
-        if(!markerInfo) kakaoKeywordSearch();
-    }, [map, markerInfo, kakaoKeywordSearch]);
-
-
+    const {searchList, kakaoKeywordSearch, map, setMap} = useKakaoSearch({setMarkers, markerInfo});
 
     const handleComplete = async (data: any) => {
         const searchTxt = data.address; // 검색한 주소
@@ -182,7 +147,6 @@ const PlanMap = () => {
             console.log(error)
         });
     };
-
 
     const onClickSerachRecord = (addressInfo : IKakaoAddressInfo)  => () => {
         setAddressInfo(addressInfo);
