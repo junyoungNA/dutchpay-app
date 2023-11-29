@@ -14,7 +14,6 @@ const Plan = require('./schema/plan');
 const cors = require('cors'); // cors 모듈 추가
 const { default: axios } = require('axios');
 const { getKakaoToken } = require('./getKakaoToken');
-const { clearTokenCookie } = require('./clearTokenCookie');
 app.use(express.json()); // JSON 요청 본문 파싱 설정
 app.use(cookieParser());
 app.use(cors({origin: 'http://localhost:3000', credentials:true})); // 모든 출처에서의 요청을 허용
@@ -343,9 +342,9 @@ app.post('/expense', async (req, res) => {
 
 app.post('/plan', async (req, res) => {
     try {
-        const {title, date, departure,  arrive, stratTime, endTime, content  } = req.body;
+        const {title, date, departure,  arrive, stratTime, endTime, content, idUser  } = req.body;
         // console.log(groupName, idUser,  desc, date, amount, payer) ;
-        const plan = new Plan({title, date, departure, arrive, stratTime, endTime, content});
+        const plan = new Plan({title, date, departure, arrive, stratTime, endTime, content, idUser});
         await plan.save(); // 사용자 데이터를 데이터베이스에 저장
         res.status(201).json(); // 저장된 사용자 데이터를 JSON 형식으로 응답
     } catch (error) {

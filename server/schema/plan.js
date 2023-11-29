@@ -8,6 +8,7 @@ const  planSchema= new mongoose.Schema({
     stratTime : String,
     endTime : String,
     content : String,
+    idUser : String,
 });
 
 module.exports = mongoose.model('Plan', planSchema);

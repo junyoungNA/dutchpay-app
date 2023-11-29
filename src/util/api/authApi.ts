@@ -11,12 +11,6 @@ export const getKakaoUserInfo = async () => {
     // if (!token) {
     //     throw new Error('Kakao access token not found');
     // }
-
-    // const headers = {
-    //     'Authorization': `Bearer ${token}`,
-    //     'Content-Type': 'application/json',
-    // };
-
     const config: AxiosRequestConfig = {
         // headers: headers,
         withCredentials : true, //쿠키에 설정된 token 데이터들을 보내기위한 설정

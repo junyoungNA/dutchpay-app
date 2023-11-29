@@ -50,7 +50,6 @@ const MapSide: React.FC<IMapSideProps> = ({setMap, markers, markerInfo, setMarke
                                     {arrive !== markerInfo.place_name && <StyledDirectionBtn variant="secondary" onClick={onClickChangePoint(markerInfo.place_name, 'arrive')}>도착지로 설정</StyledDirectionBtn>}
                                     <Card.Link href={`https://map.kakao.com/link/to/${markerInfo.place_name},${markerInfo.y},${markerInfo.x}`} target={"_blank"} >
                                         <StyledDirectionBtn variant="success" onClick={() =>{ 
-                                            console.log(markerInfo.place_name,'onClick');
                                             setArrive(markerInfo.place_name);
                                             onClickSearchDirection({arrive : markerInfo.place_name, departure : departure}, {lat : markerInfo.y, lng : markerInfo.x})}} >
                                             길찾기

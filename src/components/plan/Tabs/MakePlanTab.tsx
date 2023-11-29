@@ -5,9 +5,12 @@ import { StyledDirectionBtn } from '../PlanMap'
 import { TbTilde } from 'react-icons/tb'
 import { ArrowRight } from 'react-bootstrap-icons'
 import { postData } from '../../../util/api/apiInstance'
-import { useRecoilValue } from 'recoil'
+import { useRecoilValue, useResetRecoilState } from 'recoil'
 import { mapArrive } from '../../../atom/mapArrive'
 import { mapDeparture } from '../../../atom/mapDeparture'
+import { kakaoUser } from '../../../atom/kakaoUser'
+import { useRouter } from '../../../hooks/useRouter'
+import useFetchUserInfo from '../../../hooks/useFetchUserInfo '
 
 export interface IMakePlanTabProps {
     setKeyword : (value : string) => void,
@@ -17,6 +20,10 @@ export interface IMakePlanTabProps {
 const MakePlanTab:React.FC<IMakePlanTabProps> = ({setKeyword, handleTabSelect}) => {
     const arrive = useRecoilValue(mapArrive);
     const departure = useRecoilValue(mapDeparture);
+    const {idUser} = useRecoilValue(kakaoUser);
+    const {routeTo} = useRouter();
+    const resetKakaoUser = useResetRecoilState(kakaoUser);
+    const fetchUserInfo = useFetchUserInfo({ resetKakaoUser, routeTo });
 
     const hanldeSubmit =  async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -29,10 +36,13 @@ const MakePlanTab:React.FC<IMakePlanTabProps> = ({setKeyword, handleTabSelect}) 
             startTime: formData.get('startTime') as string,
             endTime: formData.get('endTime') as string,
             content: formData.get('content') as string,
+            idUser : idUser,
         }
-        // console.log(planPayload,'palnpayload');
+        console.log(planPayload,'palnpayload');
+        // user token체크후 유효성검사 실패 시 메인페이지로 이동
+        await fetchUserInfo();
         const result : any  =  await postData('plan',planPayload );
-        // console.log(result,'결과');
+        console.log(result,'결과');
     }
     return (
         <Form onSubmit={hanldeSubmit}>
@@ -48,7 +58,6 @@ const MakePlanTab:React.FC<IMakePlanTabProps> = ({setKeyword, handleTabSelect}) 
                 type='date'
                 placeholder='계획의 날짜를 선택해 주세요.'
                 name='date'
-                // onChange={(e) => setDate(e.target.value)}
             />
             <StyledFormGroup>
                 <StyledFormControl

@@ -39,7 +39,6 @@ const PlanMap = () => {
     const {searchList, kakaoKeywordSearch, map, setMap} = useKakaoKeywordSearch({setMarkers, markerInfo});
 
     const onClickSearchDirection = (arriveAndDeparture : TArriveAndDeparture, coordinate : TMarkers)=> {
-        console.log(arriveAndDeparture, 'onClickSearchDirection');
         if(arriveAndDeparture.arrive === '' || !arriveAndDeparture.arrive) return;
         setDirectionRecord((prev : IDirectionRecord[]) => 
             [

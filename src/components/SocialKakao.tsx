@@ -20,7 +20,7 @@ const SocialKakao = () => {
     const kakaoOnSuccess = async (data : any)=> {
         try {
             const {access_token, refresh_token, expires_in, refresh_token_expires_in } = data.response;
-            const idUser= data.profile.id
+            const idUser = data.profile.id
             const nickname = data.profile.properties.nickname;
             if(user.idUser && user.nickname) return await kakaoLogout(data);
             const response: any = await postData('user',{nickname, idUser, refresh_token, access_token, expires_in, refresh_token_expires_in});
