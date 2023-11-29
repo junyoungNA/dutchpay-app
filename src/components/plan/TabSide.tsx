@@ -5,9 +5,11 @@ import CategoryTab, { ICategoryTabProps } from './Tabs/CategoryTab'
 import { Tab, Tabs } from 'react-bootstrap'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { IKakaoAddressInfo, kakaoAddressInfoState } from '../../atom/kakaoAddressInfo'
-import { IDirectionRecord, IMarkers, TArriveAndDeparture, TMarkers } from './PlanMap'
+import { IDirectionRecord, IMarkers } from './PlanMap'
 import axios from 'axios'
 import { useSetRecoilState } from 'recoil'
+import { mapArrive } from '../../atom/mapArrive'
+import { mapDeparture } from '../../atom/mapDeparture'
 
 const TabCategoryList = [
     {
@@ -19,8 +21,6 @@ const TabCategoryList = [
             kakaoKeywordSearch, 
             onClickChangePoint,
             onClickSerachRecord,
-            departure,
-            arrive,
             map,
             } : ICategoryTabProps) => (
             <CategoryTab
@@ -29,8 +29,6 @@ const TabCategoryList = [
                 kakaoKeywordSearch={kakaoKeywordSearch}
                 onClickChangePoint={onClickChangePoint}
                 onClickSerachRecord={onClickSerachRecord}
-                departure={departure}
-                arrive={arrive}
                 map={map}
             />
         ),
@@ -63,15 +61,11 @@ const TabCategoryList = [
         eventKey :'makePlan',
         title : '계획',
         component : ({
-            departure, 
-            arrive, 
             setKeyword,
             handleTabSelect
         } : IMakePlanTabProps) =>  
         (
             <MakePlanTab
-                departure={departure}
-                arrive={arrive}
                 setKeyword={setKeyword}
                 handleTabSelect={handleTabSelect}
             />
@@ -79,16 +73,11 @@ const TabCategoryList = [
     }
 ]
 
-
 interface ITabSideProps {
     searchList : IKakaoAddressInfo[],
     setKeyword : Dispatch<SetStateAction<string>>,
     kakaoKeywordSearch : (keyword : string) => void,
     onClickChangePoint : (placeName: string, type: "departure" | "arrive") => () => void,
-    departure : string,
-    arrive : string,
-    setDeparture : Dispatch<SetStateAction<string>>,
-    setArrive : Dispatch<SetStateAction<string>>,
     directionRecord : IDirectionRecord[]    
     setMarkers : Dispatch<SetStateAction<IMarkers[]>>,
     map : any,
@@ -100,10 +89,6 @@ const TabSide : React.FC<ITabSideProps> = ({
         setKeyword, 
         kakaoKeywordSearch, 
         onClickChangePoint, 
-        departure, 
-        arrive,
-        setDeparture,
-        setArrive,
         directionRecord,
         setMarkers,
         map,
@@ -111,6 +96,8 @@ const TabSide : React.FC<ITabSideProps> = ({
     }) => {
     const setAddressInfo = useSetRecoilState(kakaoAddressInfoState);
     const [activeTab, setActiveTab] = useState('category');
+    const setArrive = useSetRecoilState(mapArrive);
+    const setDeparture = useSetRecoilState(mapDeparture);
 
     const handleKakaoAddressSearch = async (data: any) => {
         const searchTxt = data.address; // 검색한 주소
@@ -148,7 +135,7 @@ const TabSide : React.FC<ITabSideProps> = ({
         setMarkerInfo(addressInfo);
     }
 
-       // 지난 기록에서 설정을 눌러 출발지, 도착지 설정
+    // 지난 기록에서 설정을 눌러 출발지, 도착지 설정
     const onClickRecordPlan = (departure : string, arrive : string) => (event : React.MouseEvent<HTMLButtonElement>) => {
         event.stopPropagation();
         setDeparture(departure);
@@ -193,8 +180,6 @@ const TabSide : React.FC<ITabSideProps> = ({
                         kakaoKeywordSearch,
                         onClickChangePoint,
                         onClickSerachRecord,
-                        departure,
-                        arrive,
                         handleKakaoAddressSearch,
                         directionRecord,
                         onClickRecordPlan,

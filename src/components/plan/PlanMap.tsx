@@ -5,6 +5,9 @@ import styled from 'styled-components';
 import useKakaoKeywordSearch from '../../hooks/useKakaoKeywordSearch';
 import MapSide from './MapSide';
 import TabSide from './TabSide';
+import { useRecoilState } from 'recoil';
+import { mapDeparture } from '../../atom/mapDeparture';
+import { mapArrive } from '../../atom/mapArrive';
 
 export type TMarkers  = {
     lat: string,
@@ -27,18 +30,17 @@ export interface  IDirectionRecord {
 
 const PlanMap = () => {
     const [markers, setMarkers] = useState<IMarkers[]>([]); //키워드 검색들 마커
-
-    // const [activeTab, setActiveTab] = useState('category');
+    const [arrive, setArrive] = useRecoilState(mapArrive);
+    const [departure, setDeparture] = useRecoilState(mapDeparture);
     const [directionRecord, setDirectionRecord] = useState<IDirectionRecord[]>([]); //길찾기한 기록들
-    const [departure, setDeparture] = useState(''); // 출발지
-    const [arrive, setArrive] = useState(''); //도착지
     const [keyword, setKeyword] = useState('서울역');
     const [markerInfo, setMarkerInfo] = useState<any>(null); //현재 마커 정보
 
     const {searchList, kakaoKeywordSearch, map, setMap} = useKakaoKeywordSearch({setMarkers, markerInfo});
 
     const onClickSearchDirection = (arriveAndDeparture : TArriveAndDeparture, coordinate : TMarkers)=> {
-        if(arrive === '' || !arrive) return;
+        console.log(arriveAndDeparture, 'onClickSearchDirection');
+        if(arriveAndDeparture.arrive === '' || !arriveAndDeparture.arrive) return;
         setDirectionRecord((prev : IDirectionRecord[]) => 
             [
                 ...prev,
@@ -77,8 +79,6 @@ const PlanMap = () => {
                         setMarkerInfo={setMarkerInfo}  
                         onClickChangePoint={onClickChangePoint} 
                         onClickSearchDirection={onClickSearchDirection} 
-                        departure={departure} 
-                        arrive={arrive}
                         />
                     {departure && <div> 출발지 : {departure}</div>}
                     {arrive && <div> 도착지 : {arrive}</div>}
@@ -90,10 +90,6 @@ const PlanMap = () => {
                         setKeyword={setKeyword}
                         kakaoKeywordSearch={kakaoKeywordSearch}
                         onClickChangePoint={onClickChangePoint}
-                        departure={departure}
-                        arrive={arrive}
-                        setDeparture={setDeparture}
-                        setArrive={setArrive}
                         directionRecord={directionRecord}
                         setMarkers={setMarkers}
                         map={map}

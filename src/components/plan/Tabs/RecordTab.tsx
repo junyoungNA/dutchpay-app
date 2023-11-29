@@ -5,16 +5,14 @@ import styled from 'styled-components';
 import Lottie from 'lottie-react';
 import { error_animation } from '../../../aseets';
 import RecordListItem from './RecordListItem';
-// import { useRecoilValue } from 'recoil';
-// import { kakaoAddressInfoState } from '../../../atom/kakaoAddressInfo';
 
 export interface IRecordTabProps {
     directionRecord : IDirectionRecord[],
     onClickRecordPlan : (departure: string, arrive: string) => (event : React.MouseEvent<HTMLButtonElement>) => void;
-
 }
 
 const RecordTab: React.FC<IRecordTabProps> = ({directionRecord, onClickRecordPlan}) => {
+    console.log(directionRecord,'recordTab');
     return (
         <>
             {directionRecord.length === 0 && <><StyledErrorMsg>길찾기 기록이 없어요ㅠ</StyledErrorMsg><Lottie animationData={error_animation}  loop={false}/></>}

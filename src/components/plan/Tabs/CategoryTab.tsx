@@ -2,6 +2,9 @@ import React from 'react'
 import { IKakaoAddressInfo } from '../../../atom/kakaoAddressInfo';
 import { Form , ListGroup } from 'react-bootstrap';
 import { StyledCurrentPlaceDiv, StyledDirectionBtn, StyledSearchListItem, StyledeBtnWrapper } from '../PlanMap';
+import { useRecoilValue } from 'recoil';
+import { mapArrive } from '../../../atom/mapArrive';
+import { mapDeparture } from '../../../atom/mapDeparture';
 
 export interface ICategoryTabProps {
     searchList: IKakaoAddressInfo[];
@@ -9,8 +12,6 @@ export interface ICategoryTabProps {
     kakaoKeywordSearch: (keyword: string, map : any) => void;
     onClickChangePoint: (placeName: string, type: "departure" | "arrive") => ()=> void;
     onClickSerachRecord: (addressInfo: any) => () => void; 
-    departure: string; 
-    arrive: string; 
     map : any;
 }
 
@@ -20,10 +21,10 @@ const CategoryTab:React.FC<ICategoryTabProps> = ({
         kakaoKeywordSearch, 
         onClickChangePoint, 
         onClickSerachRecord,
-        departure,
-        arrive,
         map
     }) => {
+        const arrive = useRecoilValue(mapArrive);
+        const departure = useRecoilValue(mapDeparture);
     return (
         <>
             <Form.Control

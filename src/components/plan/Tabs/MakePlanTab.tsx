@@ -5,18 +5,19 @@ import { StyledDirectionBtn } from '../PlanMap'
 import { TbTilde } from 'react-icons/tb'
 import { ArrowRight } from 'react-bootstrap-icons'
 import { postData } from '../../../util/api/apiInstance'
+import { useRecoilValue } from 'recoil'
+import { mapArrive } from '../../../atom/mapArrive'
+import { mapDeparture } from '../../../atom/mapDeparture'
 
 export interface IMakePlanTabProps {
-    departure : string,
-    arrive : string,
     setKeyword : (value : string) => void,
     handleTabSelect : (type : string) => void, 
 }
 
+const MakePlanTab:React.FC<IMakePlanTabProps> = ({setKeyword, handleTabSelect}) => {
+    const arrive = useRecoilValue(mapArrive);
+    const departure = useRecoilValue(mapDeparture);
 
-
-const MakePlanTab:React.FC<IMakePlanTabProps> = ({departure, arrive, setKeyword, handleTabSelect}) => {
-    
     const hanldeSubmit =  async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
@@ -29,9 +30,9 @@ const MakePlanTab:React.FC<IMakePlanTabProps> = ({departure, arrive, setKeyword,
             endTime: formData.get('endTime') as string,
             content: formData.get('content') as string,
         }
-        console.log(planPayload,'palnpayload');
+        // console.log(planPayload,'palnpayload');
         const result : any  =  await postData('plan',planPayload );
-        console.log(result,'결과');
+        // console.log(result,'결과');
     }
     return (
         <Form onSubmit={hanldeSubmit}>
