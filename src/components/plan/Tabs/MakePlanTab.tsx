@@ -74,7 +74,7 @@ const MakePlanTab:React.FC<IMakePlanTabProps> = ({setKeyword, handleTabSelect}) 
                     name='arrive'
                     defaultValue={arrive}
                 />
-                <StyledDirectionBtn onClick={() => handleTabSelect('record')} width='100%'>길찾기 기록</StyledDirectionBtn>
+                <StyledDirectionBtn onClick={() => handleTabSelect('directionRecord')} width='100%'>길찾기 기록</StyledDirectionBtn>
             </StyledFormGroup>
             <StyledFormGroup>
                 <StyledFormControl

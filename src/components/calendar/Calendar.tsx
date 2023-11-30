@@ -44,9 +44,9 @@ const Calendar = () => {
         setTotalDate(changeDate(year, month));
         }, [year, month, getGroupMemberFetch, idUser]);
 
-    const onClickArrowSetCalendar = (dircection : number, ) => {
+    const onClickArrowSetCalendar = (direction : number, ) => {
         // 이전이면 direction = -1 , 다음 + 1
-        let newMonth  = month + dircection;
+        let newMonth  = month + direction;
         let newYear = year;
         if(newMonth > 11) {
             newMonth = 0;
@@ -74,12 +74,11 @@ const Calendar = () => {
     const onClickDeleteGroup = (idUser: string, groupName: string) => async ()  => {
         try {
             const result =  await deleteData(`members?idUser=${idUser}&groupName=${groupName}`)
-            console.log(result);
+            // console.log(result);
             const findGroupIDX = userGroups.findIndex((item : any) => item.group.groupName === groupName );
             if (findGroupIDX !== -1) {
                 const updatedGroups = [...userGroups];
                 updatedGroups.splice(findGroupIDX, 1);
-    
                 // setUserGroups로 새로운 배열로 업데이트
                 setUserGroups(updatedGroups);
             }
@@ -89,11 +88,11 @@ const Calendar = () => {
     }
 
     return (
-        <OverlayWrapper minheight='90%' padding='4vw 1vw 0 1vw'>
-            <StyledCalendarRow>
-                <StyledCalendarCol xs = {5}>{year}년 {month + 1} 월</StyledCalendarCol>
+        <OverlayWrapper  padding='6vw 1vw 0 1vw'>
+            <StyledCalendarRow xs={1}  minHeight={"0vh"}>
+                <StyledCalendarCol  xs={12} md={1}>{year}년 {month + 1} 월</StyledCalendarCol>
                 {/* 이전, 다음 오늘 보여주는 버튼 */}
-                <StyledCalendarCol xs = {2}>    
+                <StyledCalendarCol  xs={12} md={1}>    
                     <StyledArrow margin='0 15px 0 0' onClick={() => onClickArrowSetCalendar(-1)}>
                         <ArrowLeft size={30} />
                     </StyledArrow>
@@ -103,13 +102,13 @@ const Calendar = () => {
                     </StyledArrow>                
                 </StyledCalendarCol>
             </StyledCalendarRow>
-            <StyledCalendarRow>
+            <StyledCalendarRow  minHeight={"0vh"}>
                 {DATE_ARR.map((day, index) => 
                     { 
                         switch(day) {
                             case '일' : 
                             return (
-                                <StyledCalendarDateCol xs={1}  key={day} color='#b61233'>{day}</StyledCalendarDateCol>
+                                <StyledCalendarDateCol xs={1}   key={day} color='#b61233'>{day}</StyledCalendarDateCol>
                             );
                             case '토' :
                             return (
@@ -122,7 +121,7 @@ const Calendar = () => {
                 )}
             </StyledCalendarRow>
             {totalDate?.map((_, rowIndex) => (
-                <StyledCalendarRow key={rowIndex}>
+                <StyledCalendarRow  key={rowIndex}>
                     {totalDate[rowIndex]?.map((day, colIndex) => {
                         if (day === 0) {
                         return <StyledCalendarDateCol xs={1} key={colIndex}></StyledCalendarDateCol>;
@@ -137,10 +136,10 @@ const Calendar = () => {
                                     <Dropdown>
                                         <Dropdown.Toggle  style={{width:'55px', padding:'0 7px'}} variant="success" id="dropdown-basic" size='sm'>
                                             그룹
-                                        </Dropdown.Toggle>
+                                        </Dropdown.Toggle><br></br>
                                         <Dropdown.Menu>
-                                        {matchingGroups.map(({ group } : any, index) =>   
-                                            <Dropdown.Item>
+                                        {matchingGroups.map(({ group } : any, index : number) =>   
+                                            <Dropdown.Item key={index}> 
                                                 {group.groupName.length >5 ? group.groupName.slice(0,5)+'...' : group.groupName }
                                                 <Button style={{marginLeft:'5px'}} variant="outline-primary" size='sm' onClick={onClickShowGroup(group.groupName, group.groupMembers)}>보기</Button>
                                                 <Button style={{marginLeft:'5px'}} variant="outline-danger" size='sm' onClick={onClickDeleteGroup(idUser, group.groupName)} >삭제</Button>
@@ -163,32 +162,48 @@ const Calendar = () => {
 
 export default Calendar
 
-interface StyledCalendarColProps {
+type StyledCalendarColProps = {
     color? : string;
     height? : string;
     border? : string;
-}
-
-interface StyledCalendarArrowProps {    
     margin? : string;
 }
 
-const StyledCalendarRow = styled(Row)`
+type StyledCalendarArrowProps = {    
+    margin? : string;
+}
+
+interface StyledCalendarRowProps  {
+    minHeight?: string;
+    margin?: string;
+    justifyContent? : string;
+}
+
+const StyledCalendarRow = styled(Row)<StyledCalendarRowProps>`
+    min-width: 360px;
     font-size: 20px;
     font-weight: 700;
+    margin:${({margin}) => margin ? margin : '0'};
     display: flex;
-    justify-content: center;
-    min-height : 100px;
+    justify-content: ${({justifyContent}) => justifyContent ? justifyContent : 'space-between'};
     text-align: center;
+    min-height: ${({minHeight}) => minHeight ? minHeight : "17vh" };
+    white-space: nowrap;
+    @media (min-width: 768px) {
+        justify-content: center !important;
+    }
 `
 
 const StyledCalendarCol = styled(Col)<StyledCalendarColProps>`
+    min-width: ${({minWidth}) => minWidth ? minWidth : '360px'};
+    min-height: ${({height}) => height && height};
+    margin : ${({margin}) => margin ? margin : '0'};
     text-align: start;
     display: flex;
+    justify-content: center;
     align-items: center;
-    min-height: ${(height) => height && height};
-    border: ${(border) => border && border};
-    color :  ${({color}) => (color ? color : 'black')};
+    border: ${({border}) => border && border};
+    color : ${({color}) => (color ? color : 'black')};
 `
 
 const StyledCalendarDateCol = styled(Col)<{color ?: string}>`

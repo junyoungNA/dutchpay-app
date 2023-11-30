@@ -8,9 +8,10 @@ interface OverlayWrapperProps {
     maxheight? : string;
     overflowY?: string;
     height?:string;
+    margin?: string;
 }
 
-const OverlayWrapper = ({children, padding, minheight,maxheight, overflowY} : OverlayWrapperProps) => {
+const OverlayWrapper = ({children, padding, minheight,maxheight, overflowY, margin} : OverlayWrapperProps) => {
     return (
         <StyledContainer maxheight={maxheight} overflowY={overflowY} minheight={minheight} padding={padding} >
             {children}
@@ -24,17 +25,19 @@ interface StyledContainerProps {
     maxheight? : string;
     overflowY?: string;
     height?:string;
+    margin?: string;
 }
 
 const StyledContainer = styled.div<StyledContainerProps>`
     padding: ${(props) => props.padding || '5vw'};
     border-radius: 15px;
     background-color: white; 
+    min-width: 400px;
     filter : drop-shadow(0px 4px 4px rgba(0,0,0,0.25));
     min-height:${(props) => props.minheight || '0'} ;
     max-height: ${(props) => props.maxheight || 'none'};
-    /* height: ${(props) => props.height || '73vh'}; */
     overflow: ${(props) => props.overflowY || 'none'};;
+    margin :  ${(props) => props.margin || 'none'};;
 `
 
 export default OverlayWrapper

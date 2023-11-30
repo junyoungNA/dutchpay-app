@@ -10,7 +10,8 @@ import axios from 'axios'
 import { useSetRecoilState } from 'recoil'
 import { mapArrive } from '../../atom/mapArrive'
 import { mapDeparture } from '../../atom/mapDeparture'
-import PlanRecordTab from './Tabs/PlanRecordTab'
+// import PlanRecordTab from './Tabs/PlanRecordTab'
+import Calendar from '../calendar/Calendar'
 
 const TabCategoryList = [
     {
@@ -77,8 +78,7 @@ const TabCategoryList = [
         title : '내 plan',
         component : ( ) =>  
         (
-            <PlanRecordTab
-            />
+            <Calendar/>
         )
     }
 ]
