@@ -1,4 +1,4 @@
-import {  useEffect, useState } from 'react';
+import {  useCallback, useEffect, useState } from 'react';
 import changeDate from '../../util/changeDate';
 import OverlayWrapper from '../shared/OverlayWrapper';
 import { Button, Col, Dropdown, Row } from 'react-bootstrap';
@@ -25,22 +25,24 @@ const Calendar = () => {
     const {currentYear, currentMonth, currentDate} = useRecoilValue(currentDateState);
 
     const customDate = `${year}-${month < 10 ? '0'+ (month + 1): month + 1}`; //yyyy-mm;
-    const getGroupMemberFetch = async(idUser : string) => {
-        const resultGroups: any = await getCalendarGroups(idUser, customDate);
-        setUserGroups(resultGroups);
-    }
-    
     const DATE_ARR = ['일','월','화','수','목','금','토',];
     const [totalDate , setTotalDate] = useState<number[][]>([]);
 
-  // useResetRecoilState로 초기화 함수 가져오기
+    // useResetRecoilState로 초기화 함수 가져오기
     const resetCalendarState = useResetRecoilState(calendarDateState);
+
+    const getGroupMemberFetch = useCallback(async(idUser : string) => {
+        const resultGroups: any = await getCalendarGroups(idUser, customDate);
+        setUserGroups(resultGroups);
+    },[customDate]);
+
+
     useEffect(() => {
         if(idUser) {
             getGroupMemberFetch(idUser);
         }
         setTotalDate(changeDate(year, month));
-        }, [year, month]);
+        }, [year, month, getGroupMemberFetch, idUser]);
 
     const onClickArrowSetCalendar = (dircection : number, ) => {
         // 이전이면 direction = -1 , 다음 + 1
@@ -87,7 +89,7 @@ const Calendar = () => {
     }
 
     return (
-        <OverlayWrapper minheight='90%'>
+        <OverlayWrapper minheight='90%' padding='4vw 1vw 0 1vw'>
             <StyledCalendarRow>
                 <StyledCalendarCol xs = {5}>{year}년 {month + 1} 월</StyledCalendarCol>
                 {/* 이전, 다음 오늘 보여주는 버튼 */}
@@ -185,7 +187,7 @@ const StyledCalendarCol = styled(Col)<StyledCalendarColProps>`
     display: flex;
     align-items: center;
     min-height: ${(height) => height && height};
-    border: ${(border) => border && border};;
+    border: ${(border) => border && border};
     color :  ${({color}) => (color ? color : 'black')};
 `
 

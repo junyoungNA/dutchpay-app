@@ -6,9 +6,9 @@ const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 
 const mongoose = require ('mongoose');
-const User = require('./schema/user'); // User 모델 가져오기
-const Members = require('./schema/members'); // User 모델 가져오기
-const Expense = require('./schema/expense'); // User 모델 가져오기
+const User = require('./schema/user'); 
+const Members = require('./schema/members'); 
+const Expense = require('./schema/expense'); 
 const Plan = require('./schema/plan');
 
 const cors = require('cors'); // cors 모듈 추가
@@ -150,11 +150,11 @@ app.post('/kakaoLogout', async (req, res) => {
 
 app.get(`/groups`, async (req, res) => {
     try {
-        const idUser = req.query.idUser; // 첫 번째 조건 파라미터
+        const idUser = req.query.idUser; 
         const groupMembrs = await Members.find({
             idUser: idUser
         });
-        res.status(201).json(groupMembrs); // 저장된 사용자 데이터를 JSON 형식으로 응답
+        res.status(201).json(groupMembrs); 
     } catch (error) {
         console.error('사용자 조회 오류:', error);
         res.status(500).json({ error: '내부 서버 오류' });
@@ -164,7 +164,7 @@ app.get(`/groups`, async (req, res) => {
 
 app.delete(`/groups`, async (req, res) => {
     try {
-        const idUser = req.query.idUser; // 첫 번째 조건 파라미터
+        const idUser = req.query.idUser;
         const groupName = req.query.groupName;
         const result1 = await Members.deleteMany({ idUser: idUser, groupName: groupName });
         const result2 = await Expense.deleteMany({ idUser: idUser, groupName: groupName });
@@ -174,7 +174,7 @@ app.delete(`/groups`, async (req, res) => {
                 idUser: idUser
             }) 
             console.log('그룹 정보 가져오아', groupMembrs);
-            res.status(201).json(groupMembrs); // 저장된 사용자 데이터를 JSON 형식으로 응답
+            res.status(201).json(groupMembrs); 
         }
     } catch (error) {
         console.error('사용자 삭제 오류:', error);
@@ -185,11 +185,11 @@ app.delete(`/groups`, async (req, res) => {
 
 app.get(`/members`, async (req, res) => {
     try {
-        const idUser = req.query.idUser; // 첫 번째 조건 파라미터
+        const idUser = req.query.idUser; 
         const groupMembrs = await Members.find({
             idUser: idUser
         })
-        res.status(201).json(groupMembrs); // 저장된 사용자 데이터를 JSON 형식으로 응답
+        res.status(201).json(groupMembrs); 
     } catch (error) {
         console.error('멤버 조회 오류:', error);
         res.status(500).json({ error: '내부 서버 오류' });
@@ -198,15 +198,15 @@ app.get(`/members`, async (req, res) => {
 
 app.get(`/calendarGroups`, async (req, res) => {
     try {
-        const idUser = req.query.idUser; // 첫 번째 조건 파라미터
-        const createdAt = req.query.createdAt; // 두 번째 조건 파라미터
+        const idUser = req.query.idUser;
+        const createdAt = req.query.createdAt;
         const regexPattern = new RegExp("^" + createdAt); //yyyy-mm 맞는 정규 표현식생성
         const groupMembrs = await Members.find({
             $and: [
-                { idUser:idUser }, // 첫 번째 조건 필드
-                { createdAt: { $regex: regexPattern } }, // 두 번째 조건 필드
+                { idUser:idUser }, 
+                { createdAt: { $regex: regexPattern } }, 
         ]},);
-        res.status(201).json(groupMembrs); // 저장된 사용자 데이터를 JSON 형식으로 응답
+        res.status(201).json(groupMembrs); 
     } catch (error) {
         console.error('캘린더 그룹 조회 오류:', error);
         res.status(500).json({ error: '내부 서버 오류' });
@@ -216,20 +216,20 @@ app.get(`/calendarGroups`, async (req, res) => {
 //그룹 이름 중복되는지 확인
 app.get(`/existingGroup`, async (req, res) => {
     try {
-        const idUser = req.query.idUser; // 첫 번째 조건 파라미터
-        const groupName = req.query.groupName; // 두 번째 조건 파라미터
+        const idUser = req.query.idUser; 
+        const groupName = req.query.groupName; 
 
         const existingGroupName = await Members.findOne({    
             $and: [
-                { idUser:idUser }, // 첫 번째 조건 필드
-                { groupName: groupName }, // 두 번째 조건 필드
+                { idUser:idUser }, 
+                { groupName: groupName }, 
         ]},);
         
         // console.log(existingGroupName,' 그룹이름', idUser, groupName);
         if (existingGroupName) {
             return res.status(400).json({ msg: '이미 해당 그룹이름이 존재합니다.'});
         }
-        res.status(201).json({msg : '해당 그룹이름이 존재하지 않습니다.'}); // 저장된 사용자 데이터를 JSON 형식으로 응답
+        res.status(201).json({msg : '해당 그룹이름이 존재하지 않습니다.'}); 
     } catch (error) {
         console.error('존재하는 그룹 조회 오류:', error);
         res.status(500).json({ error: '내부 서버 오류' });
@@ -247,8 +247,8 @@ app.post('/members', async (req, res) => {
             return res.status(302).json({ msg: '사용자 정보가 없습니다. 다시 로그인해주세요.' });
         }
         const members = new Members({ groupMembers, idUser, groupName, createdAt });
-        await members.save(); // 사용자 데이터를 데이터베이스에 저장
-        res.status(201).json(members); // 저장된 사용자 데이터를 JSON 형식으로 응답
+        await members.save(); 
+        res.status(201).json(members); 
     } catch (error) {
         console.error('멤버 생성 오류:', error);
         res.status(500).json({ error: '내부 서버 오류' });
@@ -273,13 +273,13 @@ app.delete('/members', async (req, res) => {
 
 app.get(`/expense`, async (req, res) => {
     try {
-        const idUser = req.query.idUser; // 첫 번째 조건 파라미터
-        const groupName = req.query.groupName; // 두 번째 조건 파라미터
+        const idUser = req.query.idUser; 
+        const groupName = req.query.groupName; 
 
         const allExpenses = await Expense.find({    
             $and: [
-                { idUser:idUser }, // 첫 번째 조건 필드
-                { groupName: groupName }, // 두 번째 조건 필드
+                { idUser:idUser }, 
+                { groupName: groupName }, 
         ]},);
         // console.log(allExpenses, '찾은값');
         if (!allExpenses || allExpenses.length === 0) {
@@ -295,9 +295,9 @@ app.get(`/expense`, async (req, res) => {
 //expense 삭제하기
 app.delete(`/expense`, async (req, res) => {
     try {
-        const idUser = req.query.idUser; // 첫 번째 조건 파라미터
-        const groupName = req.query.groupName; // 두 번째 조건 파라미터
-        const expenseName = req.query.expenseName; // 두 번째 조건 파라미터
+        const idUser = req.query.idUser; 
+        const groupName = req.query.groupName;
+        const expenseName = req.query.expenseName; 
         console.log(idUser, groupName, expenseName, '정보');
         const result = await Expense.deleteOne({
             $and: [
@@ -310,8 +310,8 @@ app.delete(`/expense`, async (req, res) => {
         if(result.deletedCount === 1 && result.acknowledged === true ) {
             const allExpenses = await Expense.find({    
                 $and: [
-                    { idUser:idUser }, // 첫 번째 조건 필드
-                    { groupName: groupName }, // 두 번째 조건 필드
+                    { idUser:idUser }, 
+                    { groupName: groupName }, 
             ]},);
             // console.log(allExpenses, '찾은값');
             if (!allExpenses || allExpenses.length === 0) {
@@ -331,11 +331,27 @@ app.post('/expense', async (req, res) => {
     try {
         const {groupName, idUser,  desc, date, amount, payer } = req.body;
         // console.log(groupName, idUser,  desc, date, amount, payer) ;
-        const expense = new Expense({groupName, idUser,  desc, date, amount, payer});
-        await expense.save(); // 사용자 데이터를 데이터베이스에 저장
-        res.status(201).json(); // 저장된 사용자 데이터를 JSON 형식으로 응답
+        const expense = await Expense({groupName, idUser,  desc, date, amount, payer});
+        await expense.save(); 
+        res.status(201).json({msg:'expense저장 성공'}); 
     } catch (error) {
         console.error('더치페이 생성 오류:', error);
+        res.status(500).json({ error: '내부 서버 오류' });
+    }
+});
+
+// 계획api
+app.get('/plan', async (req, res) => {
+    try {
+        const idUser = req.query.idUser;
+        console.log(idUser,'userId입니다') ;
+        const usersPlan =  await Plan.find({
+            idUser: idUser
+        })
+        console.log(usersPlan,'찾은결과');
+        res.status(201).json({usersPlan}); 
+    } catch (error) {
+        console.error('계획 생성 오류:', error);
         res.status(500).json({ error: '내부 서버 오류' });
     }
 });
@@ -345,8 +361,8 @@ app.post('/plan', async (req, res) => {
         const {title, date, departure,  arrive, stratTime, endTime, content, idUser  } = req.body;
         // console.log(groupName, idUser,  desc, date, amount, payer) ;
         const plan = new Plan({title, date, departure, arrive, stratTime, endTime, content, idUser});
-        await plan.save(); // 사용자 데이터를 데이터베이스에 저장
-        res.status(201).json(); // 저장된 사용자 데이터를 JSON 형식으로 응답
+        await plan.save(); 
+        res.status(201).json();
     } catch (error) {
         console.error('계획 생성 오류:', error);
         res.status(500).json({ error: '내부 서버 오류' });

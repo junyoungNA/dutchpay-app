@@ -9,7 +9,6 @@ interface IDirectionRecordListItemProps {
 
 const RecordListItem:React.FC<IDirectionRecordListItemProps> = ({arriveAndDeparture , onClickRecordPlan}) => {
     const {arrive, departure} = arriveAndDeparture;
-    console.log(arrive, departure, arriveAndDeparture, 'recorditem');
     return (
         departure !== '' ?
             <>

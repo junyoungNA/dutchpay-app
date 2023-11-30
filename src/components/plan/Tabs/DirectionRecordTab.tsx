@@ -12,7 +12,6 @@ export interface IDirectionRecordTabProps {
 }
 
 const DirectionRecordTab: React.FC<IDirectionRecordTabProps> = ({directionRecord, onClickRecordPlan}) => {
-    console.log(directionRecord,'recordTab');
     return (
         <>
             {directionRecord.length === 0 && <><StyledErrorMsg>길찾기 기록이 없어요ㅠ</StyledErrorMsg><Lottie animationData={error_animation}  loop={false}/></>}
