@@ -89,10 +89,10 @@ const Calendar = () => {
 
     return (
         <OverlayWrapper  padding='6vw 1vw 0 1vw'>
-            <StyledCalendarRow xs={1}  minHeight={"0vh"}>
-                <StyledCalendarCol  xs={12} md={1}>{year}년 {month + 1} 월</StyledCalendarCol>
+            <StyledCalendarRow  minHeight={"0vh"}>
+                <StyledCalendarCol  xs={12} md={6}>{year}년 {month + 1} 월</StyledCalendarCol>
                 {/* 이전, 다음 오늘 보여주는 버튼 */}
-                <StyledCalendarCol  xs={12} md={1}>    
+                <StyledCalendarCol  xs={12} md={6}>    
                     <StyledArrow margin='0 15px 0 0' onClick={() => onClickArrowSetCalendar(-1)}>
                         <ArrowLeft size={30} />
                     </StyledArrow>
@@ -185,6 +185,7 @@ const StyledCalendarRow = styled(Row)<StyledCalendarRowProps>`
     font-weight: 700;
     margin:${({margin}) => margin ? margin : '0'};
     display: flex;
+    
     justify-content: ${({justifyContent}) => justifyContent ? justifyContent : 'space-between'};
     text-align: center;
     min-height: ${({minHeight}) => minHeight ? minHeight : "17vh" };
