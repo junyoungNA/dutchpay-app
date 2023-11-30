@@ -2,12 +2,12 @@ import React from 'react'
 import { StyledDirectionBtn, TArriveAndDeparture } from '../PlanMap'
 import { ArrowRight } from 'react-bootstrap-icons'
 
-interface IRecordListItemProps {
+interface IDirectionRecordListItemProps {
     arriveAndDeparture : TArriveAndDeparture,
     onClickRecordPlan : (departure : string, arrive : string) => (event : React.MouseEvent<HTMLButtonElement>) => void,
 }
 
-const RecordListItem:React.FC<IRecordListItemProps> = ({arriveAndDeparture , onClickRecordPlan}) => {
+const RecordListItem:React.FC<IDirectionRecordListItemProps> = ({arriveAndDeparture , onClickRecordPlan}) => {
     const {arrive, departure} = arriveAndDeparture;
     console.log(arrive, departure, arriveAndDeparture, 'recorditem');
     return (

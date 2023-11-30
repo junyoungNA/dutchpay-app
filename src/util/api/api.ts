@@ -21,7 +21,6 @@ export const getGroupMembers = async (idUser : string) => {
     } 
 }
 
-
 export const getUserGroups = async (idUser : string) => {
     try {
         const result :any = await getData(`groups?idUser=${idUser}`);

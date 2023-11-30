@@ -1,5 +1,5 @@
 import MakePlanTab, { IMakePlanTabProps } from './Tabs/MakePlanTab'
-import RecordTab, { IRecordTabProps } from './Tabs/RecordTab'
+import DirectionRecordTab, { IDirectionRecordTabProps } from './Tabs/DirectionRecordTab'
 import DaumPostcodeEmbed from 'react-daum-postcode'
 import CategoryTab, { ICategoryTabProps } from './Tabs/CategoryTab'
 import { Tab, Tabs } from 'react-bootstrap'
@@ -10,6 +10,7 @@ import axios from 'axios'
 import { useSetRecoilState } from 'recoil'
 import { mapArrive } from '../../atom/mapArrive'
 import { mapDeparture } from '../../atom/mapDeparture'
+import PlanRecordTab from './Tabs/PlanRecordTab'
 
 const TabCategoryList = [
     {
@@ -44,14 +45,14 @@ const TabCategoryList = [
         )
     },
     {
-        eventKey :'record',
+        eventKey :'directionRecord',
         title : '길찾기 기록',
         component : ({
             directionRecord,
             onClickRecordPlan
-        } : IRecordTabProps) => 
+        } : IDirectionRecordTabProps) => 
         (
-            <RecordTab
+            <DirectionRecordTab
                 directionRecord= {directionRecord}
                 onClickRecordPlan = {onClickRecordPlan}
             />
@@ -68,6 +69,15 @@ const TabCategoryList = [
             <MakePlanTab
                 setKeyword={setKeyword}
                 handleTabSelect={handleTabSelect}
+            />
+        )
+    },
+    {
+        eventKey :'planRecord',
+        title : '내 plan',
+        component : ( ) =>  
+        (
+            <PlanRecordTab
             />
         )
     }

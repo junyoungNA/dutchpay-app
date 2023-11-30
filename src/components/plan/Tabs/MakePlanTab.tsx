@@ -38,11 +38,10 @@ const MakePlanTab:React.FC<IMakePlanTabProps> = ({setKeyword, handleTabSelect}) 
             content: formData.get('content') as string,
             idUser : idUser,
         }
-        console.log(planPayload,'palnpayload');
         // user token체크후 유효성검사 실패 시 메인페이지로 이동
         await fetchUserInfo();
         const result : any  =  await postData('plan',planPayload );
-        console.log(result,'결과');
+        // console.log(result,'결과');
     }
     return (
         <Form onSubmit={hanldeSubmit}>
