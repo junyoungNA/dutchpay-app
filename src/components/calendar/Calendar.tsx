@@ -3,67 +3,55 @@ import changeDate from '../../util/changeDate';
 import OverlayWrapper from '../shared/OverlayWrapper';
 import { Button, Col, Dropdown, Row } from 'react-bootstrap';
 import styled from 'styled-components';
-import { useRecoilState, useRecoilValue, useResetRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { calendarDateState } from '../../atom/calendarDate';
-import { ArrowRight, ArrowLeft } from 'react-bootstrap-icons';
 import { kakaoUser } from '../../atom/kakaoUser';
 import {  getCalendarGroups } from '../../util/api/api';
 import { groupNameState } from '../../atom/groupName';
 import { ROUTES } from '../../route/routes';
 import { groupMemberState } from '../../atom/groupMembers';
-import { deleteData } from '../../util/api/apiInstance';
+import { deleteData, getData } from '../../util/api/apiInstance';
 import { currentDateState } from '../../atom/currentDate.state';
 import { useRouter } from '../../hooks/useRouter';
+import CalendarDate from './CalendarDate';
+import CalendarControls from './CalendarControls ';
 
 const Calendar = () => {
     const {routeTo} = useRouter();
     const {idUser} = useRecoilValue(kakaoUser);
     const [userGroups, setUserGroups] = useState([]);
-    const [{year, month}, setCalendar] = useRecoilState(calendarDateState);
+    const {year, month} = useRecoilValue(calendarDateState);
     const setGroupName = useSetRecoilState(groupNameState);
     const setGroupMembers = useSetRecoilState(groupMemberState);
     const {currentYear, currentMonth, currentDate} = useRecoilValue(currentDateState);
 
     const customDate = `${year}-${month < 10 ? '0'+ (month + 1): month + 1}`; //yyyy-mm;
-    const DATE_ARR = ['일','월','화','수','목','금','토',];
     const [totalDate , setTotalDate] = useState<number[][]>([]);
 
-    // useResetRecoilState로 초기화 함수 가져오기
-    const resetCalendarState = useResetRecoilState(calendarDateState);
-
     const getGroupMemberFetch = useCallback(async(idUser : string) => {
-        const resultGroups: any = await getCalendarGroups(idUser, customDate);
-        setUserGroups(resultGroups);
+        const userGroups: any = await getCalendarGroups(idUser, customDate);
+        return userGroups;
     },[customDate]);
+
+    const getUsersPlanRecord = useCallback(async() => {
+        try {
+            const response = await getData(`/plan?idUser=${idUser}`);
+            console.log(response, idUser, 'getUsersPlanRecord');
+        }catch(error : any) {
+            console.log(error,'유저 계획가져오기 실패');
+        }
+    }, [idUser]); 
 
 
     useEffect(() => {
         if(idUser) {
-            getGroupMemberFetch(idUser);
+            const usersGroups:any = getGroupMemberFetch(idUser);
+            setUserGroups(usersGroups);
         }
         setTotalDate(changeDate(year, month));
-        }, [year, month, getGroupMemberFetch, idUser]);
-
-    const onClickArrowSetCalendar = (direction : number, ) => {
-        // 이전이면 direction = -1 , 다음 + 1
-        let newMonth  = month + direction;
-        let newYear = year;
-        if(newMonth > 11) {
-            newMonth = 0;
-            newYear += 1; 
-        } 
-        if(newMonth < 0) {
-            newMonth = 11;
-            newYear -= 1;
-        }
-        const newDate = {
-            year : newYear,
-            month : newMonth,
-        }
-        // console.log(newMonth, '새로운달');
-        // console.log(newYear, '새로운년');
-        setCalendar(newDate);
-    }
+        getUsersPlanRecord();
+        }, [year, month, getGroupMemberFetch, getUsersPlanRecord, idUser]);
+    
 
     const onClickShowGroup = (groupName : string , groupMembers : string[]) => () => {
         setGroupName(groupName);
@@ -89,37 +77,14 @@ const Calendar = () => {
 
     return (
         <OverlayWrapper  padding='6vw 1vw 0 1vw'>
-            <StyledCalendarRow  minHeight={"0vh"}>
-                <StyledCalendarCol  xs={12} md={6}>{year}년 {month + 1} 월</StyledCalendarCol>
-                {/* 이전, 다음 오늘 보여주는 버튼 */}
-                <StyledCalendarCol  xs={12} md={6}>    
-                    <StyledArrow margin='0 15px 0 0' onClick={() => onClickArrowSetCalendar(-1)}>
-                        <ArrowLeft size={30} />
-                    </StyledArrow>
-                    <Button variant="outline-secondary" onClick={() => resetCalendarState()}>Today</Button>                  
-                    <StyledArrow margin='0 0 0 15px' onClick={() => onClickArrowSetCalendar(1)}>
-                        <ArrowRight size={30}/>
-                    </StyledArrow>                
-                </StyledCalendarCol>
-            </StyledCalendarRow>
-            <StyledCalendarRow  minHeight={"0vh"}>
-                {DATE_ARR.map((day, index) => 
-                    { 
-                        switch(day) {
-                            case '일' : 
-                            return (
-                                <StyledCalendarDateCol xs={1}   key={day} color='#b61233'>{day}</StyledCalendarDateCol>
-                            );
-                            case '토' :
-                            return (
-                                <StyledCalendarDateCol xs={1} key={day} color='#0a6ba3' >{day}</StyledCalendarDateCol>
-                                );
-                            default :
-                            return (<StyledCalendarDateCol xs={1} key={day}>{day}</StyledCalendarDateCol>);
-                        }
-                    }
-                )}
-            </StyledCalendarRow>
+            {/* 년,월 이동 버튼 */}
+            <CalendarControls/>
+
+            {/* 요일 나타내기 */}
+            <CalendarDate/>
+
+            {/* 날짜 나타내기 */}
+            {/* 더치페이의 그룹과, 유저가 만든 계획 보여주기 */}
             {totalDate?.map((_, rowIndex) => (
                 <StyledCalendarRow  key={rowIndex}>
                     {totalDate[rowIndex]?.map((day, colIndex) => {
@@ -162,24 +127,16 @@ const Calendar = () => {
 
 export default Calendar
 
-type StyledCalendarColProps = {
+export type StyledCalendarProps = {
     color? : string;
     height? : string;
     border? : string;
     margin? : string;
-}
-
-type StyledCalendarArrowProps = {    
-    margin? : string;
-}
-
-interface StyledCalendarRowProps  {
     minHeight?: string;
-    margin?: string;
     justifyContent? : string;
 }
 
-const StyledCalendarRow = styled(Row)<StyledCalendarRowProps>`
+export const StyledCalendarRow = styled(Row)<StyledCalendarProps>`
     min-width: 360px;
     font-size: 20px;
     font-weight: 700;
@@ -195,7 +152,7 @@ const StyledCalendarRow = styled(Row)<StyledCalendarRowProps>`
     }
 `
 
-const StyledCalendarCol = styled(Col)<StyledCalendarColProps>`
+export const StyledCalendarCol = styled(Col)<StyledCalendarProps>`
     min-width: ${({minWidth}) => minWidth ? minWidth : '360px'};
     min-height: ${({height}) => height && height};
     margin : ${({margin}) => margin ? margin : '0'};
@@ -207,14 +164,8 @@ const StyledCalendarCol = styled(Col)<StyledCalendarColProps>`
     color : ${({color}) => (color ? color : 'black')};
 `
 
-const StyledCalendarDateCol = styled(Col)<{color ?: string}>`
+export const StyledCalendarDateCol = styled(Col)<StyledCalendarProps>`
     color: ${(proprs) => proprs.color &&  proprs.color};
     padding : 0;
     margin : 10px;
 `
-
-const StyledArrow = styled.div<StyledCalendarArrowProps>`
-  // 공통 스타일을 여기에 적용
-    margin: ${({ margin }) => margin && margin};
-    cursor: pointer;
-`;
