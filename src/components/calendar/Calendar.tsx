@@ -28,29 +28,46 @@ const Calendar = () => {
     const customDate = `${year}-${month < 10 ? '0'+ (month + 1): month + 1}`; //yyyy-mm;
     const [totalDate , setTotalDate] = useState<number[][]>([]);
 
-    const getGroupMemberFetch = useCallback(async(idUser : string) => {
-        const userGroups: any = await getCalendarGroups(idUser, customDate);
-        return userGroups;
-    },[customDate]);
 
-    const getUsersPlanRecord = useCallback(async() => {
+// 받은 유저의 그룹정보와 함께 바로 set을 통해 상태 업데이트
+    const getGroupMemberFetch = useCallback(async(idUser : string) => {
+        const usersGroups: any = await getCalendarGroups(idUser, customDate);
+        setUserGroups(usersGroups);
+        return userGroups;
+    },[customDate, userGroups]);
+
+    const getUsersPlanRecordFetch = useCallback(async(idUser : string) => {
         try {
             const response = await getData(`/plan?idUser=${idUser}`);
             console.log(response, idUser, 'getUsersPlanRecord');
         }catch(error : any) {
             console.log(error,'유저 계획가져오기 실패');
         }
-    }, [idUser]); 
+    }, []); 
 
+    // useEffect내에서 사용할 비동기 처리 함수, setState콜백 함수로 받아 처리
+    const handleAsyncOperation = (promise: Promise<any>, successCallback: (result: any) => void) => {
+        promise
+            .then((result) => {
+                // api 요청 성공시 setState처리
+                successCallback(result);
+            })
+            .catch((error) => {
+                console.log(error, '비동기 작업 실패');
+                // 에러 처리 로직을 추가할 수 있습니다.
+            });
+    };
 
     useEffect(() => {
         if(idUser) {
-            const usersGroups:any = getGroupMemberFetch(idUser);
-            setUserGroups(usersGroups);
+            // 유저 더치페이그룹정보
+            handleAsyncOperation(getGroupMemberFetch(idUser), setUserGroups);
+    
+            // 유저 계획 정보
+            // handleAsyncOperation(getUsersPlanRecord(idUser), ());
         }
         setTotalDate(changeDate(year, month));
-        getUsersPlanRecord();
-        }, [year, month, getGroupMemberFetch, getUsersPlanRecord, idUser]);
+    }, [getUsersPlanRecordFetch, getGroupMemberFetch, idUser, year, month]);
     
 
     const onClickShowGroup = (groupName : string , groupMembers : string[]) => () => {
@@ -74,7 +91,6 @@ const Calendar = () => {
             console.log(error);
         }
     }
-
     return (
         <OverlayWrapper  padding='6vw 1vw 0 1vw'>
             {/* 년,월 이동 버튼 */}
@@ -92,7 +108,7 @@ const Calendar = () => {
                         return <StyledCalendarDateCol xs={1} key={colIndex}></StyledCalendarDateCol>;
                     } else {
                     // 해당 날짜와 일치하는 userGroups의 요소들을 필터링하고 처리
-                        const matchingGroups = userGroups.filter(({ date }) => date === String(day));
+                        const matchingGroups = userGroups?.filter(({ date }) => date === String(day));
                         return (
                                 <StyledCalendarDateCol xs={1} key={colIndex}  color={currentYear === year && currentMonth === month && currentDate === Number(day)  ? '#ae7df9' : undefined}
                                 >
