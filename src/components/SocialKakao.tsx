@@ -29,7 +29,7 @@ const SocialKakao = () => {
         
             // localStorage는 사용하지않고 쿠키만 사용해보기로!
             // localStorage.setItem(process.env.REACT_APP_ACCESS_TOKEN as string, response.token);
-            setUser({nickname: response.nickname, idUser : response.idUser,});
+            setUser({nickname: response.nickname, idUser : String(response.idUser),});
         } catch (error) {
             showAlert('로그인 오류');
             console.log(error);

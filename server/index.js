@@ -344,12 +344,14 @@ app.post('/expense', async (req, res) => {
 app.get('/plan', async (req, res) => {
     try {
         const idUser = req.query.idUser;
-        console.log(idUser,'userId입니다') ;
-        const usersPlan =  await Plan.find({
-            idUser: idUser
-        })
-        console.log(usersPlan,'찾은결과');
-        res.status(201).json({usersPlan}); 
+        const date = req.query.date;
+        const regexPattern = new RegExp("^" + date); //yyyy-mm 맞는 정규 표현식생성
+        const planRecord = await Plan.find({
+            $and: [
+                { idUser:idUser }, 
+                { date: { $regex: regexPattern } }, 
+        ]},);
+        res.status(201).json(planRecord); 
     } catch (error) {
         console.error('계획 생성 오류:', error);
         res.status(500).json({ error: '내부 서버 오류' });

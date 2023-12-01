@@ -6,68 +6,58 @@ import styled from 'styled-components';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { calendarDateState } from '../../atom/calendarDate';
 import { kakaoUser } from '../../atom/kakaoUser';
-import {  getCalendarGroups } from '../../util/api/api';
+import {  getCalendarGroups, getPlanRecord } from '../../util/api/api';
 import { groupNameState } from '../../atom/groupName';
 import { ROUTES } from '../../route/routes';
 import { groupMemberState } from '../../atom/groupMembers';
-import { deleteData, getData } from '../../util/api/apiInstance';
+import { deleteData } from '../../util/api/apiInstance';
 import { currentDateState } from '../../atom/currentDate.state';
 import { useRouter } from '../../hooks/useRouter';
 import CalendarDate from './CalendarDate';
 import CalendarControls from './CalendarControls ';
+// useEffect내에서 사용할 비동기 처리 함수, setState콜백 함수로 받아 처리
+import handleAsyncOperation from '../../util/handleAsyncOperation';
 
 const Calendar = () => {
     const {routeTo} = useRouter();
     const {idUser} = useRecoilValue(kakaoUser);
     const [userGroups, setUserGroups] = useState([]);
+    const [userPlans, setUserPlans] = useState([]);
     const {year, month} = useRecoilValue(calendarDateState);
     const setGroupName = useSetRecoilState(groupNameState);
     const setGroupMembers = useSetRecoilState(groupMemberState);
     const {currentYear, currentMonth, currentDate} = useRecoilValue(currentDateState);
 
-    const customDate = `${year}-${month < 10 ? '0'+ (month + 1): month + 1}`; //yyyy-mm;
+    const customDate = `${year}-${month < 9 ? '0'+ (month + 1): month + 1}`; //yyyy-mm;
     const [totalDate , setTotalDate] = useState<number[][]>([]);
 
 
 // 받은 유저의 그룹정보와 함께 바로 set을 통해 상태 업데이트
-    const getGroupMemberFetch = useCallback(async(idUser : string) => {
+    const getGroupMemberFetch = useCallback(async(idUser : string, customDate : string) => {
         const usersGroups: any = await getCalendarGroups(idUser, customDate);
-        setUserGroups(usersGroups);
-        return userGroups;
-    },[customDate, userGroups]);
+        return usersGroups;
+    },[]);
 
-    const getUsersPlanRecordFetch = useCallback(async(idUser : string) => {
+    const getUsersPlanRecordFetch = useCallback(async(idUser : string,  customDate : string ) => {
         try {
-            const response = await getData(`/plan?idUser=${idUser}`);
-            console.log(response, idUser, 'getUsersPlanRecord');
+            const userPlanRecord = await getPlanRecord(idUser, customDate);
+            console.log(userPlanRecord,'userPlanRecord');
+            return userPlanRecord;
         }catch(error : any) {
             console.log(error,'유저 계획가져오기 실패');
         }
     }, []); 
 
-    // useEffect내에서 사용할 비동기 처리 함수, setState콜백 함수로 받아 처리
-    const handleAsyncOperation = (promise: Promise<any>, successCallback: (result: any) => void) => {
-        promise
-            .then((result) => {
-                // api 요청 성공시 setState처리
-                successCallback(result);
-            })
-            .catch((error) => {
-                console.log(error, '비동기 작업 실패');
-                // 에러 처리 로직을 추가할 수 있습니다.
-            });
-    };
-
     useEffect(() => {
         if(idUser) {
             // 유저 더치페이그룹정보
-            handleAsyncOperation(getGroupMemberFetch(idUser), setUserGroups);
+            handleAsyncOperation(getGroupMemberFetch(idUser, customDate), setUserGroups);
     
             // 유저 계획 정보
-            // handleAsyncOperation(getUsersPlanRecord(idUser), ());
+            handleAsyncOperation(getUsersPlanRecordFetch(idUser, customDate), setUserPlans);
         }
         setTotalDate(changeDate(year, month));
-    }, [getUsersPlanRecordFetch, getGroupMemberFetch, idUser, year, month]);
+    }, [getUsersPlanRecordFetch, getGroupMemberFetch, setGroupMembers,setUserPlans,customDate, idUser, year, month]);
     
 
     const onClickShowGroup = (groupName : string , groupMembers : string[]) => () => {
@@ -109,6 +99,7 @@ const Calendar = () => {
                     } else {
                     // 해당 날짜와 일치하는 userGroups의 요소들을 필터링하고 처리
                         const matchingGroups = userGroups?.filter(({ date }) => date === String(day));
+                        const matchingPlans = userPlans?.filter(({date}) => date === String(day));
                         return (
                                 <StyledCalendarDateCol xs={1} key={colIndex}  color={currentYear === year && currentMonth === month && currentDate === Number(day)  ? '#ae7df9' : undefined}
                                 >
@@ -124,6 +115,23 @@ const Calendar = () => {
                                                 {group.groupName.length >5 ? group.groupName.slice(0,5)+'...' : group.groupName }
                                                 <Button style={{marginLeft:'5px'}} variant="outline-primary" size='sm' onClick={onClickShowGroup(group.groupName, group.groupMembers)}>보기</Button>
                                                 <Button style={{marginLeft:'5px'}} variant="outline-danger" size='sm' onClick={onClickDeleteGroup(idUser, group.groupName)} >삭제</Button>
+                                            </Dropdown.Item>
+                                            )
+                                        }
+                                        </Dropdown.Menu>
+                                    </Dropdown> 
+                                    }
+                                    {matchingPlans.length !== 0 &&
+                                    <Dropdown>
+                                        <Dropdown.Toggle  style={{width:'55px', padding:'0 7px'}} variant="success" id="dropdown-basic" size='sm'>
+                                            계획
+                                        </Dropdown.Toggle><br></br>
+                                        <Dropdown.Menu>
+                                        {matchingPlans.map(({ plan } : any, index : number) =>   
+                                            <Dropdown.Item key={index}> 
+                                                {/* {group.groupName.length >5 ? group.groupName.slice(0,5)+'...' : group.groupName } */}
+                                                {/* <Button style={{marginLeft:'5px'}} variant="outline-primary" size='sm' onClick={onClickShowGroup(group.groupName, group.groupMembers)}>보기</Button>
+                                                <Button style={{marginLeft:'5px'}} variant="outline-danger" size='sm' onClick={onClickDeleteGroup(idUser, group.groupName)} >삭제</Button> */}
                                             </Dropdown.Item>
                                             )
                                         }

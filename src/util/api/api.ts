@@ -36,7 +36,7 @@ export const getUserGroups = async (idUser : string) => {
 export const getCalendarGroups = async (idUser : string , createdAt: string) => {
     try {
         const result :any = await getData(`calendarGroups?idUser=${idUser}&createdAt=${createdAt}`);
-        const filterUserGroups = filterUserGroup(result);
+        const filterUserGroups = transformDates(result);
         return filterUserGroups;
     } catch(error : any) {
         // console.log(error, 'api호출 오류');
@@ -79,16 +79,28 @@ export const deleteExpense = async (idUser : string, groupName : string, expense
     } 
 }
 
+export const getPlanRecord = async (idUser : string, customDate: string) => {
+        try {
+            const response = await getData(`/plan?idUser=${idUser}&date=${customDate}`);
+            // console.log('api response record', response);
+            const filterPalnRecord = transformDates(response);
+            return filterPalnRecord;
+        }catch(error : any) {
+            console.log(error,'유저 계획가져오기 실패');
+        }
+}
+
 // 유저의 그룹 생성날짜와 받아온 totalDate의 날짜 데이터를 맵핑
-const filterUserGroup = (resultGroups : any) => {
+const transformDates  = (resultGroups : any) => {
     if(!resultGroups) return;
     // const formattedDay = `${year}-${month + 1}-${day < 10 ? '0' + day : day}`;
-    const filterUserGroups = resultGroups.map((group: any) => {
-        const { createdAt, ...otherData } = group; // createdAt를 제외한 다른 데이터를 유지
+    const filterData = resultGroups.map((group: any) => {
+        const { createdAt,date, ...otherData } = group; // createdAt를 제외한 다른 데이터를 유지
+        const formattedDate = date ? date.slice(-2) : createdAt ? createdAt.slice(-2) : null;
         return {
-            date :createdAt.slice(-2) , // 다른 데이터 유지
+            date : formattedDate, // yyyy-mm 형태의 데이터
             group :otherData,
         };
     });
-    return filterUserGroups;
+    return filterData;
 }
