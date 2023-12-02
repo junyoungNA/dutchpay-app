@@ -1,12 +1,11 @@
-import {  useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import changeDate from '../../util/changeDate';
 import OverlayWrapper from '../shared/OverlayWrapper';
 import { Button, Col, Dropdown, Row } from 'react-bootstrap';
 import styled from 'styled-components';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { calendarDateState } from '../../atom/calendarDate';
 import { kakaoUser } from '../../atom/kakaoUser';
-import {  getCalendarGroups, getPlanRecord } from '../../util/api/api';
 import { groupNameState } from '../../atom/groupName';
 import { ROUTES } from '../../route/routes';
 import { groupMemberState } from '../../atom/groupMembers';
@@ -17,12 +16,15 @@ import CalendarDate from './CalendarDate';
 import CalendarControls from './CalendarControls ';
 // useEffect내에서 사용할 비동기 처리 함수, setState콜백 함수로 받아 처리
 import handleAsyncOperation from '../../util/handleAsyncOperation';
+import useFetchGetUsersPlan from '../../hooks/useFetchUserPlan';
+import useFetchGetUsersGroups from '../../hooks/useFetchCalendarGroups';
+import { planRecord } from '../../atom/planRecord';
 
 const Calendar = () => {
     const {routeTo} = useRouter();
     const {idUser} = useRecoilValue(kakaoUser);
     const [userGroups, setUserGroups] = useState([]);
-    const [userPlans, setUserPlans] = useState([]);
+    const [userPlans, setUserPlans] = useRecoilState(planRecord);
     const {year, month} = useRecoilValue(calendarDateState);
     const setGroupName = useSetRecoilState(groupNameState);
     const setGroupMembers = useSetRecoilState(groupMemberState);
@@ -31,30 +33,19 @@ const Calendar = () => {
     const customDate = `${year}-${month < 9 ? '0'+ (month + 1): month + 1}`; //yyyy-mm;
     const [totalDate , setTotalDate] = useState<number[][]>([]);
 
-
 // 받은 유저의 그룹정보와 함께 바로 set을 통해 상태 업데이트
-    const getGroupMemberFetch = useCallback(async(idUser : string, customDate : string) => {
-        const usersGroups: any = await getCalendarGroups(idUser, customDate);
-        return usersGroups;
-    },[]);
+    const getGroupMemberFetch = useFetchGetUsersGroups();
 
-    const getUsersPlanRecordFetch = useCallback(async(idUser : string,  customDate : string ) => {
-        try {
-            const userPlanRecord = await getPlanRecord(idUser, customDate);
-            console.log(userPlanRecord,'userPlanRecord');
-            return userPlanRecord;
-        }catch(error : any) {
-            console.log(error,'유저 계획가져오기 실패');
-        }
-    }, []); 
+    // 유저 계획기록가져오기
+    const getUsersPlanRecordFetch = useFetchGetUsersPlan();
 
     useEffect(() => {
         if(idUser) {
             // 유저 더치페이그룹정보
-            handleAsyncOperation(getGroupMemberFetch(idUser, customDate), setUserGroups);
+            handleAsyncOperation(getGroupMemberFetch(customDate), setUserGroups);
     
             // 유저 계획 정보
-            handleAsyncOperation(getUsersPlanRecordFetch(idUser, customDate), setUserPlans);
+            handleAsyncOperation(getUsersPlanRecordFetch(customDate), setUserPlans);
         }
         setTotalDate(changeDate(year, month));
     }, [getUsersPlanRecordFetch, getGroupMemberFetch, setGroupMembers,setUserPlans,customDate, idUser, year, month]);

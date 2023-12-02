@@ -10,8 +10,8 @@ import axios from 'axios'
 import { useSetRecoilState } from 'recoil'
 import { mapArrive } from '../../atom/mapArrive'
 import { mapDeparture } from '../../atom/mapDeparture'
-// import PlanRecordTab from './Tabs/PlanRecordTab'
 import Calendar from '../calendar/Calendar'
+import PlanRecordTab from './Tabs/PlanRecordTab'
 
 const TabCategoryList = [
     {
@@ -50,18 +50,18 @@ const TabCategoryList = [
         title : '길찾기 기록',
         component : ({
             directionRecord,
-            onClickRecordPlan
+            onClickDirectionRecord
         } : IDirectionRecordTabProps) => 
         (
             <DirectionRecordTab
                 directionRecord= {directionRecord}
-                onClickRecordPlan = {onClickRecordPlan}
+                onClickDirectionRecord = {onClickDirectionRecord}
             />
         ),
     },
     {
         eventKey :'makePlan',
-        title : '계획',
+        title : '계획 작성',
         component : ({
             setKeyword,
             handleTabSelect
@@ -75,7 +75,15 @@ const TabCategoryList = [
     },
     {
         eventKey :'planRecord',
-        title : '내 plan',
+        title : '계획',
+        component : ( ) =>  
+        (
+            <PlanRecordTab/>
+        )
+    },
+    {
+        eventKey :'calendar',
+        title : '캘린더',
         component : ( ) =>  
         (
             <Calendar/>
@@ -146,7 +154,7 @@ const TabSide : React.FC<ITabSideProps> = ({
     }
 
     // 지난 기록에서 설정을 눌러 출발지, 도착지 설정
-    const onClickRecordPlan = (departure : string, arrive : string) => (event : React.MouseEvent<HTMLButtonElement>) => {
+    const onClickDirectionRecord = (departure : string, arrive : string) => (event : React.MouseEvent<HTMLButtonElement>) => {
         event.stopPropagation();
         setDeparture(departure);
         setArrive(arrive);
@@ -192,7 +200,7 @@ const TabSide : React.FC<ITabSideProps> = ({
                         onClickSerachRecord,
                         handleKakaoAddressSearch,
                         directionRecord,
-                        onClickRecordPlan,
+                        onClickDirectionRecord,
                         handleTabSelect,
                         map
                     })}
