@@ -99,7 +99,7 @@ const transformDates  = (resultGroups : any) => {
         const formattedDate = date ? date.slice(-2) : createdAt ? createdAt.slice(-2) : null;
         return {
             date : formattedDate, // yyyy-mm 형태의 데이터
-            group :otherData,
+            usersData :otherData,
         };
     });
     return filterData;

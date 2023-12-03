@@ -54,7 +54,7 @@ export function getFirstDayOfWeek(year:number, month : number) {
     return firstDayOfWeek;
 }
 
-function addZeroDate (getCallback : () => number) {
+export function addZeroDate (getCallback : () => number) {
     const LIMIT_NUM = 10
     const customDate = getCallback() < LIMIT_NUM ?  '0' + String(getCallback()) : getCallback();
     return customDate;

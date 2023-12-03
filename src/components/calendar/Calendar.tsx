@@ -101,11 +101,11 @@ const Calendar = () => {
                                             그룹
                                         </Dropdown.Toggle><br></br>
                                         <Dropdown.Menu>
-                                        {matchingGroups.map(({ group } : any, index : number) =>   
+                                        {matchingGroups.map(({ usersData } : any, index : number) =>   
                                             <Dropdown.Item key={index}> 
-                                                {group.groupName.length >5 ? group.groupName.slice(0,5)+'...' : group.groupName }
-                                                <Button style={{marginLeft:'5px'}} variant="outline-primary" size='sm' onClick={onClickShowGroup(group.groupName, group.groupMembers)}>보기</Button>
-                                                <Button style={{marginLeft:'5px'}} variant="outline-danger" size='sm' onClick={onClickDeleteGroup(idUser, group.groupName)} >삭제</Button>
+                                                {usersData.groupName.length >5 ? usersData.groupName.slice(0,5)+'...' : usersData.groupName }
+                                                <Button style={{marginLeft:'5px'}} variant="outline-primary" size='sm' onClick={onClickShowGroup(usersData.groupName, usersData.groupMembers)}>보기</Button>
+                                                <Button style={{marginLeft:'5px'}} variant="outline-danger" size='sm' onClick={onClickDeleteGroup(idUser, usersData.groupName)} >삭제</Button>
                                             </Dropdown.Item>
                                             )
                                         }

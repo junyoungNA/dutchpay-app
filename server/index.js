@@ -341,7 +341,7 @@ app.post('/expense', async (req, res) => {
 });
 
 // 계획api
-app.get('/plan', async (req, res) => {
+app.get('/calendar', async (req, res) => {
     try {
         const idUser = req.query.idUser;
         const date = req.query.date;
@@ -353,7 +353,25 @@ app.get('/plan', async (req, res) => {
         ]},);
         res.status(201).json(planRecord); 
     } catch (error) {
-        console.error('계획 생성 오류:', error);
+        console.error('달력계획 가져오기 오류:', error);
+        res.status(500).json({ error: '내부 서버 오류' });
+    }
+});
+
+
+app.get('/plan', async (req, res) => {
+    try {
+        const idUser = req.query.idUser;
+        const date = req.query.date;
+        // const regexPattern = new RegExp("^" + date); //yyyy-mm 맞는 정규 표현식생성
+        const planRecord = await Plan.find({
+            $and: [
+                { idUser:idUser }, 
+                { date:  date }, 
+        ]},);
+        res.status(201).json(planRecord); 
+    } catch (error) {
+        console.error('계획 가져오기 오류:', error);
         res.status(500).json({ error: '내부 서버 오류' });
     }
 });
