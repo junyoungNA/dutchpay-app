@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react'
+import React, { ChangeEvent, useState } from 'react'
 import { FormGroup, Form, Button } from 'react-bootstrap'
 import styled from 'styled-components'
 import { StyledDirectionBtn } from '../PlanMap'
@@ -11,6 +11,7 @@ import { mapDeparture } from '../../../atom/mapDeparture'
 import { kakaoUser } from '../../../atom/kakaoUser'
 import { useRouter } from '../../../hooks/useRouter'
 import useFetchUserInfo from '../../../hooks/useFetchUserInfo '
+import showAlert from '../../../util/shoAlert'
 
 export interface IMakePlanTabProps {
     setKeyword : (value : string) => void,
@@ -24,27 +25,39 @@ const MakePlanTab:React.FC<IMakePlanTabProps> = ({setKeyword, handleTabSelect}) 
     const {routeTo} = useRouter();
     const resetKakaoUser = useResetRecoilState(kakaoUser);
     const fetchUserInfo = useFetchUserInfo({ resetKakaoUser, routeTo });
+    const title = useState('');
+    const date = useState('');
+    const startTime = useState('');
+    const endTime = useState('');
+    const content = useState('');
 
     const hanldeSubmit =  async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        const formData = new FormData(event.currentTarget);
-        const planPayload = {
-            title: formData.get('title') as string,
-            date: formData.get('date') as string,
-            departure: formData.get('departure') as string,
-            arrive: formData.get('arrive') as string,
-            startTime: formData.get('startTime') as string,
-            endTime: formData.get('endTime') as string,
-            content: formData.get('content') as string,
-            idUser : idUser,
+        try {
+            event.preventDefault();
+            const formData = new FormData(event.currentTarget);
+            const planPayload = {
+                title: formData.get('title') as string,
+                date: formData.get('date') as string,
+                departure: formData.get('departure') as string,
+                arrive: formData.get('arrive') as string,
+                startTime: formData.get('startTime') as string,
+                endTime: formData.get('endTime') as string,
+                content: formData.get('content') as string,
+                idUser : idUser,
+            }
+             // user token체크후 유효성검사 실패 시 메인페이지로 이동
+            await fetchUserInfo();
+            const result : any  =  await postData('plan',planPayload );
+            // event DOM접근해서 resest메소드를 사용
+            // 좋은 방법은 아닌듯!
+            event.currentTarget.reset();
+            showAlert(`${planPayload.title} 계획만들기 성공!. 계획 탭에서 확인하세요.`);
+        }catch(error) {
+            console.log(error,'계획 생성 오류');
         }
-        // user token체크후 유효성검사 실패 시 메인페이지로 이동
-        await fetchUserInfo();
-        const result : any  =  await postData('plan',planPayload );
-        // console.log(result,'결과');
     }
     return (
-        <Form onSubmit={hanldeSubmit}>
+        <Form  onSubmit={hanldeSubmit}>
             <StyledFormControl
                 type="text"
                 onChange={(e : ChangeEvent<HTMLInputElement>) => setKeyword(e.target.value)}
