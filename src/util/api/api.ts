@@ -82,9 +82,7 @@ export const deleteExpense = async (idUser : string, groupName : string, expense
 export const getPlanRecord = async (idUser : string, customDate: string) => {
         try {
             const response = await getData(`/plan?idUser=${idUser}&date=${customDate}`);
-            // console.log('api response record', response);
-            const filterPalnRecord = transformDates(response);
-            return filterPalnRecord;
+            return response;
         }catch(error : any) {
             console.log(error,'유저 계획가져오기 실패');
         }

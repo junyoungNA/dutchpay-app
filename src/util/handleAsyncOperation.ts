@@ -2,6 +2,7 @@
     promise
         .then((result) => {
             // api 요청 성공시 setState처리
+            console.log('callbackresult', result);
             successCallback(result);
         })
         .catch((error) => {

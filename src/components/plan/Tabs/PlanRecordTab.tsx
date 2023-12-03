@@ -18,8 +18,7 @@ const PlanRecordTab = () => {
 
     useEffect(() => {
         handleAsyncOperation(getUsersPlanRecordFetch(date), setUserPlansRecord);
-        console.log(date);
-    },[date,getUsersPlanRecordFetch,setUserPlansRecord])
+    },[date,getUsersPlanRecordFetch,setUserPlansRecord ])
 
     return (
         <>
@@ -29,7 +28,7 @@ const PlanRecordTab = () => {
                 onChange={(e) => {setDate(e.target.value); console.log(e.target.value)}}
                 value={date}
                 />
-            {userPlansRecord.length === 0 && <><StyledErrorMessage>계획 기록이 없어요ㅠ</StyledErrorMessage><Lottie animationData={error_animation}  loop={false}/></>}
+            {userPlansRecord.length <= 0 && <><StyledErrorMessage>계획 기록이 없어요ㅠ</StyledErrorMessage><Lottie animationData={error_animation}  loop={false}/></>}
             <ListGroup as='ol' numbered>
                 {userPlansRecord?.map((plan : any, idx: number) => 
                     <StyledSearchListItem action key={idx}>

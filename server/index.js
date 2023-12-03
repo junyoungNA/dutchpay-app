@@ -369,6 +369,7 @@ app.get('/plan', async (req, res) => {
                 { idUser:idUser }, 
                 { date:  date }, 
         ]},);
+        console.log('plan결과',planRecord, date);
         res.status(201).json(planRecord); 
     } catch (error) {
         console.error('계획 가져오기 오류:', error);
