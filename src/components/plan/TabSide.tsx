@@ -63,12 +63,10 @@ const TabCategoryList = [
         eventKey :'makePlan',
         title : '계획 작성',
         component : ({
-            setKeyword,
             handleTabSelect
         } : IMakePlanTabProps) =>  
         (
             <MakePlanTab
-                setKeyword={setKeyword}
                 handleTabSelect={handleTabSelect}
             />
         )
@@ -113,6 +111,7 @@ const TabSide : React.FC<ITabSideProps> = ({
         setMarkerInfo,
     }) => {
     const setAddressInfo = useSetRecoilState(kakaoAddressInfoState);
+    // useReducer로 뺄 수 있을듯
     const [activeTab, setActiveTab] = useState('category');
     const setArrive = useSetRecoilState(mapArrive);
     const setDeparture = useSetRecoilState(mapDeparture);
@@ -160,6 +159,7 @@ const TabSide : React.FC<ITabSideProps> = ({
         setArrive(arrive);
     }
 
+    // useReducer나 전역상태로 뺄수있을듯?
     const handleTabSelect = (eventKey: string | null) => {
         //카테고리 선택시 실행될 함수 
         //location 에서 category이동시에 이전에 검색됐던 내용들을 다시 마커설정

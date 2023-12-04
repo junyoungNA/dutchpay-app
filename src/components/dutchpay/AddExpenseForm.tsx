@@ -28,13 +28,8 @@ const AddExpenseForm = () => {
     const [isAmountValid, setAmountValid] = useState(false);
     const [isPayerValid, setPayerValid] = useState(false);
 
-    useEffect(() => {
-        //useEffect내에서 바로 async 호출 불가능!
-        //fetchData감싸주어 호출
-        fetchData(idUser, groupName);
-    }, [idUser, groupName]);
-
-    const fetchData = async (idUser : string, groupName : string) => {
+    
+    const fetchData = useCallback(async (idUser : string, groupName : string) => {
         try {
             const expenses: any = await getExpenses(idUser, groupName);
             // console.log(expenses, '클라이언트 받은 데이터');
@@ -43,7 +38,14 @@ const AddExpenseForm = () => {
         } catch (error) {
             console.error('데이터를 가져오는 중 오류 발생:', error);
         }
-    }
+    },[setExpense])
+
+
+    useEffect(() => {
+        //useEffect내에서 바로 async 호출 불가능!
+        //fetchData감싸주어 호출
+        fetchData(idUser, groupName);
+    }, [idUser, fetchData, groupName]);
 
     const checkFormValidated = () => {
         const desceValid = desc.length > 0;
@@ -142,7 +144,6 @@ const AddExpenseForm = () => {
                                         isInvalid = {!isPayerValid && validated}
                                         onChange={({target}) => setPayer(target.value)}
                                         style={{padding: '0 12px'}}
-                                        // className='form-control'
                                     >
                                         <option value="" defaultValue='' disabled style={{display:'none'}}>누가 결제 했나요?</option>
                                         {groupMembers.map((member : string) => 

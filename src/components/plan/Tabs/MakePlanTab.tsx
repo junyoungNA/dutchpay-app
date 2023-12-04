@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import { FormGroup, Form, Button } from 'react-bootstrap'
 import styled from 'styled-components'
 import { StyledDirectionBtn } from '../PlanMap'
@@ -14,69 +14,139 @@ import useFetchUserInfo from '../../../hooks/useFetchUserInfo '
 import showAlert from '../../../util/shoAlert'
 
 export interface IMakePlanTabProps {
-    setKeyword : (value : string) => void,
     handleTabSelect : (type : string) => void, 
 }
 
-const MakePlanTab:React.FC<IMakePlanTabProps> = ({setKeyword, handleTabSelect}) => {
+const MakePlanTab:React.FC<IMakePlanTabProps> = ({handleTabSelect}) => {
     const arrive = useRecoilValue(mapArrive);
     const departure = useRecoilValue(mapDeparture);
     const {idUser} = useRecoilValue(kakaoUser);
     const {routeTo} = useRouter();
     const resetKakaoUser = useResetRecoilState(kakaoUser);
     const fetchUserInfo = useFetchUserInfo({ resetKakaoUser, routeTo });
-    const title = useState('');
-    const date = useState('');
-    const startTime = useState('');
-    const endTime = useState('');
-    const content = useState('');
+    
+    const [isTitleValid, setTitleValid] = useState(false);
+    const [isDateValid, setDateValid] = useState(false);
+    
+    // MakePlanTab 컴포넌트가 처음에 마운트되면서 
+    // departure와 arrive 값이 변경되지 않을 것으로 예상된다면, 
+    // 초기 상태를 직접 설정하는 방식도 사용할 수 있습니다
+    // useState에서 초기값을 바로 설정하면 동작하지 않음?
+    useEffect(() => {
+        setForm((prevForm) => ({
+            ...prevForm,
+            formDeparture: departure,
+            formArrive: arrive,
+        }));
+    }, [departure, arrive]);
 
-    const hanldeSubmit =  async (event: React.FormEvent<HTMLFormElement>) => {
+    const [form, setForm] = useState({
+        title:'',
+        date:'',
+        startTime:'',
+        endTime:'',
+        content:'',
+        formDeparture: '',
+        formArrive: '',
+    })
+
+    const onFormChagne = (e : ChangeEvent<HTMLInputElement>) => {
+        const { value, name } = e.target; // 우선 e.target 에서 name 과 value 를 추출
+        setForm({
+            ...form, 
+            [name]: value 
+        });
+    }
+
+    const onReset = () => {
+        setForm({
+            title:'',
+            date:'',
+            startTime:'',
+            endTime:'',
+            content:'',
+            formDeparture:'',
+            formArrive:'',
+        })
+    };
+    
+
+    const {title, date, startTime, endTime, content, formDeparture, formArrive } = form; 
+
+
+    const hanldeSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         try {
             event.preventDefault();
-            const formData = new FormData(event.currentTarget);
+            if(!checkFormValidated()) return;
             const planPayload = {
-                title: formData.get('title') as string,
-                date: formData.get('date') as string,
-                departure: formData.get('departure') as string,
-                arrive: formData.get('arrive') as string,
-                startTime: formData.get('startTime') as string,
-                endTime: formData.get('endTime') as string,
-                content: formData.get('content') as string,
+                title: title,
+                date: date,
+                departure: formDeparture,
+                arrive: formArrive, 
+                startTime:startTime,
+                endTime: endTime,
+                content: content,
                 idUser : idUser,
             }
+            console.log(planPayload,'저장');
+            onReset();
              // user token체크후 유효성검사 실패 시 메인페이지로 이동
             await fetchUserInfo();
             const result : any  =  await postData('plan',planPayload );
-            // event DOM접근해서 resest메소드를 사용
-            // 좋은 방법은 아닌듯!
-            event.currentTarget.reset();
+            console.log(result,'postData 결과');
             showAlert(`${planPayload.title} 계획만들기 성공!. 계획 탭에서 확인하세요.`);
+            handleTabSelect('planRecord');
         }catch(error) {
             console.log(error,'계획 생성 오류');
         }
     }
+
+    const checkFormValidated = () => {
+        const titleValid = title.length > 0;
+        const dateValid = date!== (null || '');
+        setTitleValid(titleValid);
+        setDateValid(dateValid);
+        return titleValid && dateValid
+    }
+
     return (
         <Form  onSubmit={hanldeSubmit}>
-            <StyledFormControl
-                type="text"
-                onChange={(e : ChangeEvent<HTMLInputElement>) => setKeyword(e.target.value)}
-                placeholder='이 계획의 제목을 입력해주세요!'
-                minLength={1}
-                name='title'
-                maxLength={20}
-            />
-            <StyledFormControl
-                type='date'
-                placeholder='계획의 날짜를 선택해 주세요.'
-                name='date'
-            />
+            <Form.Group>
+                <StyledFormControl
+                    type="text"
+                    onChange={onFormChagne}
+                    placeholder='이 계획의 제목을 입력해주세요(20자 이내)!'
+                    minLength={1}
+                    isValid={isTitleValid}
+                    isInvalid={!isTitleValid}
+                    name='title'
+                    maxLength={20}
+                    value={title}
+                />
+                <Form.Control.Feedback type="invalid" data-valid={isTitleValid}>제목을 입력해주세요.</Form.Control.Feedback>
+            </Form.Group>
+            
+            <Form.Group>
+                <StyledFormControl
+                    type='date'
+                    placeholder='계획의 날짜를 선택해 주세요.'
+                    onChange={onFormChagne}
+                    value={date}
+                    isValid={isDateValid}
+                    isInvalid={!isDateValid}
+                    name='date'
+                />
+                <Form.Control.Feedback type="invalid" data-valid={isDateValid}>해당 날짜를 입력해주세요.</Form.Control.Feedback>
+            </Form.Group>
+
             <StyledFormGroup>
                 <StyledFormControl
                     type='text'
                     placeholder='출발지'
-                    name='departure'
-                    defaultValue={departure}
+                    name='formDeparture'
+                    value={formDeparture}
+                    maxLength={25}
+                    onChange={onFormChagne}
                 />
                 <StyledIcon>
                     <ArrowRight/>
@@ -84,8 +154,10 @@ const MakePlanTab:React.FC<IMakePlanTabProps> = ({setKeyword, handleTabSelect}) 
                 <StyledFormControl
                     type='text'
                     placeholder='도착지'
-                    name='arrive'
-                    defaultValue={arrive}
+                    name='formArrive'
+                    value={formArrive}
+                    maxLength={25}
+                    onChange={onFormChagne}
                 />
                 <StyledDirectionBtn onClick={() => handleTabSelect('directionRecord')} width='100%'>길찾기 기록</StyledDirectionBtn>
             </StyledFormGroup>
@@ -93,6 +165,8 @@ const MakePlanTab:React.FC<IMakePlanTabProps> = ({setKeyword, handleTabSelect}) 
                 <StyledFormControl
                     type='time'
                     name='startTime'
+                    onChange={onFormChagne}
+                    value={startTime}
                 />
                 <StyledIcon>
                     <TbTilde/>
@@ -100,17 +174,21 @@ const MakePlanTab:React.FC<IMakePlanTabProps> = ({setKeyword, handleTabSelect}) 
                 <StyledFormControl
                     type='time'
                     name='endTime'
+                    onChange={onFormChagne}
+                    value={endTime}
                 />
             </StyledFormGroup>
             <StyledFormControl
                     as='textarea'
                     name='content'
-                    placeholder='내용을 입력해주세요 (20자 이내).'
-                    maxLength={20}
+                    placeholder='내용을 입력해주세요 (100자 이내).'
+                    maxLength={100}
                     minLength={1}
                     width='100%'
                     height='15vh'
                     row={100}
+                    onChange={onFormChagne}
+                    value={content}
             />
             <Button type='submit'>저장하기</Button>
         </Form>
