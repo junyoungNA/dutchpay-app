@@ -1,6 +1,7 @@
 import {atom} from 'recoil';
 import { recoilPersist } from 'recoil-persist';
 
+// 더치페이를 위한 그룹 멤버들 이름 상태
 const { persistAtom: persistExpenses } = recoilPersist({
     key: 'groupMembersPersist', // expensesState를 위한 고유한 키
 });

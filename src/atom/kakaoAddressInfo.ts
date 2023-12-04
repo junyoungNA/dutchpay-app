@@ -1,5 +1,6 @@
 import {atom} from 'recoil';
 
+// 카카오맵 전역상태
 export interface IKakaoAddressInfo  {
     address_name?: string,
     region_2depth_name?: string,

@@ -1,6 +1,7 @@
 import {atom} from 'recoil';
 import { getCalendarMonth, getFullYear, getDate } from '../util/getCurrentDate';
 
+// 캘린더 전역상태
 type TypeCalendarDate = {
     year : number;
     month : number;

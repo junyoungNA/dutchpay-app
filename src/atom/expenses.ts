@@ -1,6 +1,7 @@
 import {atom} from 'recoil';
 import { recoilPersist } from 'recoil-persist';
 
+// 더치페이 상세 정보  전역상태
 export interface IExpenseState {
     date : string;
     desc : string;

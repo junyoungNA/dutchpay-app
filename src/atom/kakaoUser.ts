@@ -1,6 +1,7 @@
 import {atom} from 'recoil';
 import { recoilPersist } from 'recoil-persist';
 
+// 카카오 유저 정보 전역 상태
 export type TKakaoUser = {
     nickname : string,
     idUser : string,

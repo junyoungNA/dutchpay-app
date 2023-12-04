@@ -1,5 +1,6 @@
 import { Button, Modal,Form } from 'react-bootstrap';
 import { useState } from 'react';
+import { StyledDirectionBtn } from '../PlanMap';
 
 
 const TabModal = () => {
@@ -9,9 +10,9 @@ const TabModal = () => {
     const handleShow = () => setShow(true);
     return (
         <>
-            <Button variant="primary" onClick={handleShow}>
+            <StyledDirectionBtn variant="primary" onClick={handleShow}>
                 자세히
-            </Button>
+            </StyledDirectionBtn>
 
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>

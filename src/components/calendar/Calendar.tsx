@@ -42,10 +42,10 @@ const Calendar = () => {
     useEffect(() => {
         if(idUser) {
             // 유저 더치페이그룹정보
-            handleAsyncOperation(getGroupMemberFetch(customDate), setUserGroups);
+            // handleAsyncOperation(getGroupMemberFetch(customDate), setUserGroups);
     
             // 유저 계획 정보
-            handleAsyncOperation(getUsersPlanRecordFetch(customDate), setUserPlans);
+            // handleAsyncOperation(getUsersPlanRecordFetch(customDate), setUserPlans);
         }
         setTotalDate(changeDate(year, month));
     }, [getUsersPlanRecordFetch, getGroupMemberFetch, setGroupMembers,setUserPlans,customDate, idUser, year, month]);

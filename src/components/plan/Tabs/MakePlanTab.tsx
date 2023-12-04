@@ -5,13 +5,14 @@ import { StyledDirectionBtn } from '../PlanMap'
 import { TbTilde } from 'react-icons/tb'
 import { ArrowRight } from 'react-bootstrap-icons'
 import { postData } from '../../../util/api/apiInstance'
-import { useRecoilValue, useResetRecoilState } from 'recoil'
+import { useRecoilValue, useResetRecoilState, useSetRecoilState } from 'recoil'
 import { mapArrive } from '../../../atom/mapArrive'
 import { mapDeparture } from '../../../atom/mapDeparture'
 import { kakaoUser } from '../../../atom/kakaoUser'
 import { useRouter } from '../../../hooks/useRouter'
 import useFetchUserInfo from '../../../hooks/useFetchUserInfo '
 import showAlert from '../../../util/shoAlert'
+import { planDateAtom } from '../../../atom/planDateSet'
 
 export interface IMakePlanTabProps {
     handleTabSelect : (type : string) => void, 
@@ -24,7 +25,8 @@ const MakePlanTab:React.FC<IMakePlanTabProps> = ({handleTabSelect}) => {
     const {routeTo} = useRouter();
     const resetKakaoUser = useResetRecoilState(kakaoUser);
     const fetchUserInfo = useFetchUserInfo({ resetKakaoUser, routeTo });
-    
+
+    const setPlanDate = useSetRecoilState(planDateAtom); //현재 만들어진 계획이 있다면 이 날짜를 이용해 만든 계획 보여주기
     const [isTitleValid, setTitleValid] = useState(false);
     const [isDateValid, setDateValid] = useState(false);
     
@@ -88,13 +90,12 @@ const MakePlanTab:React.FC<IMakePlanTabProps> = ({handleTabSelect}) => {
                 content: content,
                 idUser : idUser,
             }
-            console.log(planPayload,'저장');
             onReset();
              // user token체크후 유효성검사 실패 시 메인페이지로 이동
             await fetchUserInfo();
-            const result : any  =  await postData('plan',planPayload );
-            console.log(result,'postData 결과');
+            const result : any  =  await postData('plan', planPayload);
             showAlert(`${planPayload.title} 계획만들기 성공!. 계획 탭에서 확인하세요.`);
+            setPlanDate(date);
             handleTabSelect('planRecord');
         }catch(error) {
             console.log(error,'계획 생성 오류');
@@ -115,7 +116,7 @@ const MakePlanTab:React.FC<IMakePlanTabProps> = ({handleTabSelect}) => {
                 <StyledFormControl
                     type="text"
                     onChange={onFormChagne}
-                    placeholder='이 계획의 제목을 입력해주세요(20자 이내)!'
+                    placeholder='이 계획의 제목을 입력해주세요.(20자 이내)'
                     minLength={1}
                     isValid={isTitleValid}
                     isInvalid={!isTitleValid}

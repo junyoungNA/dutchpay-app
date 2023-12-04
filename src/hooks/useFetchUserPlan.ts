@@ -8,6 +8,7 @@ const useFetchGetUsersPlan = () => {
     const getUsersPlanRecordFetch = useCallback(async (customDate: string) => {
         try {
             const userPlanRecord = await getPlanRecord(idUser, customDate);
+            console.log(customDate,'날짜뭔데');
             return userPlanRecord;
         } catch (error: any) {
             console.log(error, '유저 계획 가져오기 실패');

@@ -168,7 +168,7 @@ app.delete(`/groups`, async (req, res) => {
         const groupName = req.query.groupName;
         const result1 = await Members.deleteMany({ idUser: idUser, groupName: groupName });
         const result2 = await Expense.deleteMany({ idUser: idUser, groupName: groupName });
-        console.log(result1, result2,'결과아');
+        // console.log(result1, result2,'결과아');
         if (result1.acknowledged === true && result2.acknowledged === true) {
             const groupMembrs = await Members.find({
                 idUser: idUser
@@ -241,7 +241,7 @@ app.post('/members', async (req, res) => {
     try {
         const { groupMembers, idUser, groupName, createdAt } = req.body;
         
-        console.log(groupMembers, idUser, groupName);
+        // console.log(groupMembers, idUser, groupName);
         const existingUser = await User.findOne({ idUser});
         if (!existingUser) {
             return res.status(302).json({ msg: '사용자 정보가 없습니다. 다시 로그인해주세요.' });
@@ -261,7 +261,7 @@ app.delete('/members', async (req, res) => {
         const idUser = req.query.idUser;
         const groupName = req.query.groupName; 
         
-        console.log(idUser, groupName);
+        // console.log(idUser, groupName);
         const result1 = await Members.deleteOne({ idUser, groupName });
         const result2 = await Expense.deleteMany({ idUser, groupName });      
         return res.status(204).send(); // 삭제가 성공하면 빈 응답(204 No Content)을 보냅니다.
@@ -298,7 +298,7 @@ app.delete(`/expense`, async (req, res) => {
         const idUser = req.query.idUser; 
         const groupName = req.query.groupName;
         const expenseName = req.query.expenseName; 
-        console.log(idUser, groupName, expenseName, '정보');
+        // console.log(idUser, groupName, expenseName, '정보');
         const result = await Expense.deleteOne({
             $and: [
                 {idUser : idUser}, 
@@ -317,7 +317,7 @@ app.delete(`/expense`, async (req, res) => {
             if (!allExpenses || allExpenses.length === 0) {
                 return res.status(201).json({ msg: '데이터가 없습니다.' });
             }
-            console.log(allExpenses,'삭제후 정보');
+            // console.log(allExpenses,'삭제후 정보');
             res.status(201).json(allExpenses); // 저장된 사용자 데이터를 JSON 형식으로 응답
         }
     } catch (error) {
@@ -382,8 +382,9 @@ app.post('/plan', async (req, res) => {
         const {title, date, departure,  arrive, stratTime, endTime, content, idUser  } = req.body;
         // console.log(groupName, idUser,  desc, date, amount, payer) ;
         const plan = new Plan({title, date, departure, arrive, stratTime, endTime, content, idUser});
-        await plan.save(); 
-        res.status(201).json();
+        const result =  await plan.save(); 
+        console.log('plan result', result );
+        res.status(201).json({msg:'계획 생성 성공'});
     } catch (error) {
         console.error('계획 생성 오류:', error);
         res.status(500).json({ error: '내부 서버 오류' });
@@ -393,6 +394,3 @@ app.post('/plan', async (req, res) => {
 app.listen(port, () => {
     console.log(`listening localhost://:${port}`);
 });
-
-// 사용자 데이터 삽입을 처리하는 라우트 생성
-
