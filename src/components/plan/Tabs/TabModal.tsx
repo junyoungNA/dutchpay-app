@@ -5,7 +5,7 @@ import { StyledDirectionBtn } from '../PlanMap';
 
 const TabModal = () => {
     const [show, setShow] = useState(false);
-
+    
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     return (
@@ -23,9 +23,9 @@ const TabModal = () => {
                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                         <Form.Label>Email address</Form.Label>
                         <Form.Control
-                        type="email"
-                        placeholder="name@example.com"
-                        autoFocus
+                            type="email"
+                            placeholder="name@example.com"
+                            autoFocus
                         />
                     </Form.Group>
                     <Form.Group
@@ -39,10 +39,10 @@ const TabModal = () => {
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>
-                    Close
+                    닫기    
                     </Button>
                     <Button variant="primary" onClick={handleClose}>
-                    Save Changes
+                    수정
                     </Button>
                 </Modal.Footer>
             </Modal>

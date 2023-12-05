@@ -3,7 +3,7 @@ import { Form, ListGroup } from 'react-bootstrap'
 import Lottie from 'lottie-react';
 import { error_animation } from '../../../aseets';
 import useFetchGetUsersPlan from '../../../hooks/useFetchUserPlan';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRecoilState, } from 'recoil';
 import { planRecord } from '../../../atom/planRecord';
 import { StyledErrorMessage } from '../../dutchpay/AddMembers';
@@ -19,6 +19,7 @@ const PlanRecordTab = () => {
         const updateDateAndFetch = async () => {
                 // 계획 작성 후 바로 만든 계획을 보여주기 위한 date 설정
                 const result:any = await getUsersPlanRecordFetch(planDate);
+                // console.log(result,'모든 계획');
                 setUserPlansRecord(result);
         };
         updateDateAndFetch();

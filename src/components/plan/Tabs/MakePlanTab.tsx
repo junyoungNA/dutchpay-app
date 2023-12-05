@@ -54,6 +54,15 @@ const MakePlanTab:React.FC<IMakePlanTabProps> = ({handleTabSelect}) => {
 
     const onFormChagne = (e : ChangeEvent<HTMLInputElement>) => {
         const { value, name } = e.target; // 우선 e.target 에서 name 과 value 를 추출
+        switch(name) {
+            case 'title': 
+                value.length > 0 ? setTitleValid(true) : setTitleValid(false);
+                break;
+            case 'date': 
+                value !== (null || '') ? setDateValid(true) : setDateValid(false);
+                break;
+            default : break;
+        }
         setForm({
             ...form, 
             [name]: value 
@@ -75,7 +84,6 @@ const MakePlanTab:React.FC<IMakePlanTabProps> = ({handleTabSelect}) => {
 
     const {title, date, startTime, endTime, content, formDeparture, formArrive } = form; 
 
-
     const hanldeSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         try {
             event.preventDefault();
@@ -93,12 +101,15 @@ const MakePlanTab:React.FC<IMakePlanTabProps> = ({handleTabSelect}) => {
             onReset();
              // user token체크후 유효성검사 실패 시 메인페이지로 이동
             await fetchUserInfo();
-            const result : any  =  await postData('plan', planPayload);
-            showAlert(`${planPayload.title} 계획만들기 성공!. 계획 탭에서 확인하세요.`);
-            setPlanDate(date);
-            handleTabSelect('planRecord');
+            const {msg} : any  =  await postData('plan', planPayload);
+            if(msg === '계획 생성 성공') {
+                showAlert(`${planPayload.title} 계획만들기 성공!. 계획 탭에서 확인하세요.`);
+                setPlanDate(date);
+                handleTabSelect('planRecord');
+            }
         }catch(error) {
-            console.log(error,'계획 생성 오류');
+            console.log(error);
+            showAlert('계획 만들기 오류');
         }
     }
 
@@ -111,7 +122,7 @@ const MakePlanTab:React.FC<IMakePlanTabProps> = ({handleTabSelect}) => {
     }
 
     return (
-        <Form  onSubmit={hanldeSubmit}>
+        <Form onSubmit={hanldeSubmit}>
             <Form.Group>
                 <StyledFormControl
                     type="text"

@@ -369,7 +369,7 @@ app.get('/plan', async (req, res) => {
                 { idUser:idUser }, 
                 { date:  date }, 
         ]},);
-        console.log('plan결과',planRecord, date);
+        // console.log('plan결과',planRecord, date);
         res.status(201).json(planRecord); 
     } catch (error) {
         console.error('계획 가져오기 오류:', error);
@@ -383,7 +383,7 @@ app.post('/plan', async (req, res) => {
         // console.log(groupName, idUser,  desc, date, amount, payer) ;
         const plan = new Plan({title, date, departure, arrive, stratTime, endTime, content, idUser});
         const result =  await plan.save(); 
-        console.log('plan result', result );
+        // console.log('plan result', result );
         res.status(201).json({msg:'계획 생성 성공'});
     } catch (error) {
         console.error('계획 생성 오류:', error);

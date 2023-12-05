@@ -14,8 +14,8 @@ type FetchUserInfo = () => Promise<void>;
 const useFetchUserInfo = ({resetKakaoUser, routeTo} : IUseFetchUserInfoProps) : FetchUserInfo  => {
     const fetchUserInfo = useCallback(async () => {
         try {
-        const { idUser, nickname } = await getKakaoUserInfo();
-        console.log(idUser, nickname, 'layout 확인결과');
+        const { idUser } = await getKakaoUserInfo();
+        // console.log(idUser, nickname, 'layout 확인결과');
         if (!idUser) {
              // 의문점 
             //callback 의존성 배열에 children을 빼도 될까?
