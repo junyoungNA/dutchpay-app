@@ -5,29 +5,26 @@ import { StyledDirectionBtn } from '../PlanMap'
 import { TbTilde } from 'react-icons/tb'
 import { ArrowRight } from 'react-bootstrap-icons'
 import { ChangeEvent, FormEvent } from 'react'
-import { TmakePlanFormStates } from '../../../hooks/useMakePlanForm'
+import { TmakePlanFormStates } from '../../../hooks/usePlanForm'
 
-interface IMakePlanFormProps {
+interface IPlanFormProps {
     handleSubmit: (e : FormEvent<HTMLFormElement>) => void,
     formStates: TmakePlanFormStates,
     onFormChange : (e : ChangeEvent<HTMLInputElement>) => void,
     isDateValid : boolean,
     isTitleValid : boolean,
-    handleTabSelect: (type : string) => void,
+    handleTabSelect?: (type : string) => void,
 }
 
-const MakePlanForm = ({
+const PlanForm = ({
     handleSubmit, 
     formStates, 
     onFormChange, 
     isDateValid, 
     isTitleValid,
     handleTabSelect
-}:IMakePlanFormProps) => {
-
-    const {title, date, startTime, endTime, content, formDeparture, formArrive } = formStates; 
-
-    
+}:IPlanFormProps) => {
+    const {title, date, startTime, endTime, content, departure, arrive } = formStates; 
     return (
         <OverlayForm handleSubmit={handleSubmit}>
             <Form.Group>
@@ -62,8 +59,8 @@ const MakePlanForm = ({
                 <StyledFormControl
                     type='text'
                     placeholder='출발지'
-                    name='formDeparture'
-                    value={formDeparture}
+                    name='departure'
+                    value={departure}
                     maxLength={25}
                     onChange={onFormChange}
                 />
@@ -73,12 +70,12 @@ const MakePlanForm = ({
                 <StyledFormControl
                     type='text'
                     placeholder='도착지'
-                    name='formArrive'
-                    value={formArrive}
+                    name='arrive'
+                    value={arrive}
                     maxLength={25}
                     onChange={onFormChange}
                 />
-                <StyledDirectionBtn onClick={() => handleTabSelect('directionRecord')} width='100%'>길찾기 기록</StyledDirectionBtn>
+                {handleTabSelect && <StyledDirectionBtn onClick={() => handleTabSelect('directionRecord')} width='100%'>길찾기 기록</StyledDirectionBtn>}
             </StyledFormGroup>
 
             <StyledFormGroup>
@@ -131,4 +128,4 @@ const StyledIcon = styled.div`
     margin: 6px 5px 0 5px;
 `;
 
-export default MakePlanForm
+export default PlanForm

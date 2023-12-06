@@ -5,12 +5,6 @@ import showAlert from '../util/shoAlert';
 import { useRouter } from './useRouter';
 import { useResetRecoilState } from 'recoil';
 import { kakaoUser } from '../atom/kakaoUser';
-// interface IUseFetchUserInfoProps {
-//     resetKakaoUser: () => void;
-//     routeTo: (path: string) => void;
-// }
-
-// type FetchUserInfo = () => Promise<void>;
 
 const useFetchUserInfo = () => {
     const {routeTo} = useRouter();
@@ -19,17 +13,20 @@ const useFetchUserInfo = () => {
         try {
         const { idUser } = await getKakaoUserInfo();
         // console.log(idUser, nickname, 'layout 확인결과');
-        if (!idUser) {
-             // 의문점 
-            //callback 의존성 배열에 children을 빼도 될까?
-            //내생각은 빼야할 것 같다 callback 함수의 재생성을 막기위한 것
-            // compoenet가 바뀔때마다 재생성하는 것은 좋지 않은 것 같다
-            showAlert('죄송합니다. 다시 로그인해주세요.');
-            resetKakaoUser();
-            return routeTo('/');
-        }
+            if (!idUser) {
+                // 의문점 
+                //callback 의존성 배열에 children을 빼도 될까?
+                //내생각은 빼야할 것 같다 callback 함수의 재생성을 막기위한 것
+                // compoenet가 바뀔때마다 재생성하는 것은 좋지 않은 것 같다
+                showAlert('죄송합니다. 다시 로그인해주세요.');
+                resetKakaoUser();
+                routeTo('/')
+                return {msg :'유저 유효하지않음.', error: true};
+            }
+            return {msg: '유저 유효함', error:false}
         } catch (error) {
-        showAlert('죄송합니다. 다시 로그인해주세요.');
+            showAlert('죄송합니다. 다시 로그인해주세요.');
+            return {msg :'유저 유효성검사 중 오류발생.', error: true}
         }
     }, [resetKakaoUser, routeTo]);
 

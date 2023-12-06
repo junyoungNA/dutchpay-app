@@ -10,7 +10,7 @@ const RecordListItem = ({plan} : IRecordListItemProps) => {
     return (
         <>
             <StyledDirectionBtn variant='success' disabled>{plan.title}</StyledDirectionBtn>        
-            <TabModal/>  
+            <TabModal plan={plan}/>  
         </>
         )
     }

@@ -11,8 +11,16 @@ const AuthCheckLayout: React.FC<GeneralLayoutProps> = ({children}) => {
 
     useEffect(() => {
     //페이지 이동시 마다 로그인 여부를 확인하는 함수 실행
-        fetchUserInfo();
-        console.log('page changed!');
+        const fetchData = async () => {
+            try {
+                const {error} = await fetchUserInfo();
+                if(error) return; //fetchUserInfo 에서 route처리
+                console.log('page changed!');
+            } catch(error) {
+                console.log(error);
+            }
+        } 
+        fetchData();
         // 의문점
         // 의존성배열에 children을 빼도 될까?
         // 내 생각은 넣어야 할 것 같다. 페이지가 바뀔때 마다 body 즉 children 도 

@@ -7,24 +7,22 @@ import { kakaoUser } from '../../../atom/kakaoUser'
 import useFetchUserInfo from '../../../hooks/useFetchUserInfo '
 import showAlert from '../../../util/shoAlert'
 import { planDateAtom } from '../../../atom/planDateSet'
-import useMakePlanForm from '../../../hooks/useMakePlanForm'
-import MakePlanForm from './MakePlanForm'
+import usePlanForm from '../../../hooks/usePlanForm'
+import PlanForm from './PlanForm'
 
 export interface IMakePlanTabProps {
     handleTabSelect : (type : string) => void, 
 }
 
 const MakePlanTab:React.FC<IMakePlanTabProps> = ({handleTabSelect}) => {
-    const arrive = useRecoilValue(mapArrive);
-    const departure = useRecoilValue(mapDeparture);
+    const arriveRecord = useRecoilValue(mapArrive);
+    const departureRecord = useRecoilValue(mapDeparture);
     const {idUser} = useRecoilValue(kakaoUser);
     const fetchUserInfo = useFetchUserInfo();
 
     const setPlanDate = useSetRecoilState(planDateAtom); //현재 만들어진 계획이 있다면 이 날짜를 이용해 만든 계획 보여주기
-    
-    const {formStates, onFormChange, onReset, checkTitleAndDateValidated, isTitleValid, isDateValid} = useMakePlanForm({arrive, departure})
-
-    const {title, date, startTime, endTime, content, formDeparture, formArrive } = formStates; 
+    const {formStates, onFormChange, onReset, checkTitleAndDateValidated, isTitleValid, isDateValid} = usePlanForm({arriveRecord, departureRecord})
+    const {title, date, startTime, endTime, content, departure, arrive } = formStates; 
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         try {
@@ -33,17 +31,18 @@ const MakePlanTab:React.FC<IMakePlanTabProps> = ({handleTabSelect}) => {
             const planPayload = {
                 title: title,
                 date: date,
-                departure: formDeparture,
-                arrive: formArrive, 
+                departure: departure,
+                arrive: arrive, 
                 startTime:startTime,
                 endTime: endTime,
                 content: content,
                 idUser : idUser,
             }
              // user token체크후 유효성검사 실패 시 메인페이지로 이동
-            await fetchUserInfo();
+            const {error} = await fetchUserInfo();
+            if(error) return; //fetchUser에서 route처리;
             const {msg} : any  =  await postData('plan', planPayload);
-            if(msg === '계획 생성 성공') {
+            if(error === false) {
                 showAlert(`${planPayload.title} 계획만들기 성공!. 계획 탭에서 확인하세요.`);
                 setPlanDate(date);
                 handleTabSelect('planRecord');
@@ -55,7 +54,7 @@ const MakePlanTab:React.FC<IMakePlanTabProps> = ({handleTabSelect}) => {
         }
     }
 
-    return <MakePlanForm
+    return <PlanForm
         handleSubmit={handleSubmit}
         formStates={formStates}
         onFormChange={onFormChange}

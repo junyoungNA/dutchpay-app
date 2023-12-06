@@ -379,9 +379,9 @@ app.get('/plan', async (req, res) => {
 
 app.post('/plan', async (req, res) => {
     try {
-        const {title, date, departure,  arrive, stratTime, endTime, content, idUser  } = req.body;
+        const {title, date, departure,  arrive, startTime, endTime, content, idUser  } = req.body;
         // console.log(groupName, idUser,  desc, date, amount, payer) ;
-        const plan = new Plan({title, date, departure, arrive, stratTime, endTime, content, idUser});
+        const plan = new Plan({title, date, departure, arrive, startTime, endTime, content, idUser});
         const result =  await plan.save(); 
         // console.log('plan result', result );
         res.status(201).json({msg:'계획 생성 성공'});

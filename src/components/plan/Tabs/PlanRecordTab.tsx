@@ -17,10 +17,10 @@ const PlanRecordTab = () => {
     // const [date, setDate] = useState(makedPlanDate || getCalenderDate()); //날짜로 계획표시
     useEffect(() => {
         const updateDateAndFetch = async () => {
-                // 계획 작성 후 바로 만든 계획을 보여주기 위한 date 설정
-                const result:any = await getUsersPlanRecordFetch(planDate);
-                // console.log(result,'모든 계획');
-                setUserPlansRecord(result);
+            // 계획 작성 후 바로 만든 계획을 보여주기 위한 date 설정
+            const result:any = await getUsersPlanRecordFetch(planDate);
+            // console.log(result,'모든 계획');
+            setUserPlansRecord(result);
         };
         updateDateAndFetch();
     },[planDate,getUsersPlanRecordFetch,setUserPlansRecord])

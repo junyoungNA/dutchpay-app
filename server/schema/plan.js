@@ -5,7 +5,7 @@ const  planSchema= new mongoose.Schema({
     date: String,
     departure : String,
     arrive : String,
-    stratTime : String,
+    startTime : String,
     endTime : String,
     content : String,
     idUser : String,
