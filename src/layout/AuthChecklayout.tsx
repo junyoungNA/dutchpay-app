@@ -1,7 +1,4 @@
 import React, {useEffect } from 'react';
-import { useRouter } from '../hooks/useRouter'
-import { useResetRecoilState } from 'recoil';
-import { kakaoUser } from '../atom/kakaoUser';
 import useFetchUserInfo from '../hooks/useFetchUserInfo ';
 
 interface GeneralLayoutProps {
@@ -9,10 +6,8 @@ children: React.ReactNode
 }
 
 const AuthCheckLayout: React.FC<GeneralLayoutProps> = ({children}) => {
-    const resetKakaoUser = useResetRecoilState(kakaoUser);
-    const {routeTo} = useRouter();
     // 커스텀 훅
-    const fetchUserInfo = useFetchUserInfo({ resetKakaoUser, routeTo });
+    const fetchUserInfo = useFetchUserInfo();
 
     useEffect(() => {
     //페이지 이동시 마다 로그인 여부를 확인하는 함수 실행

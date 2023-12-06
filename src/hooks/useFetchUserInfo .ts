@@ -2,16 +2,19 @@
 import { useCallback } from 'react';
 import { getKakaoUserInfo } from '../util/api/authApi';
 import showAlert from '../util/shoAlert';
+import { useRouter } from './useRouter';
+import { useResetRecoilState } from 'recoil';
+import { kakaoUser } from '../atom/kakaoUser';
+// interface IUseFetchUserInfoProps {
+//     resetKakaoUser: () => void;
+//     routeTo: (path: string) => void;
+// }
 
+// type FetchUserInfo = () => Promise<void>;
 
-interface IUseFetchUserInfoProps {
-    resetKakaoUser: () => void;
-    routeTo: (path: string) => void;
-}
-
-type FetchUserInfo = () => Promise<void>;
-
-const useFetchUserInfo = ({resetKakaoUser, routeTo} : IUseFetchUserInfoProps) : FetchUserInfo  => {
+const useFetchUserInfo = () => {
+    const {routeTo} = useRouter();
+    const resetKakaoUser = useResetRecoilState(kakaoUser);
     const fetchUserInfo = useCallback(async () => {
         try {
         const { idUser } = await getKakaoUserInfo();
