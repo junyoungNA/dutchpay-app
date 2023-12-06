@@ -9,6 +9,7 @@ export type TmakePlanFormStates = {
     content: string;
     departure: string;
     arrive: string;
+    _id?: string,
 };
 
 export interface IUsePlanFormProps {
@@ -35,6 +36,7 @@ const usePlanForm = ({plan, arriveRecord, departureRecord} : IUsePlanFormProps) 
         content:'',
         departure: '',
         arrive: '',
+        _id:'',
     });
 
     const onFormChange = (e : ChangeEvent<HTMLInputElement>) => {
@@ -63,6 +65,7 @@ const usePlanForm = ({plan, arriveRecord, departureRecord} : IUsePlanFormProps) 
             content:'',
             departure:'',
             arrive:'',
+            _id:'',
         })
     };
 

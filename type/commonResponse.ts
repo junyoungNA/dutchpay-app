@@ -15,7 +15,7 @@ export interface APIResponse<T> {
   errorCode: number // 에러코드 (본인 서버에러코드)
   message: string // 메시지
   result: T // 데이터 내용
-  timestamp: Date // 시간
+  // timestamp: Date // 시간
 }
 
 // 참고하기

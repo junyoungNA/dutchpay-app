@@ -391,6 +391,37 @@ app.post('/plan', async (req, res) => {
     }
 });
 
+app.put('/plan/:id', async (req, res) => {
+    try {
+        const { title, date, departure, arrive, startTime, endTime, content } = req.body;
+        const planId = req.params.id;
+        console.log(req.params.id,'id업데이트');
+        // Update할 필드들을 객체로 만듭니다.
+        const updatePlan = {
+            title,
+            date,
+            departure,
+            arrive,
+            startTime,
+            endTime,
+            content,
+        };
+        console.log(updatePlan, '업데이트내용');
+
+        // Mongoose의 findByIdAndUpdate 메서드를 사용하여 업데이트합니다.
+        const result = await Plan.findByIdAndUpdate(planId, updatePlan, { new: true });
+        // console.log(result, '찾은결과');
+        if (!result) {
+            // ID에 해당하는 Plan이 없는 경우
+            return res.status(404).json({ message: '해당하는 계획이 없습니다.', errorCode: 404, });
+        }
+        res.status(200).json({statusCode : 200,  message: '계획 수정 성공', result : {updatedPlan: result}});
+    } catch (error) {
+        console.error('계획 수정 오류:', error);
+        res.status(500).json({ error: '내부 서버 오류' });
+    }
+});
+
 app.listen(port, () => {
     console.log(`listening localhost://:${port}`);
 });
