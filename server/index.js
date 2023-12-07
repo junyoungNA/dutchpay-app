@@ -147,7 +147,6 @@ app.post('/kakaoLogout', async (req, res) => {
 });
 
 
-
 app.get(`/groups`, async (req, res) => {
     try {
         const idUser = req.query.idUser; 
@@ -173,7 +172,7 @@ app.delete(`/groups`, async (req, res) => {
             const groupMembrs = await Members.find({
                 idUser: idUser
             }) 
-            console.log('그룹 정보 가져오아', groupMembrs);
+            // console.log('그룹 정보 가져오아', groupMembrs);
             res.status(201).json(groupMembrs); 
         }
     } catch (error) {
@@ -395,7 +394,6 @@ app.put('/plan/:id', async (req, res) => {
     try {
         const { title, date, departure, arrive, startTime, endTime, content } = req.body;
         const planId = req.params.id;
-        console.log(req.params.id,'id업데이트');
         // Update할 필드들을 객체로 만듭니다.
         const updatePlan = {
             title,
@@ -406,8 +404,6 @@ app.put('/plan/:id', async (req, res) => {
             endTime,
             content,
         };
-        console.log(updatePlan, '업데이트내용');
-
         // Mongoose의 findByIdAndUpdate 메서드를 사용하여 업데이트합니다.
         const result = await Plan.findByIdAndUpdate(planId, updatePlan, { new: true });
         // console.log(result, '찾은결과');
@@ -422,6 +418,26 @@ app.put('/plan/:id', async (req, res) => {
     }
 });
 
+app.delete('/plan/:id', async (req, res) => {
+    try {
+        const planId = req.params.id;
+        console.log(req.params.id,'id삭제');
+        // Update할 필드들을 객체로 만듭니다.
+        // Mongoose의 findByIdAndUpdate 메서드를 사용하여 업데이트합니다.
+        const result = await Plan.deleteOne({_id : planId});
+        // console.log(result, '찾은결과');
+        if (!result || result.deletedCount === 0) {
+            // 삭제한 plan이 없는경우
+            return res.status(404).json({ message: '해당하는 계획이 없습니다.', errorCode: 404, });
+        }
+        res.status(200).json({statusCode : 200,  message: '계획 삭제 성공',});
+    }catch (error) {
+        console.error('계획 수정 오류:', error);
+        res.status(500).json({ error: '내부 서버 오류' });
+    }
+
+})
+;
 app.listen(port, () => {
     console.log(`listening localhost://:${port}`);
 });

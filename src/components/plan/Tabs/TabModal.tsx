@@ -8,7 +8,7 @@ import { kakaoUser } from '../../../atom/kakaoUser';
 import useFetchUserInfo from '../../../hooks/useFetchUserInfo ';
 import useMakePlanForm from '../../../hooks/usePlanForm';
 import { TPlan, planRecord } from '../../../atom/planRecord';
-import { putData } from '../../../util/api/apiInstance';
+import { deleteData, putData } from '../../../util/api/apiInstance';
 import { APIResponse } from '../../../../type/commonResponse';
 import { planDateAtom } from '../../../atom/planDateSet';
 
@@ -52,9 +52,6 @@ const TabModal = ({plan} : ITabModalProps ) => {
             if(error) return; //fetchUserInfo에서 route처리
 
             const response : APIResponse<TPutPlanResponse> = await putData(`plan/${_id}`, planPayload);
-            if(response.errorCode) {
-                return showAlert(`계획 수정 오류,${response.message}`)
-            }
             if(response.message === '계획 수정 성공' && response.result?.updatedPlan) {
                 //수정이 완료되었다면 해당 계획의 날짜가 바뀌었다면 날짜를 바꿔서 새롭게 
                 // 해당날짜의 planRecord 정보들을 가져와야한다.
@@ -71,11 +68,34 @@ const TabModal = ({plan} : ITabModalProps ) => {
                     // console.log(updatePlans,'바뀐 plans',updatePlanIDX);
                     setPlans(updatePlans);
                 }
-                showAlert(`${planPayload.title} 계획을 수정하였습니다.`);
+                return showAlert(`${planPayload.title} 계획을 수정하였습니다.`);
             }
+            return showAlert(`계획 수정 오류,${response?.message}`)
+
         }catch(error) {
             console.log(error);
             showAlert('계획 수정 오류');
+        }
+    }
+
+    const onDeletePlanHandle = async() =>  {
+        try {
+              // user token체크후 유효성검사 실패 시 메인페이지로 이동
+            const {error} = await fetchUserInfo();
+            if(error) return; //fetchUserInfo에서 route처리
+            if(!window.confirm('해당 계획을 삭제하시겠습니까?')) return;
+                const response  = await deleteData(`plan/${_id}`);
+                console.log(response,'삭제 결과');
+                if(response.message === '계획 삭제 성공') {
+                    const updatedPlan = plans.filter((item) => _id !== item._id);
+                    setPlans(updatedPlan);
+                    await handleClose();
+                    return showAlert(`${title} 계획을 삭제하였습니다.`);
+                }
+                return showAlert(`계획 수정 오류,${response?.message}`)
+        } catch(error) {
+            console.log(error)
+            showAlert('계획 삭제 오류');
         }
     }
 
@@ -99,8 +119,11 @@ const TabModal = ({plan} : ITabModalProps ) => {
                         />
                 </Modal.Body>
                 <Modal.Footer>
+                <Button variant="danger" onClick={onDeletePlanHandle}>
+                        삭제    
+                    </Button>
                     <Button variant="secondary" onClick={handleClose}>
-                    닫기    
+                        닫기    
                     </Button>
                 </Modal.Footer>
             </Modal>

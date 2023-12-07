@@ -86,8 +86,8 @@ const usePlanForm = ({plan, arriveRecord, departureRecord} : IUsePlanFormProps) 
         if (arriveRecord !== undefined && departureRecord !== undefined) {
                 setFormStates((prevForm) => ({
                 ...prevForm,
-                departure: arriveRecord,
-                arrive: departureRecord,
+                departure: departureRecord,
+                arrive: arriveRecord,
             }));
         }
 
