@@ -280,7 +280,7 @@ app.get(`/expense`, async (req, res) => {
                 { idUser:idUser }, 
                 { groupName: groupName }, 
         ]},);
-        console.log(allExpenses, '찾은값');
+        // console.log(allExpenses, '찾은값');
         if (!allExpenses) {
             return res.status(404).json({ msg: '해당 존재하는 더치페이 정보가 없습니다.' });
         }
@@ -340,10 +340,11 @@ app.post('/expense', async (req, res) => {
 });
 
 // 계획api
-app.get('/calendar', async (req, res) => {
+app.get('/calendarPlans', async (req, res) => {
     try {
         const idUser = req.query.idUser;
         const date = req.query.date;
+        // console.log(date,'캘린더 date');
         const regexPattern = new RegExp("^" + date); //yyyy-mm 맞는 정규 표현식생성
         const planRecord = await Plan.find({
             $and: [

@@ -81,8 +81,9 @@ export const deleteExpense = async (idUser : string, groupName : string, expense
 
 export const getPlanRecord = async (idUser : string, customDate: string) => {
         try {
-            const response = await getData(`/plan?idUser=${idUser}&date=${customDate}`);
-            return response;
+            const response = await getData(`/calendarPlans?idUser=${idUser}&date=${customDate}`);
+            const filterUserPlans = transformDates(response);
+            return filterUserPlans;
         }catch(error : any) {
             console.log(error,'유저 계획가져오기 실패');
         }
@@ -97,7 +98,7 @@ const transformDates  = (resultGroups : any) => {
         const formattedDate = date ? date.slice(-2) : createdAt ? createdAt.slice(-2) : null;
         return {
             date : formattedDate, // yyyy-mm 형태의 데이터
-            usersData :otherData,
+            usersData :{...otherData,date},
         };
     });
     return filterData;

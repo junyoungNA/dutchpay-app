@@ -19,6 +19,8 @@ import handleAsyncOperation from '../../util/handleAsyncOperation';
 import useFetchGetUsersPlan from '../../hooks/useFetchUserPlan';
 import useFetchGetUsersGroups from '../../hooks/useFetchCalendarGroups';
 import { planRecord } from '../../atom/planRecord';
+import useFetchUserInfo from '../../hooks/useFetchUserInfo ';
+import TabModal from '../plan/Tabs/TabModal';
 
 const Calendar = () => {
     const {routeTo} = useRouter();
@@ -29,7 +31,7 @@ const Calendar = () => {
     const setGroupName = useSetRecoilState(groupNameState);
     const setGroupMembers = useSetRecoilState(groupMemberState);
     const {currentYear, currentMonth, currentDate} = useRecoilValue(currentDateState);
-
+    const fetchUserInfo = useFetchUserInfo();
     const customDate = `${year}-${month < 9 ? '0'+ (month + 1): month + 1}`; //yyyy-mm;
     const [totalDate , setTotalDate] = useState<number[][]>([]);
 
@@ -40,13 +42,9 @@ const Calendar = () => {
     const getUsersPlanRecordFetch = useFetchGetUsersPlan();
 
     useEffect(() => {
-        if(idUser) {
-            // 유저 더치페이그룹정보
             handleAsyncOperation(getGroupMemberFetch(customDate), setUserGroups);
-            console.log(userGroups,'바뀌엇을까');
             // 유저 계획 정보
-            // handleAsyncOperation(getUsersPlanRecordFetch(customDate), setUserPlans);
-        }
+            handleAsyncOperation(getUsersPlanRecordFetch(customDate), setUserPlans);
         setTotalDate(changeDate(year, month));
     }, [getUsersPlanRecordFetch, getGroupMemberFetch, setGroupMembers,setUserPlans,customDate, idUser, year, month]);
     
@@ -59,15 +57,13 @@ const Calendar = () => {
 
     const onClickDeleteGroup = (idUser: string, groupName: string) => async ()  => {
         try {
+            if(!window.confirm('해당 더치페이 그룹을 삭제하시겠습니까?')) return;
+            const {error} = await fetchUserInfo();
+            if(error) return; //fetchUser에서 route처리;
             const result =  await deleteData(`members?idUser=${idUser}&groupName=${groupName}`)
-            // console.log(result);
-            const findGroupIDX = userGroups.findIndex((item : any) => item.group.groupName === groupName );
-            if (findGroupIDX !== -1) {
-                const updatedGroups = [...userGroups];
-                updatedGroups.splice(findGroupIDX, 1);
-                // setUserGroups로 새로운 배열로 업데이트
-                setUserGroups(updatedGroups);
-            }
+            const updatedGroups = userGroups.filter((item : any) => item.usersData.groupName !== groupName );
+            // console.log(updatedGroups);
+            setUserGroups(updatedGroups);
         } catch(error) {
             console.log(error);
         }
@@ -89,8 +85,8 @@ const Calendar = () => {
                         return <StyledCalendarDateCol xs={1} key={colIndex}></StyledCalendarDateCol>;
                     } else {
                     // 해당 날짜와 일치하는 userGroups의 요소들을 필터링하고 처리
-                        const matchingGroups = userGroups?.filter(({ date }) => date === String(day));
-                        const matchingPlans = userPlans?.filter(({date}) => date === String(day));
+                        const matchingGroups = userGroups?.filter(({ date }) =>  Number(date) === day);
+                        const matchingPlans = userPlans?.filter(({date}) => Number(date) === day);
                         return (
                                 <StyledCalendarDateCol xs={1} key={colIndex}  color={currentYear === year && currentMonth === month && currentDate === Number(day)  ? '#ae7df9' : undefined}
                                 >
@@ -103,7 +99,7 @@ const Calendar = () => {
                                         <Dropdown.Menu>
                                         {matchingGroups.map(({ usersData } : any, index : number) =>   
                                             <Dropdown.Item key={index}> 
-                                                {usersData.groupName.length >5 ? usersData.groupName.slice(0,5)+'...' : usersData.groupName }
+                                                {usersData.groupName.length > 5 ? usersData.groupName.slice(0,5)+'...' : usersData.groupName }
                                                 <Button style={{marginLeft:'5px'}} variant="outline-primary" size='sm' onClick={onClickShowGroup(usersData.groupName, usersData.groupMembers)}>보기</Button>
                                                 <Button style={{marginLeft:'5px'}} variant="outline-danger" size='sm' onClick={onClickDeleteGroup(idUser, usersData.groupName)} >삭제</Button>
                                             </Dropdown.Item>
@@ -118,11 +114,10 @@ const Calendar = () => {
                                             계획
                                         </Dropdown.Toggle><br></br>
                                         <Dropdown.Menu>
-                                        {matchingPlans.map(({ plan } : any, index : number) =>   
+                                        {matchingPlans.map(({ usersData } : any, index : number) =>   
                                             <Dropdown.Item key={index}> 
-                                                {/* {group.groupName.length >5 ? group.groupName.slice(0,5)+'...' : group.groupName } */}
-                                                {/* <Button style={{marginLeft:'5px'}} variant="outline-primary" size='sm' onClick={onClickShowGroup(group.groupName, group.groupMembers)}>보기</Button>
-                                                <Button style={{marginLeft:'5px'}} variant="outline-danger" size='sm' onClick={onClickDeleteGroup(idUser, group.groupName)} >삭제</Button> */}
+                                                {usersData.title.length >5 ? usersData.title.slice(0,5)+'...' : usersData.title }
+                                                <TabModal plan={usersData}/>  
                                             </Dropdown.Item>
                                             )
                                         }
