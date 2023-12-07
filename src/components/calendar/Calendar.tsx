@@ -42,8 +42,8 @@ const Calendar = () => {
     useEffect(() => {
         if(idUser) {
             // 유저 더치페이그룹정보
-            // handleAsyncOperation(getGroupMemberFetch(customDate), setUserGroups);
-    
+            handleAsyncOperation(getGroupMemberFetch(customDate), setUserGroups);
+            console.log(userGroups,'바뀌엇을까');
             // 유저 계획 정보
             // handleAsyncOperation(getUsersPlanRecordFetch(customDate), setUserPlans);
         }

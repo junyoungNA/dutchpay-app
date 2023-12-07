@@ -280,9 +280,9 @@ app.get(`/expense`, async (req, res) => {
                 { idUser:idUser }, 
                 { groupName: groupName }, 
         ]},);
-        // console.log(allExpenses, '찾은값');
-        if (!allExpenses || allExpenses.length === 0) {
-            return res.status(404).json({ msg: '데이터가 없습니다.' });
+        console.log(allExpenses, '찾은값');
+        if (!allExpenses) {
+            return res.status(404).json({ msg: '해당 존재하는 더치페이 정보가 없습니다.' });
         }
         res.status(201).json(allExpenses); // 저장된 사용자 데이터를 JSON 형식으로 응답
     } catch (error) {
@@ -313,7 +313,7 @@ app.delete(`/expense`, async (req, res) => {
                     { groupName: groupName }, 
             ]},);
             // console.log(allExpenses, '찾은값');
-            if (!allExpenses || allExpenses.length === 0) {
+            if (!allExpenses) {
                 return res.status(201).json({ msg: '데이터가 없습니다.' });
             }
             // console.log(allExpenses,'삭제후 정보');
@@ -362,7 +362,6 @@ app.get('/plan', async (req, res) => {
     try {
         const idUser = req.query.idUser;
         const date = req.query.date;
-        // const regexPattern = new RegExp("^" + date); //yyyy-mm 맞는 정규 표현식생성
         const planRecord = await Plan.find({
             $and: [
                 { idUser:idUser }, 
@@ -421,9 +420,6 @@ app.put('/plan/:id', async (req, res) => {
 app.delete('/plan/:id', async (req, res) => {
     try {
         const planId = req.params.id;
-        console.log(req.params.id,'id삭제');
-        // Update할 필드들을 객체로 만듭니다.
-        // Mongoose의 findByIdAndUpdate 메서드를 사용하여 업데이트합니다.
         const result = await Plan.deleteOne({_id : planId});
         // console.log(result, '찾은결과');
         if (!result || result.deletedCount === 0) {

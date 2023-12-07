@@ -24,6 +24,7 @@ const PlanForm = ({
     isTitleValid,
     handleTabSelect
 }:IPlanFormProps) => {
+    
     const {title, date, startTime, endTime, content, departure, arrive } = formStates; 
     return (
         <OverlayForm handleSubmit={handleSubmit}>

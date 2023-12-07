@@ -4,31 +4,33 @@ import { Table } from 'react-bootstrap'
 import OverlayWrapper from '../shared/OverlayWrapper'
 import styled from 'styled-components'
 import { kakaoUser } from '../../atom/kakaoUser'
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import { deleteExpense, getExpenses } from '../../util/api/api'
 import { groupNameState } from '../../atom/groupName'
 import { Button } from 'react-bootstrap' 
+import showAlert from '../../util/shoAlert'
 
 const ExpenseTable = () => {
     const {idUser} = useRecoilValue(kakaoUser);
     const groupName =  useRecoilValue(groupNameState);
     const [expense,setExpense] = useRecoilState<any>(expensesState);
     // const resetExpense = useResetRecoilState(expensesState);
-
-    const fetchData = async (idUser : string, groupName : string) => {
+    
+    const fetchData = useCallback(async (idUser : string, groupName : string) => {
         try {
+            console.log(idUser, groupName, '프론트 getExpense');
             const expenses: any = await getExpenses(idUser, groupName);
-            // console.log(expenses, '클라이언트 받은 데이터');
-            if(!expenses) return;
+            console.log(expenses, '클라이언트 받은 데이터');
+            if(!expenses)  return showAlert('해당 그룹의 존재하는 더치페이 정보가 없습니다.');
             setExpense(expenses);
         } catch (error) {
             console.error('데이터를 가져오는 중 오류 발생:', error);
         }
-    };
+    },[setExpense]);
 
     useEffect(() => {
         fetchData(idUser, groupName);
-    }, [idUser, groupName]);
+    }, [idUser, groupName, fetchData]);
 
     const deleteExpenseHandler = async (groupName : string, expenseName: string) => {
         try {
