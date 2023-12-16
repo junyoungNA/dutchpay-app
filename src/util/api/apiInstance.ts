@@ -1,9 +1,14 @@
 import axios, {Axios, AxiosRequestConfig } from 'axios' // 추가
 import { APIResponse } from '../../../type/commonResponse';
 
+const URL = process.env.NODE_ENV === 'production'
+? process.env.REACT_APP_API_EC2
+:  process.env.REACT_APP_API_URL;
+
 // axios 인스턴스 생성
+
 const client: Axios = axios.create({
-    baseURL: process.env.REACT_APP_API_URL,
+    baseURL: URL,
     headers: {
         'Content-Type': 'application/json',
     },
