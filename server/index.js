@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const port = 80;
+const port = Number(process.env.port);
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
