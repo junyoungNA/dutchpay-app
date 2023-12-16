@@ -16,7 +16,7 @@ const { default: axios } = require('axios');
 const { getKakaoToken } = require('./getKakaoToken');
 app.use(express.json()); // JSON 요청 본문 파싱 설정
 app.use(cookieParser());
-app.use(cors({origin: 'http://localhost:3000', credentials:true})); // 모든 출처에서의 요청을 허용
+app.use(cors({origin: ['http://localhost:3000', process.env.E2C_IP], credentials:true})); // 모든 출처에서의 요청을 허용
 app.options('*', cors());
 
 
