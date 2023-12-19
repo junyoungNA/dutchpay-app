@@ -1,23 +1,15 @@
 import ServiceLogo from '../shared/ServiceLogo';
-import styled from 'styled-components';
-import { Col } from 'react-bootstrap';
-import RouteBtnsGroups from './RouteBtnGroups';
-
+import { StyledBootStrapCol } from '../../aseets/styled/BootSrapCol';
+import SocialKakao from '../SocialKakao';
 
 const RightSide = () => {
     return (
-        <StyleRouteCol lg={4} md={5} >
+        <StyledBootStrapCol md={6} gap={'30px'} width='330px' >
             <ServiceLogo/>
-            <RouteBtnsGroups/>
-        </StyleRouteCol>
+            {/* <RouteBtnsGroups/> */}
+            <SocialKakao/>
+        </StyledBootStrapCol>
     )
 }
-const StyleRouteCol = styled(Col)`
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    padding: 0;
-    gap: 15px;
-`
 
 export default RightSide

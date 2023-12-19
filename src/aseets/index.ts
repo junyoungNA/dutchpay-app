@@ -4,3 +4,4 @@ export {default as loginSide_animation} from './lottie/loginSide_animation.json'
 export {default as dutchpay} from './lottie/dutchpayButton.json';
 export {default as calendar} from './lottie/calendar_animation.json';
 export {default as plan} from './lottie/plan_animation.json';
+export {default as book_animation} from './lottie/mainBook_animation.json';

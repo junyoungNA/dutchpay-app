@@ -1,5 +1,4 @@
 import { useRecoilValue } from 'recoil';
-import SocialKakao from '../SocialKakao';
 import { StyledButtonWrapper } from '../../aseets/styled/ButtonWrapper';
 import styled from 'styled-components';
 import { calendar, dutchpay, plan } from '../../aseets';
@@ -89,13 +88,12 @@ const RouteBtnGroups = () => {
 
     return (
         <>
-            <SocialKakao/>
-                {routeBtnData.map((btn : IRouteBtnData ,idx:number) => (
-                    btn.withAuth && !nickname  ? null : 
-                <StyledButtonWrapper onClick={() => routeTo(btn.path)} background={btn.color} key={idx}>
-                        {btn.lottie()}
-                    <StlyedNavBtn background={btn.color}>{btn.text}</StlyedNavBtn>
-                </StyledButtonWrapper>
+            {routeBtnData.map((btn : IRouteBtnData ,idx:number) => (
+                btn.withAuth && !nickname  ? null : 
+            <StyledButtonWrapper onClick={() => routeTo(btn.path)} background={btn.color} key={idx}>
+                    {btn.lottie()}
+                <StlyedNavBtn background={btn.color}>{btn.text}</StlyedNavBtn>
+            </StyledButtonWrapper>
             ))}
         </>
     )

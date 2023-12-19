@@ -1,12 +1,14 @@
 import Lottie from 'lottie-react';
-import { loginSide_animation } from '../../aseets';
-import { Col } from 'react-bootstrap';
+import { book_animation } from '../../aseets';
+import { StyledBootStrapCol } from '../../aseets/styled/BootSrapCol';
 
 const LeftSide = () => {
     return (
-        <Col lg={8} md={7} >
-            <Lottie animationData ={loginSide_animation} />
-        </Col>
+        <StyledBootStrapCol md={6} width='780px'>
+            <Lottie 
+                animationData ={book_animation}
+            />
+        </StyledBootStrapCol>
     )
 }
 
