@@ -16,7 +16,7 @@ import CalendarDate from './CalendarDate';
 import CalendarControls from './CalendarControls ';
 // useEffect내에서 사용할 비동기 처리 함수, setState콜백 함수로 받아 처리
 import handleAsyncOperation from '../../util/handleAsyncOperation';
-import useFetchGetUsersPlan from '../../hooks/useFetchUserPlan';
+import getCalendarPlanRecord from '../../hooks/useFetchUserPlan';
 import useFetchGetUsersGroups from '../../hooks/useFetchCalendarGroups';
 import { planRecord } from '../../atom/planRecord';
 import useFetchUserInfo from '../../hooks/useFetchUserInfo ';
@@ -39,7 +39,7 @@ const Calendar = () => {
     const getGroupMemberFetch = useFetchGetUsersGroups();
 
     // 유저 계획기록가져오기
-    const getUsersPlanRecordFetch = useFetchGetUsersPlan();
+    const getUsersPlanRecordFetch = getCalendarPlanRecord();
 
     useEffect(() => {
             handleAsyncOperation(getGroupMemberFetch(customDate), setUserGroups);

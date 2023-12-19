@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const port = Number(process.env.port);
+const port = 4000;
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
@@ -111,7 +111,6 @@ app.post('/user', async (req, res) => {
             await user.save(); // 사용자 데이터를 데이터베이스에 저장
         }
     
-
         //받은 인가로 해당 유저 정보가 맞는지 확인
         const token = jwt.sign({orginToken: access_token }, process.env.JWT_SECRET, {
             expiresIn: '1h', // 토큰 유효 기간 설정 (예: 1시간)

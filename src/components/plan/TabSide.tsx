@@ -203,7 +203,7 @@ const TabSide : React.FC<ITabSideProps> = ({
                         onClickDirectionRecord,
                         handleTabSelect,
                         map
-                    })}
+                    })} 
                 </Tab>
             ))}
         </Tabs>

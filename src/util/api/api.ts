@@ -79,7 +79,7 @@ export const deleteExpense = async (idUser : string, groupName : string, expense
     } 
 }
 
-export const getPlanRecord = async (idUser : string, customDate: string) => {
+export const getCalendarPlanRecord = async (idUser : string, customDate: string) => {
         try {
             const response = await getData(`/calendarPlans?idUser=${idUser}&date=${customDate}`);
             const filterUserPlans = transformDates(response);
@@ -87,6 +87,16 @@ export const getPlanRecord = async (idUser : string, customDate: string) => {
         }catch(error : any) {
             console.log(error,'유저 계획가져오기 실패');
         }
+}
+
+export const getPlanRecord = async (idUser : string, customDate: string) => {
+    try {
+        const response = await getData(`/plan?idUser=${idUser}&date=${customDate}`);
+        const filterUserPlans = transformDates(response);
+        return filterUserPlans;
+    }catch(error : any) {
+        console.log(error,'유저 계획가져오기 실패');
+    }
 }
 
 // 유저의 그룹 생성날짜와 받아온 totalDate의 날짜 데이터를 맵핑
