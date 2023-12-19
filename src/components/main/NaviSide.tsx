@@ -1,22 +1,14 @@
 import RouteBtnGroups from './RouteBtnGroups'
-import { Row, Col } from 'react-bootstrap'
+import { StyledBootStrapRow } from '../../aseets/styled/BootStrapRow'
+import { StyledBootStrapCol } from '../../aseets/styled/BootSrapCol'
+import { Image } from 'react-bootstrap'
 import styled from 'styled-components'
+import { StyledBootStrapImage } from '../../aseets/styled/BootStrapImage'
 
 const NaviSide = () => {
     return (
-        <Row>
-            <StyledCol md={2}>1</StyledCol>
-            <StyledCol md={2}>2</StyledCol>
-            <StyledCol md={2}>3</StyledCol>
-            {/* <RouteBtnGroups/> */}
-        </Row>
+        <RouteBtnGroups/>
     )
 }
-
-const StyledCol = styled(Col)`
-    color: white;
-
-
-`
 
 export default NaviSide

@@ -6,21 +6,23 @@ import Lottie from 'lottie-react';
 import {ROUTES} from '../../route/routes'
 import { kakaoUser } from '../../atom/kakaoUser';
 import { useRouter } from '../../hooks/useRouter';
+import { StyledBootStrapCol } from '../../aseets/styled/BootSrapCol';
+import { StyledBootStrapRow } from '../../aseets/styled/BootStrapRow';
+import { StyledBootStrapImage } from '../../aseets/styled/BootStrapImage';
 
 // Lottie 애니메이션 데이터를 나타내는 타입 정의
-    
 interface IRouteBtnData {
     path: string;
     lottie:  () => JSX.Element;
     color: string;
     text: string;
+    img : string;
     withAuth : boolean;
 }
 
 const StlyedDutchpayLottie = styled(Lottie)`
     width: 40px;
     height: 40px;
-    object-fit: fill;
     border-radius: 100%;
     position: absolute;
     left: 10px;
@@ -49,6 +51,8 @@ const StlyedNavBtn  = styled.button<{background? : string}>`
     font-size: 16px;
     height: 50px;
     border: none;
+    position: absolute;
+    bottom: 50px;
     background-color: ${({background}) => (background ? background : 'gray')};
 `
 
@@ -59,17 +63,19 @@ const StlyedNavBtn  = styled.button<{background? : string}>`
 // 이부분을 컴포넌트를 다시 빼봐서 함성컴포넌트로 작성했을때와 차이점을 한번 알아봐야겠다.
 const routeBtnData = [
     {
-        path:ROUTES.PLAN,
-        lottie: () => <StlyedPlanLottie animationData={plan} />,
-        color:'#e97522',
-        text : '계획 짜러가기',
-        withAuth : true
-    },
-    {
         path:ROUTES.DUTCHPAY,
         lottie:() => <StlyedDutchpayLottie animationData={dutchpay} />,
         color:'#ae7df9',
         text : '더치페이 하러가기',
+        img : '/images/PlanofP1.png',
+        withAuth : true
+    },
+    {
+        path:ROUTES.PLAN,
+        lottie: () => <StlyedPlanLottie animationData={plan} />,
+        color:'#e97522',
+        text : '계획 짜러가기',
+        img :'/images/PlanofP2.png',
         withAuth : true
     },
     {
@@ -77,26 +83,28 @@ const routeBtnData = [
         lottie:() => <StlyedCalendarLottie animationData={calendar} />,
         color:'#66a4f5',
         text : '캘린더 보러가기',
+        img :'/images/PlanofP3.png',
         withAuth : false,
     },
 ]
-
 
 const RouteBtnGroups = () => {
     const {routeTo} = useRouter();
     const {nickname} = useRecoilValue(kakaoUser);
 
     return (
-        <>
+        <StyledBootStrapRow>
             {routeBtnData.map((btn : IRouteBtnData ,idx:number) => (
                 btn.withAuth && !nickname  ? null : 
-            <StyledButtonWrapper onClick={() => routeTo(btn.path)} background={btn.color} key={idx}>
-                    {btn.lottie()}
-                <StlyedNavBtn background={btn.color}>{btn.text}</StlyedNavBtn>
-            </StyledButtonWrapper>
+            <StyledBootStrapCol hover={true} md={3} height='250px'>
+                <StyledBootStrapImage src={btn.img}/>
+                <StyledButtonWrapper onClick={() => routeTo(btn.path)} background={btn.color} key={idx}>
+                        {/* {btn.lottie()} */}
+                    <StlyedNavBtn background={btn.color}>{btn.text}</StlyedNavBtn>
+                </StyledButtonWrapper>
+            </StyledBootStrapCol>
             ))}
-        </>
+        </StyledBootStrapRow>
     )
 }
-
 export default RouteBtnGroups

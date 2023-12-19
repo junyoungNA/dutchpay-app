@@ -1,10 +1,11 @@
 import { Col } from "react-bootstrap";
-import styled from "styled-components";
+import styled, {css} from "styled-components";
 
 
 interface IStyledBootStrapColProps {
     gap?: string,
     width?:string,
+    height?: string,
 }
 
 export const StyledBootStrapCol = styled(Col)<IStyledBootStrapColProps>`
@@ -13,5 +14,19 @@ export const StyledBootStrapCol = styled(Col)<IStyledBootStrapColProps>`
     flex-direction: column;
     /* max-width: ${({maxWidth}) => (maxWidth ? maxWidth : '0')}; */
     width: ${({width}) => (width && width )};
-    gap:${({gap}) => (gap ? gap : '0')};;
+    height: ${({height}) => (height && height )};
+    gap:${({gap}) => (gap ? gap : '0')};
+
+    ${({ hover }) =>
+        hover === true &&
+        css`
+        /* overflow: hidden; */
+        opacity: 0.2;
+        transition: opacity 0.5s;
+            &:hover {
+                opacity: 0.5;
+                transition: opacity 0.5s;
+            }
+        `
+    };
 `

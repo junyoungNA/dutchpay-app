@@ -7,8 +7,8 @@ interface IStyledBootStrapContainerProps {
 }
 
 
-export const StyledMainContainer = styled(Row)<IStyledBootStrapContainerProps>`
+export const StyledBootStrapContainer = styled(Row)<IStyledBootStrapContainerProps>`
     width: 100%;
-    /* display: flex; */
+    overflow: hidden;
     height: ${({height}) => (height ? height : '0')};
 `
