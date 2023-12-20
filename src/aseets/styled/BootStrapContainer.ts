@@ -9,6 +9,7 @@ interface IStyledBootStrapContainerProps {
 
 export const StyledBootStrapContainer = styled(Row)<IStyledBootStrapContainerProps>`
     width: 100%;
-    overflow: hidden;
-    height: ${({height}) => (height ? height : '0')};
+    /* overflow: hidden; */
+    height: ${({height}) => (height ? height : '100vh')};
+;
 `

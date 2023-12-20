@@ -1,14 +1,13 @@
 import { useRecoilValue } from 'recoil';
 import { StyledButtonWrapper } from '../../aseets/styled/ButtonWrapper';
-import styled from 'styled-components';
 import { calendar, dutchpay, plan } from '../../aseets';
-import Lottie from 'lottie-react';
 import {ROUTES} from '../../route/routes'
 import { kakaoUser } from '../../atom/kakaoUser';
 import { useRouter } from '../../hooks/useRouter';
 import { StyledBootStrapCol } from '../../aseets/styled/BootSrapCol';
 import { StyledBootStrapRow } from '../../aseets/styled/BootStrapRow';
 import { StyledBootStrapImage } from '../../aseets/styled/BootStrapImage';
+import { StlyedCalendarLottie, StlyedDutchpayLottie, StlyedNavBtn, StlyedPlanLottie } from '../../aseets/styled/RouteButtons/RouteBtns';
 
 // Lottie 애니메이션 데이터를 나타내는 타입 정의
 interface IRouteBtnData {
@@ -19,42 +18,6 @@ interface IRouteBtnData {
     img : string;
     withAuth : boolean;
 }
-
-const StlyedDutchpayLottie = styled(Lottie)`
-    width: 40px;
-    height: 40px;
-    border-radius: 100%;
-    position: absolute;
-    left: 10px;
-`
-
-const StlyedCalendarLottie = styled(Lottie)`
-    width: 125px;
-    height: 125px;
-    border-radius: 100%;
-    position: absolute;
-    left: -35px;
-    pointer-events: none;
-`
-
-const StlyedPlanLottie = styled(Lottie)`
-    width: 55px;
-    height: 40px;
-    position: absolute;
-    pointer-events: none;
-    left: 5px;
-`
-
-const StlyedNavBtn  = styled.button<{background? : string}>`
-    border-radius: 15px;
-    font-weight:700;
-    font-size: 16px;
-    height: 50px;
-    border: none;
-    position: absolute;
-    bottom: 50px;
-    background-color: ${({background}) => (background ? background : 'gray')};
-`
 
 // 똑같은 스타일의 route 용 버튼들을 
 // 반복문을 돌려 버튼들을 보여주기 위해 생성하였다
@@ -93,18 +56,20 @@ const RouteBtnGroups = () => {
     const {nickname} = useRecoilValue(kakaoUser);
 
     return (
-        <StyledBootStrapRow>
+        <>
             {routeBtnData.map((btn : IRouteBtnData ,idx:number) => (
                 btn.withAuth && !nickname  ? null : 
-            <StyledBootStrapCol hover={true} md={3} height='250px'>
-                <StyledBootStrapImage src={btn.img}/>
-                <StyledButtonWrapper onClick={() => routeTo(btn.path)} background={btn.color} key={idx}>
-                        {/* {btn.lottie()} */}
-                    <StlyedNavBtn background={btn.color}>{btn.text}</StlyedNavBtn>
-                </StyledButtonWrapper>
-            </StyledBootStrapCol>
+                    <StyledButtonWrapper onClick={() => routeTo(btn.path)} background={btn.color} key={idx}> 
+                            {btn.lottie()}
+                        <StlyedNavBtn background={btn.color}>{btn.text}</StlyedNavBtn>
+                    </StyledButtonWrapper>
             ))}
-        </StyledBootStrapRow>
+        </>
+        // <StyledBootStrapRow>
+        //      <StyledBootStrapCol hover={true} md={3} height='300px'>
+        //             {/* <StyledBootStrapImage src={btn.img}/> */}
+        //     </StyledBootStrapCol>
+        // </StyledBootStrapRow>
     )
 }
 export default RouteBtnGroups

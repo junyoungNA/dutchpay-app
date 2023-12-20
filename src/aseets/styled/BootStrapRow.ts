@@ -16,6 +16,4 @@ export const StyledBootStrapRow = styled(Row)<IStyledBootStrapRowProps>`
     margin: auto;
     min-height: ${({minHeight}) => (minHeight ? minHeight : '0')};
     gap : ${({gap}) => (gap ? gap : '0')};
-    
-    
 `
