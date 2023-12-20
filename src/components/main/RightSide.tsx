@@ -8,7 +8,7 @@ const RightSide = () => {
         <StyledBootStrapCol md={6} gap={'20px'} width='330px' height={'500px'} >
             <ServiceLogo/>
             <SocialKakao/>
-            <RouteBtnGroups/>
+            {/* <RouteBtnGroups/> */}
         </StyledBootStrapCol>
     )
 }

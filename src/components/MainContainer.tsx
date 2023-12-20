@@ -15,7 +15,7 @@ const MainContainer:React.FC = () => {
                 {/* 오른쪽 사이드 */}
                 <RightSide/>
                 {/* 밑에 Navigation */}
-                {/* <NaviSide/> */}
+                <NaviSide/>
             </StyledBootStrapRow>
         </StyledBootStrapContainer>
     )
