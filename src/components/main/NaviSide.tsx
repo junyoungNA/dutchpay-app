@@ -18,7 +18,7 @@ const NaviSide = ({nickname} : INavSideProps) => {
                 withAuth && !nickname  ? null : 
                 <StyledBootStrapCol hover={'true'} md={3} height={'400px'} key={idx}>
                     <StyledBootStrapImage src={img} height={'400px'} rounded/>
-                    <StyledBootStrapLayoutWrapper position={'absolute'}>
+                    <StyledBootStrapLayoutWrapper position={'absolute'} top={'55%'} left={'50%'}>
                             <StyledGreetings fontSize='22px' fontWeight='800' color={'#fff'}>
                                 {subText}
                             </StyledGreetings>

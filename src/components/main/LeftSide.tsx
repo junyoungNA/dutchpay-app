@@ -4,7 +4,7 @@ import { StyledBootStrapCol } from '../../aseets/styled/BootStrapCol';
 
 const LeftSide = () => {
     return (
-        <StyledBootStrapCol md={6} width='780px'>
+        <StyledBootStrapCol md={5} width='700px'>
             <Lottie 
                 animationData ={book_animation}
             />

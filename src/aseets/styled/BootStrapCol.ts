@@ -3,9 +3,10 @@ import styled, {css} from "styled-components";
 
 
 interface IStyledBootStrapColProps {
-    gap?: string,
-    width?:string,
-    height?: string,
+    gap?: string;
+    width?:string;
+    height?: string;
+    margin?:string;
 }
 
 export const StyledBootStrapCol = styled(Col)<IStyledBootStrapColProps>`
@@ -13,6 +14,7 @@ export const StyledBootStrapCol = styled(Col)<IStyledBootStrapColProps>`
     align-items: center;
     flex-direction: column;
     position: relative;
+    margin: ${({margin}) => (margin && margin)};;
     /* max-width: ${({maxWidth}) => (maxWidth ? maxWidth : '0')}; */
     width: ${({width}) => (width && width )};
     height: ${({height}) => (height && height )};

@@ -9,7 +9,7 @@ interface IRightSideProps {
 
 const RightSide = ({nickname} : IRightSideProps) => {
     return (
-        <StyledBootStrapCol md={6} gap={'20px'} width='330px' height={'300px'} >
+        <StyledBootStrapCol md={7} gap={'20px'} width='400px' height={'300px'} margin='15px 0 0 0'>
             <ServiceLogo nickname={nickname}/>
             <SocialKakao/>
             {/* <RouteBtnGroups/> */}
