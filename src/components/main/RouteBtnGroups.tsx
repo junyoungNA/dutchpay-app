@@ -1,9 +1,8 @@
 import { useRecoilValue } from 'recoil';
 import { kakaoUser } from '../../atom/kakaoUser';
-import { StyledBootStrapCol } from '../../aseets/styled/BootSrapCol';
+import { StyledBootStrapCol } from '../../aseets/styled/BootStrapCol';
 import { StyledBootStrapRow } from '../../aseets/styled/BootStrapRow';
 import { StyledBootStrapImage } from '../../aseets/styled/BootStrapImage';
-import { StlyedCalendarLottie, StlyedDutchpayLottie, StlyedNavBtn, StlyedPlanLottie } from '../../aseets/styled/RouteButtons/RouteBtns';
 import routeBtnData, { TRouteBtnData } from '../../constants/routeBtnData';
 import RouteBtnWrapper from './RouteBtnWrapper';
 
@@ -14,16 +13,11 @@ const RouteBtnGroups = () => {
 
     return (
         <>
-            {routeBtnData.map(({text, color, routePath, lottie, withAuth} : TRouteBtnData ,idx:number) => (
+            {routeBtnData.map(({text, title, color, routePath, lottie, withAuth} : TRouteBtnData ,idx:number) => (
                 withAuth && !nickname  ? null : 
-                <RouteBtnWrapper routePath={routePath} lottie={lottie} color={color} text={text} />
+                <RouteBtnWrapper routePath={routePath} lottie={lottie} color={color} text={text} title={title}/>
             ))}
         </>
-        // <StyledBootStrapRow>
-        //      <StyledBootStrapCol hover={true} md={3} height='300px'>
-        //             {/* <StyledBootStrapImage src={btn.img}/> */}
-        //     </StyledBootStrapCol>
-        // </StyledBootStrapRow>
     )
 }
 export default RouteBtnGroups

@@ -32,7 +32,6 @@ export const StlyedNavBtn  = styled.button<{background? : string}>`
     font-size: 16px;
     height: 50px;
     border: none;
-    /* position: absolute; */
     bottom: 50px;
     background-color: ${({background}) => (background ? background : 'gray')};
 `

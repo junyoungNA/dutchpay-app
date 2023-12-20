@@ -12,19 +12,20 @@ export const StyledBootStrapCol = styled(Col)<IStyledBootStrapColProps>`
     display: flex;
     align-items: center;
     flex-direction: column;
+    position: relative;
     /* max-width: ${({maxWidth}) => (maxWidth ? maxWidth : '0')}; */
     width: ${({width}) => (width && width )};
     height: ${({height}) => (height && height )};
     gap:${({gap}) => (gap ? gap : '0')};
-
+    
     ${({ hover }) =>
         hover === true &&
         css`
-        /* overflow: hidden; */
-        opacity: 0.2;
-        transition: opacity 0.5s;
+        opacity: 0.3;
+        /* border: 1px solid #fff; */
+        transition: opacity 0.4s;
             &:hover {
-                opacity: 0.5;
+                opacity: 0.6;
                 transition: opacity 0.5s;
             }
         `

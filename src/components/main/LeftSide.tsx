@@ -1,6 +1,6 @@
 import Lottie from 'lottie-react';
 import { book_animation } from '../../aseets';
-import { StyledBootStrapCol } from '../../aseets/styled/BootSrapCol';
+import { StyledBootStrapCol } from '../../aseets/styled/BootStrapCol';
 
 const LeftSide = () => {
     return (

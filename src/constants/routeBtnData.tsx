@@ -14,10 +14,12 @@ import { calendar, dutchpay, plan } from '../aseets';
 // 이부분을 컴포넌트를 다시 빼봐서 함성컴포넌트로 작성했을때와 차이점을 한번 알아봐야겠다.
 export type TRouteBtnData = {
     routePath: string;
-    lottie:  () => JSX.Element;
+    lottie ?:  () => JSX.Element;
     color: string;
     text: string;
-    img : string;
+    title : string;
+    subText : string;
+    img ?: string;
     withAuth : boolean;
 }
 
@@ -27,6 +29,8 @@ const routeBtnData :TRouteBtnData[] = [
         lottie: () => <StlyedDutchpayLottie animationData={dutchpay} />,
         color:'#ae7df9',
         text : '더치페이 하러가기',
+        subText : '친구들과 함께 더치페이를 작성하세요.',
+        title : 'Duthpay',
         img : '/images/PlanofP1.png',
         withAuth : true
     },
@@ -35,6 +39,8 @@ const routeBtnData :TRouteBtnData[] = [
         lottie: () => <StlyedPlanLottie animationData={plan} />,
         color:'#e97522',
         text : '계획 짜러가기',
+        subText : '길찾기와 키워드 검색을 통해 계획을 작성하세요.',
+        title : 'Plan',
         img :'/images/PlanofP2.png',
         withAuth : true
     },
@@ -43,6 +49,8 @@ const routeBtnData :TRouteBtnData[] = [
         lottie:() => <StlyedCalendarLottie animationData={calendar} />,
         color:'#66a4f5',
         text : '캘린더 보러가기',
+        subText : '친구들과 함께 더치페이를 작성하세요.',
+        title : 'Calendar',
         img :'/images/PlanofP3.png',
         withAuth : false,
     },

@@ -7,14 +7,8 @@
 //gray4 : #a0a0a0
 //gray5 : ##40414f
 //black : ##1c1c1c
-
-#root {
+html, body, #root, #parentContainer {
+    height: 100%; /* 모든 부모 요소들의 높이를 100%로 설정 */
     background-color: #1c1c1c;
-    height: 100vh;
-
-    @media (max-width: 1100px) { 
-        height: 100vh;
-        background-color: #1c1c1c; /* 새로운 백그라운드 컬러 설정 */
-    }
 }
 

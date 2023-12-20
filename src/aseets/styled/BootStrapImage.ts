@@ -8,6 +8,9 @@ interface IStyledBootStrapImageProps {
 
 export const StyledBootStrapImage = styled(Image)<IStyledBootStrapImageProps>`
     width:100%;
-    height:${({height}) => (height && height )};;
+    height:${({height}) => (height && height )};
     object-fit: cover;
+    position: absolute;
+    top: 0;
+    z-index: -999;
 `
