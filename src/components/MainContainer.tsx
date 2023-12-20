@@ -10,8 +10,8 @@ import { kakaoUser } from '../atom/kakaoUser';
 const MainContainer:React.FC = () => {
     const {nickname} = useRecoilValue(kakaoUser);
     return (
-        <StyledBootStrapContainer height='100%'>
-            <StyledBootStrapRow minHeight='500px'>
+        <StyledBootStrapContainer height={'100%'}>
+            <StyledBootStrapRow minHeight={'500px'}>
                 {/* 왼쪽 사이드 */}
                 <LeftSide/>
                 {/* 오른쪽 사이드 */}

@@ -7,7 +7,7 @@ interface IStyledBootStrapLayoutWrapperProps {
 
 export const StyledBootStrapLayoutWrapper = styled.div<IStyledBootStrapLayoutWrapperProps>`
     position: ${({position}) => (position ? position : 'static' )};
-    top: 65%;
+    top: 55%;
     left: 50%;
     transform: translate(-50%, -50%);
 `

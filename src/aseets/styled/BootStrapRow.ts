@@ -14,6 +14,6 @@ export const StyledBootStrapRow = styled(Row)<IStyledBootStrapRowProps>`
     justify-content: center;
     align-items: center;
     margin: auto;
-    min-height: ${({minHeight}) => (minHeight ? minHeight : '0')};
+    min-height: ${({minHeight}) => (minHeight && minHeight)};
     gap : ${({gap}) => (gap ? gap : '0')};
 `

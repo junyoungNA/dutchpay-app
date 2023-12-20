@@ -13,7 +13,7 @@ const RouteBtnWrapper = ({routePath, lottie, text, title, color,} : IRouteBtnWra
     return (
         <StyledButtonWrapper onClick={() => routeTo(routePath)} background={color}> 
                 {lottie && lottie()}
-            <StlyedNavBtn background={color}>{title}</StlyedNavBtn>
+            <StlyedNavBtn width={'212px'} hover={'true'}  height={'40px'} background={'#fff'}>{title}</StlyedNavBtn>
         </StyledButtonWrapper>
     )
 }

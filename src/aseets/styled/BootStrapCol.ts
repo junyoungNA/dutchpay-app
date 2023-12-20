@@ -18,14 +18,14 @@ export const StyledBootStrapCol = styled(Col)<IStyledBootStrapColProps>`
     height: ${({height}) => (height && height )};
     gap:${({gap}) => (gap ? gap : '0')};
     
-    ${({ hover }) =>
-        hover === true &&
+    ${({ hover  }) =>
+        hover === 'true' &&
         css`
         opacity: 0.3;
         /* border: 1px solid #fff; */
         transition: opacity 0.4s;
             &:hover {
-                opacity: 0.6;
+                opacity: 0.8;
                 transition: opacity 0.5s;
             }
         `

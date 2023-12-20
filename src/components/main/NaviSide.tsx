@@ -13,16 +13,16 @@ interface INavSideProps {
 
 const NaviSide = ({nickname} : INavSideProps) => {
     return (
-        <StyledBootStrapRow gap={'15px'} minHeight='400px'>
+        <StyledBootStrapRow gap={'15px'} minHeight={'400px'}>
             {routeBtnData.map(({text, title, subText, color, routePath, lottie, img, withAuth} : TRouteBtnData ,idx:number) => (
                 withAuth && !nickname  ? null : 
-                <StyledBootStrapCol hover={true} md={3} height={'400px'} >
+                <StyledBootStrapCol hover={'true'} md={3} height={'400px'} key={idx}>
                     <StyledBootStrapImage src={img} height={'400px'} rounded/>
                     <StyledBootStrapLayoutWrapper position={'absolute'}>
-                            <StyledGreetings fontSize='22px' fontWeight='800' color={'#181717'}>
+                            <StyledGreetings fontSize='22px' fontWeight='800' color={'#fff'}>
                                 {subText}
                             </StyledGreetings>
-                            <RouteBtnWrapper routePath={routePath} color={'none'} text={text} title={title} />
+                            <RouteBtnWrapper routePath={routePath} color={'none'} text={text} title={title}  />
                     </StyledBootStrapLayoutWrapper>
                 </StyledBootStrapCol>
             ))}

@@ -29,7 +29,7 @@ const routeBtnData :TRouteBtnData[] = [
         lottie: () => <StlyedDutchpayLottie animationData={dutchpay} />,
         color:'#ae7df9',
         text : '더치페이 하러가기',
-        subText : '친구들과 함께 더치페이를 작성하세요.',
+        subText : '친구들과 함께 \n 더치페이를 작성하세요.',
         title : 'Duthpay',
         img : '/images/PlanofP1.png',
         withAuth : true
@@ -39,7 +39,7 @@ const routeBtnData :TRouteBtnData[] = [
         lottie: () => <StlyedPlanLottie animationData={plan} />,
         color:'#e97522',
         text : '계획 짜러가기',
-        subText : '길찾기와 키워드 검색을 통해 계획을 작성하세요.',
+        subText : '목적지를 검색하고 \n 계획을 작성하세요.',
         title : 'Plan',
         img :'/images/PlanofP2.png',
         withAuth : true
@@ -49,7 +49,7 @@ const routeBtnData :TRouteBtnData[] = [
         lottie:() => <StlyedCalendarLottie animationData={calendar} />,
         color:'#66a4f5',
         text : '캘린더 보러가기',
-        subText : '친구들과 함께 더치페이를 작성하세요.',
+        subText : '작성한 계획을\n 캘린더에서 확인하세요.',
         title : 'Calendar',
         img :'/images/PlanofP3.png',
         withAuth : false,

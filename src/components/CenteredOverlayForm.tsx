@@ -41,7 +41,6 @@ const CenteredOverlayForm = ({children, title, handleSubmit, validated, route} :
 const StyledCenteralizedContainer = styled(Container)`
     width: 50vw;
     min-height : 100vh;
-
     display: flex;
     flex-direction: column;
     justify-content: center;

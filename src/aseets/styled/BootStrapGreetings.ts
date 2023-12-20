@@ -15,4 +15,5 @@ export const StyledGreetings = styled.div<IStyledGreetingProps>`
     line-height:${({lineHeight}) => (lineHeight ? lineHeight : '30px')};
     white-space: pre-wrap;
     font-size: ${({fontSize}) => (fontSize ? fontSize : '18px')};
+    margin: 0 auto 0 auto;
 `

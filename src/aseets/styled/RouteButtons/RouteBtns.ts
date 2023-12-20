@@ -1,4 +1,4 @@
-import styled from "styled-components"
+import styled, { css } from "styled-components"
 import Lottie from 'lottie-react';
 
 export const StlyedDutchpayLottie = styled(Lottie)`
@@ -25,13 +25,29 @@ export const StlyedPlanLottie = styled(Lottie)`
     pointer-events: none;
     left: 5px;
 `
-
-export const StlyedNavBtn  = styled.button<{background? : string}>`
+interface IStyledNavBtnProps  {
+    background? : string;
+    width ? : string;
+    height? : string;
+    hover? : string;
+}
+export const StlyedNavBtn  = styled.button<IStyledNavBtnProps>`
     border-radius: 15px;
     font-weight:700;
-    font-size: 16px;
-    height: 50px;
+    font-size: 18px;
+    width:  ${({width}) => (width ? width : '120px')};
+    height: ${({height}) => (height ? height : '50px')};
     border: none;
-    bottom: 50px;
     background-color: ${({background}) => (background ? background : 'gray')};
+    ${({ hover  }) =>
+        hover === 'true' &&
+        css`
+        margin-top: 30px;
+            &:hover {
+                transition: 0.3s;
+                background-color: rgb(175, 19, 0);
+                color: #fff;
+            }
+        `
+    };
 `
