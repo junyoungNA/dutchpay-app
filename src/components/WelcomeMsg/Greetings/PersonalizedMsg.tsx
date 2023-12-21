@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-const PersonalizedMsg = ({ nickname } : {nickname : string}) => {
+const PersonalizedMsg = ({ nickname } : {nickname? : string}) => {
     return (
         <>
             <StyledUserName>{nickname}님</StyledUserName>
