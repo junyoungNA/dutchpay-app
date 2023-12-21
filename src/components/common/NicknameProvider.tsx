@@ -1,18 +1,14 @@
-import React, { ReactElement, ReactNode } from 'react'
+import React from 'react'
 import { useRecoilValue } from 'recoil';
 import { kakaoUser } from '../../atom/kakaoUser';
 
-interface NicknameProviderProps {
-    children: ReactNode;
-}
-
-const NicknameProvider = ({children} : NicknameProviderProps) => {
+const NicknameProvider = () => {
     const {nickname} = useRecoilValue(kakaoUser);
 
     return (
-        <div>
-            {React.cloneElement(children as ReactElement, { nickname })}
-        </div>
+        <>
+            qweq
+        </>
     )
 }
 

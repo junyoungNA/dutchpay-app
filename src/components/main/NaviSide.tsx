@@ -1,17 +1,15 @@
 import { StyledBootStrapRow } from '../../aseets/styled/BootStrapRow'
 import { StyledBootStrapCol } from '../../aseets/styled/BootStrapCol'
-import { Image } from 'react-bootstrap'
 import { StyledBootStrapImage } from '../../aseets/styled/BootStrapImage'
 import routeBtnData, { TRouteBtnData } from '../../constants/routeBtnData'
 import RouteBtnWrapper from './RouteBtnWrapper'
 import { StyledGreetings } from '../../aseets/styled/BootStrapGreetings'
 import { StyledBootStrapLayoutWrapper } from '../../aseets/styled/BootStrapLayoutWrapper'
+import { useRecoilValue } from 'recoil'
+import { kakaoUser } from '../../atom/kakaoUser'
 
-interface INavSideProps {
-    nickname : string | undefined,
-}
-
-const NaviSide = ({nickname} : INavSideProps) => {
+const NaviSide = () => {
+    const {nickname} = useRecoilValue(kakaoUser);
     return (
         <StyledBootStrapRow gap={'15px'} minHeight={'400px'}>
             {routeBtnData.map(({text, title, subText, color, routePath, lottie, img, withAuth} : TRouteBtnData ,idx:number) => (
