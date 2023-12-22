@@ -14,12 +14,12 @@ import { calendar, dutchpay, plan } from '../aseets';
 // 이부분을 컴포넌트를 다시 빼봐서 함성컴포넌트로 작성했을때와 차이점을 한번 알아봐야겠다.
 export type TRouteBtnData = {
     routePath: string;
-    lottie ?:  () => JSX.Element;
+    lottie :  () => JSX.Element;
     color: string;
     text: string;
     title : string;
     subText : string;
-    img ?: string;
+    img : string;
     withAuth : boolean;
 }
 
