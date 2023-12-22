@@ -7,6 +7,7 @@ interface IStyledBootStrapColProps {
     width?:string;
     height?: string;
     margin?:string;
+    
 }
 
 export const StyledBootStrapCol = styled(Col)<IStyledBootStrapColProps>`

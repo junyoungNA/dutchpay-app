@@ -5,17 +5,17 @@ import { TRouteBtnData } from '../../constants/routeBtnData';
 
 
 
-export interface IRouteBtnWrapperProps extends Omit<TRouteBtnData, 'withAuth' | 'img'| 'subText'> {
+export interface IRouteBtnMinWrapperProps extends Omit<TRouteBtnData, 'withAuth' | 'img'| 'subText'> {
 }
 
-const RouteBtnWrapper = ({routePath, lottie, text, title, color,} : IRouteBtnWrapperProps) => {
+const RouteBtnMinWrapper = ({routePath, lottie, text, color,} : IRouteBtnMinWrapperProps) => {
     const {routeTo} = useRouter();
     return (
         <StyledButtonWrapper onClick={() => routeTo(routePath)} background={color}> 
                 {lottie && lottie()}
-            <StlyedNavBtn  width={'212px'} hover={'true'}  height={'40px'} background={'#fff'}>{title}</StlyedNavBtn>
+            <StlyedNavBtn width={'212px'} height={'40px'} background={color}>{text}</StlyedNavBtn>
         </StyledButtonWrapper>
     )
 }
 
-export default RouteBtnWrapper
+export default RouteBtnMinWrapper

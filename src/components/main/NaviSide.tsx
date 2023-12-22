@@ -7,6 +7,7 @@ import { StyledGreetings } from '../../aseets/styled/BootStrapGreetings'
 import { StyledBootStrapLayoutWrapper } from '../../aseets/styled/BootStrapLayoutWrapper'
 import { useRecoilValue } from 'recoil'
 import { kakaoUser } from '../../atom/kakaoUser'
+import RouteBtnGroups from './RouteBtnGroups'
 
 const NaviSide = () => {
     const {nickname} = useRecoilValue(kakaoUser);
@@ -14,7 +15,7 @@ const NaviSide = () => {
         <StyledBootStrapRow gap={'15px'} minHeight={'400px'}>
             {routeBtnData.map(({text, title, subText, color, routePath, lottie, img, withAuth} : TRouteBtnData ,idx:number) => (
                 withAuth && !nickname  ? null : 
-                <StyledBootStrapCol hover={'true'} md={3} height={'400px'} key={idx}>
+                <StyledBootStrapCol hover={'true'} md={3} height={'400px'} flex={'flex'} key={idx}>
                     <StyledBootStrapImage src={img} height={'400px'} rounded/>
                     <StyledBootStrapLayoutWrapper position={'absolute'} top={'55%'} left={'50%'}>
                             <StyledGreetings fontSize='22px' fontWeight='800' color={'#fff'}>
