@@ -1,28 +1,34 @@
-## React-bootstrap 사용하기
+# 개인 사이드 프로젝트
+## 📝 [Plan of P] 계획 작성 웹,앱
 
-- react-bootstrap bootstrap에서 제공하는 라이브러리로서 레이아웃, 버튼, 테이블등 디자인을 미리 만들어 두어 ui상황에 맞게 가져다 쓸 수 있고. function과 hooks를 사용하며 반응형을 제공해준다고 한다. <br/>
-  react-bootstrap링크: https://react-bootstrap.netlify.app/docs/layout/grid
-- Container 컴포넌트
 
-  - 컴포넌트는 그리드 시스템을 감싸는 역할을 하며, 페이지 컨텐츠를 중앙에 정렬하고 그리드를 적절하게 관리합니다.
-  - 그리드 시스템은 페이지의 레이아웃을 조직화하는 데 도움을 주는 도구입니다.
-    행(row)과 열(column)의 조합으로 구성되며, 화면 크기에 따라 열들의 너비가 자동으로 조정됩니다
-  - <strong>반응형 너비 조정: Container 내에 있는 열(col)들은 화면의 크기에 따라 자동으로 너비를 조정합니다. 작은 화면에서는 열들이 세로로 쌓이고, 큰 화면에서는 옆으로 나란히 배치됩니다.
-  - 가운데 정렬: Container는 페이지 컨텐츠를 가운데에 정렬시켜주는 역할을 합니다.</strong>
-    <br/>
+## ❓구현 내용
+#### React, Bootstrap 활용하여 반응형 구현
+#### 카카오 로그인, OAuth 로그인 구현
+#### 더치페이 기능 구현
+#### 카카오 맵 키워드 검색, 주소 검색을 통해 길찾기 기능 구현
+#### 캘린더 기능 구현, 작성한 계획,더치페이를 달력을 통해 확인가능
+#### Node, Express, MongoDB를 사용하여 서버 API 코드를 구현
+#### AWS EC2, Ngnix 를 사용하여 서비스 배포
 
-- Row 컴포넌트:
-  Row 컴포넌트는 열(Col)들을 감싸고, 그리드 시스템의 행을 형성합니다. 각 행은 그리드의 가로 라인을 형성하며, 기본적으로 행 내의 열들은 가로로 나란히 배치됩니다. 화면 크기에 따라 열들이 자동으로 정렬되며, 작은 화면에서는 세로로 쌓이고 큰 화면에서는 옆으로 나란히 배치되며 속성으로
-  flex 와 관련된 속성들을 사용 가능.
+-------
 
-- Col 컴포넌트:
-  Col 컴포넌트는 그리드 시스템에서 열(column)을 정의합니다. 각 열은 행 내에서의 컨텐츠를 담당하며, 열의 너비는 화면 크기에 따라 자동으로 조정됩니다.
-  그리드 시스템은 12개의 컬럼으로 나누어진 구조를 가지고 있으며 md 프로퍼티는 중간 화면(medium screen) 크기에서의 열 너비를 지정합니다
-  <br/>
-  https://react-bootstrap.netlify.app/docs/layout/breakpoints
-  - xs: 576px 보다 작을때 열 너비를 정의.
-  - sm: ≥576px 보다 클 때 열 너비를 정의.
-  - md: ≥768px 보다 클 때 열 너비를 정의.
-  - lg: 992px 보다 클 때 열 너비를 정의.
-  - xl: 1200px 보다 클 때 열 너비를 정의.
-  - 예시 `<Col xs={12} md={6}>`
+## 🛠 기술정보
+![React](https://img.shields.io/badge/react-67DCF7?style=for-the-badge&logo=react&logoColor=white)
+![JavaScript](https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=white)
+![Axios](https://img.shields.io/badge/axios-5A29E4?style=for-the-badge&logo=axios&logoColor=white)
+![ReactRouter](https://img.shields.io/badge/reactrouter-CA4245?style=for-the-badge&logo=reactrouter&logoColor=white)
+![BootStrap](https://img.shields.io/badge/BootStrap-7952B3?style=for-the-badge&logo=BootStrap&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=TypeScript&logoColor=ffffff)
+![Recoil](https://img.shields.io/badge/Recoil-3578E5?style=for-the-badge&logo=Recoil&logoColor=ffffff)
+![KakakoLogin](https://img.shields.io/badge/KakakoLogin-FFCD00?style=for-the-badge&logo=Kakao&logoColor=ffffff)
+![KakaMap](https://img.shields.io/badge/kakaoreact―maps-FFCD00?style=for-the-badge&logo=kakao&logoColor=white)
+![Daumpostcode](https://img.shields.io/badge/daumpostcode-FFCD00?style=for-the-badge&logo=kakao&logoColor=white)
+![AWS EC2](https://img.shields.io/badge/EC2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white)
+![Nginx](https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=nginx&logoColor=white)
+![JSON WebToken](https://img.shields.io/badge/jsonwebtokens-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
+
+----
+## 기타 내용
+현재는 코드의 재사용성과 유자 보수에 초점을 두고 코드를 리팩토링하며 기록하고 있습니다. <br/>
+블로그: https://zoon-bloom.tistory.com/147
