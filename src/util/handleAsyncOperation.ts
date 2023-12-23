@@ -3,7 +3,6 @@ const handleAsyncOperation = (promise: Promise<any>, successCallback: (result: a
         .then((result) => {
             // api 요청 성공시 setState처리
             // console.log('callbackresult', result);
-            console.log(result,'뭐가문제냐');
             successCallback(result);
         })
         .catch((error) => {

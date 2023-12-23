@@ -23,7 +23,7 @@ const MapSide: React.FC<IMapSideProps> = ({setMap, markers, markerInfo, setMarke
     const {x , y} = useRecoilValue(kakaoAddressInfoState);
     const [arrive, setArrive] = useRecoilState(mapArrive);
     const departure= useRecoilValue(mapDeparture);
-
+    const [isOpenMarkerCard, setOpenMarkerCard] = useState(false);
     return (
         <StyledPlanMap 
             center={{ lat: y, lng: x }}   // 지도의 중심 좌표
@@ -36,13 +36,14 @@ const MapSide: React.FC<IMapSideProps> = ({setMap, markers, markerInfo, setMarke
                 <MapMarker
                     key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
                     position={marker.position}
-                    onClick={() => setMarkerInfo(marker)}
+                    onClick={() => {setMarkerInfo(marker); setOpenMarkerCard(true)}}
                     />
                     {markerInfo && markerInfo.x === marker.x && markerInfo.y === marker.y && (
-                        <CustomOverlayMap position={marker.position} >
+                        <CustomOverlayMap position={marker.position}>
+                        {isOpenMarkerCard &&
                             <StyledMapCard>
                                 <Card.Body >
-                                    <StyledColseBtn onClick={() => setMarkerInfo(null)}/>
+                                    <StyledColseBtn onClick={() => setOpenMarkerCard(false)}/>
                                     <Card.Title>{markerInfo.place_name}</Card.Title>
                                     <Card.Text>{markerInfo.road_address_name}</Card.Text>
                                     <Card.Text>{markerInfo.address_name}</Card.Text>
@@ -57,6 +58,7 @@ const MapSide: React.FC<IMapSideProps> = ({setMap, markers, markerInfo, setMarke
                                     </Card.Link>
                                 </Card.Body> 
                             </StyledMapCard>
+                        }
                         </CustomOverlayMap>
                     )}
             </>

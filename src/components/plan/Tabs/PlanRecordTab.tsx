@@ -15,7 +15,7 @@ const PlanRecordTab = () => {
     const [planDate,setPlanDate] = useRecoilState(planDateAtom); //현재 만들어진 계획이 있다면 이 날짜를 이용해 만든 계획 보여주기
     const [userPlansRecord, setUserPlansRecord] = useRecoilState(planRecord); 
     const getUsersPlanRecordFetch = useFetchGetUsersPlan();
-    console.log(planDate,'날짜');
+    // console.log(planDate,'날짜');
     useEffect(() => {
         // const updateDateAndFetch = async () => {
         //     // 계획 작성 후 바로 만든 계획을 보여주기 위한 date 설정
